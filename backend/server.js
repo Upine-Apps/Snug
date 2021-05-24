@@ -3,16 +3,18 @@ import userRoutes from './api/userRoutes.js';
 import dateRoutes from './api/dateRoutes.js';
 import CognitoExpress from 'cognito-express';
 
+require('dotenv').config();
 const app = express();//, authenticatedRoute = express.Router();
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
+
 // app.use("/api", authenticatedRoute);
 
 const cognitoExpress = new CognitoExpress({
-    region: "us-east-2",
-    cognitoUserPoolId: "us-east-2_rweyLTmso",
+    region: process.env.AWS_REGION,
+    cognitoUserPoolId: process.env.AWS_COGNITO_POOL_ID,
     tokenUse: "access",
-    tokenExpiration: 3600000
+    tokenExpiration: 3600000 //one hour
 });
 
 const port = process.env.PORT || 3000;

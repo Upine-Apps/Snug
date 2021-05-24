@@ -1,72 +1,108 @@
 
-//STARTS WHATEVER IS INSIDE EVERY HOUR
+// STARTS WHATEVER IS INSIDE EVERY HOUR
 // setInterval(function () {
 //     console.log('this bitch running');
 // }, 1*1000
 // );
 
 
-const {Pool, Client} = require('pg')
-const pool = new Pool({
-    user: "application",
-    host: 'test-postgres.c6avwbngrz7p.us-east-1.rds.amazonaws.com',
-    database: "TEST",
-    password: "password",
-    port: "5432"
-    })
 
-//GETTING THE CURRENT DATE AND THE THE CURRENT DATE PLUS AN HOUR
+/*
+
+WHEN WE ARE TESTING THIS, WE NEED TO MAKE SURE THAT IT IS ONLY PULLING LIKE 2 DATES
+THIS WAY WE DON'T RUN UP THE CHARGES
+
+*/
+
+require('dotenv').config();
+
+const { Pool, Client } = require('pg')
+var AWS = require('aws-sdk');
+
+function sendTextMessage(phone_number) {
+    var params = {
+        Message: msg,
+        PhoneNumber: '+1' + phone_number,
+        MessageAttributes: {
+            'AWS.SNS.SMS.SenderID': {
+                'DataType': 'String',
+                'StringValue': 'Snug'
+            }
+        }
+    };
+
+    var publishTextPromise = new AWS.SNS({ apiVersion: '2010-03-31' }).publish(params).promise();
+    return publishTextPromise;
+}
+
+const pool = new Pool({
+    user: process.env.POSTGRES_USERNAME,
+    host: process.env.POSTGRES_HOST,
+    database: process.env.POSTGRES_DATABASE,
+    password: process.env.POSTGRES_PASSWORD,
+    port: process.env.POSTGRESS_PORT
+});
+
+
+
+var msg = 'Snug App here! Just checking in on you, are you okay? After 15 more minutes we\'ll send a message to all of your contacts. If you are safe, please go to your date on Snug and mark it as safe.';
 var currentDate = new Date(new Date().toUTCString());
 var currentDateConverted = `${currentDate.getFullYear()}-${currentDate.getUTCMonth()}-${currentDate.getUTCDay()} ${currentDate.getUTCHours()}:${currentDate.getUTCMinutes()}`;
-var currentDateConvertedPlusHour = `${currentDate.getFullYear()}-${currentDate.getUTCMonth()}-${currentDate.getUTCDay()} ${currentDate.getUTCHours()+1}:${currentDate.getUTCMinutes()}`;
+var currentDateConvertedPlusHour = `${currentDate.getFullYear()}-${currentDate.getUTCMonth()}-${currentDate.getUTCDay()} ${currentDate.getUTCHours()}:${currentDate.getUTCMinutes() + 1}`;
 
-var testTimeStart = '2020-05-05 11:00:00';
-var testTimeEnd = '2020-05-05 12:00:00'
+var testTimeStart = '2020-05-05 12:45:00';
 
 //QUERY TO GET ALL DATES WITHIN AN HOUR
-var selectQuery = `SELECT * from dates where (date_start between $1 and $2)`;
+var selectQuery = `select users.phone_number, dates.date_end  from dates left join users on dates.user_1 = users.user_id where date_end = $1`;
 
-var res;
-res = { status: false, data: null };
-    pool.query(selectQuery, async (err, res) => {
-        try {
-            // MAKE SURE TO CHANGE THE VARIABLES AT THE END
-            const fetchedUser =  await pool.query(selectQuery,[testTimeStart,testTimeEnd]);
-            if (fetchedUser.rows.length) {
-                res = { status: true, data: fetchedUser.rows };   
-            } else {
-                throw Error("No user found");
-            }
-        } catch (err) {
-            console.error(err.message);
-           res = ({ status: false, data: null });
+var dateData = [];
+pool.query(selectQuery, async (err, res) => {
+    try {
+        // MAKE SURE TO CHANGE THE VARIABLES AT THE END
+        const fetchedUser = await pool.query(selectQuery, [testTimeStart]);
+        if (fetchedUser.rows.length) {
+            dateData = fetchedUser.rows;
+
+        } else {
+            throw Error("No dates found");
         }
-       
-        // IF STATEMENT SO THAT WE CAN RUN SHIT AFTER THE QUERY IS FULLY DONE
-        if(res.data.length >0) {
-        let userIdToSendMsg = [];
-        let dateStartTime = [];
-        for (let i in res.data) {
-            userIdToSendMsg.push(res.data[i].user_1);
-            dateStartTime.push(res.data[i].date_start);
-            console.log(userIdToSendMsg);
-            console.log(dateStartTime);
+    } catch (err) {
+        var curTime = new Date().toUTCString();
+        console.error(`${curTime} -- ${err.message}`); //if this is a console error will it break the service?
+    }
+
+
+    // IF STATEMENT SO THAT WE CAN RUN SHIT AFTER THE QUERY IS FULLY DONE
+    if (dateData.length > 0) {
+        for (i in dateData) {
+            var publishTextPromise = sendTextMessage(dateData[i].phone_number);
+
+            publishTextPromise.then(
+                function (data) {
+                    console.info(`Sent text: ${data.MessageId}`);
+                }).catch(
+                    function (err) {
+                        console.error(`Failed sending text to ${i.phone_number}. Error: ${err}`);
+                    });
+
+
+
         }
-        
-          
-        
-        }
-    })
 
- 
-
-    
+    }
+})
 
 
 
 
-    
 
+
+
+
+
+    // select phone_number from users where user_id = (select user_1 from dates where (date_end between '2021-05-20 13:09:00' and '2021-05-20 13:010:00') );
+
+    // select users.phone_number, dates.trusted_contacts  from dates left join users on dates.user_1 = users.user_id where (date_end between '2021-05-20 13:09:00' and '2021-05-20 13:010:00');
 
 
 
@@ -86,11 +122,11 @@ res = { status: false, data: null };
 
 //All users that receive the previous message gets sent to another function that will run every minute and check to see if it has been more than 5 min since the end of the date.
 
-//All users that reveive the previous message gets sent to another function that will run every minute and check to see if it has been more than 15 min since the end of the date.
-
 //All users that receive the previous message gets sent to another function that will run every minute and check to see if it has been more than 20 min since the end of the date. 
 //This is where we send the message to all contacts.
 //---------------------------------------------------------------------//
 
 //Probably make it efficient by checking to see if the list is full or not, if not full then we dont have to run the functions 
+
+
 
