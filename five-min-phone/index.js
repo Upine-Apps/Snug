@@ -14,9 +14,11 @@ THIS WAY WE DON'T RUN UP THE CHARGES
 
 */
 
+
+import { pool } from "./config/databaseConfig.js";
 require('dotenv').config();
 
-const { Pool, Client } = require('pg')
+
 var AWS = require('aws-sdk');
 
 function sendTextMessage(phone_number) {
@@ -35,13 +37,7 @@ function sendTextMessage(phone_number) {
     return publishTextPromise;
 }
 
-const pool = new Pool({
-    user: process.env.POSTGRES_USERNAME,
-    host: process.env.POSTGRES_HOST,
-    database: process.env.POSTGRES_DATABASE,
-    password: process.env.POSTGRES_PASSWORD,
-    port: process.env.POSTGRESS_PORT
-});
+
 
 
 
@@ -53,7 +49,7 @@ var currentDateConvertedPlusHour = `${currentDate.getFullYear()}-${currentDate.g
 var testTimeStart = '2020-05-05 12:45:00';
 
 //QUERY TO GET ALL DATES WITHIN AN HOUR
-var selectQuery = `select users.phone_number, dates.date_end  from dates left join users on dates.user_1 = users.user_id where date_end = $1`;
+var selectQuery = `select users.phone_number, dates.date_end  from dates left join users on dates.user_1 = users.user_id where date_end = $1`; //make sure you're pulling dates that are not canceled and not marked safe as well
 
 var dateData = [];
 pool.query(selectQuery, async (err, res) => {
@@ -76,7 +72,6 @@ pool.query(selectQuery, async (err, res) => {
     if (dateData.length > 0) {
         for (i in dateData) {
             var publishTextPromise = sendTextMessage(dateData[i].phone_number);
-
             publishTextPromise.then(
                 function (data) {
                     console.info(`Sent text: ${data.MessageId}`);
@@ -84,11 +79,7 @@ pool.query(selectQuery, async (err, res) => {
                     function (err) {
                         console.error(`Failed sending text to ${i.phone_number}. Error: ${err}`);
                     });
-
-
-
         }
-
     }
 })
 
