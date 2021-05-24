@@ -2,8 +2,8 @@ import express from 'express';
 import userRoutes from './api/userRoutes.js';
 import dateRoutes from './api/dateRoutes.js';
 import CognitoExpress from 'cognito-express';
-
-require('dotenv').config();
+import dotenv from 'dotenv';
+dotenv.config();
 const app = express();//, authenticatedRoute = express.Router();
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
