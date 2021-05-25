@@ -1,21 +1,7 @@
 
 // STARTS WHATEVER IS INSIDE EVERY HOUR
-// setInterval(function () {
-//     console.log('this bitch running');
-// }, 1*1000
-// );
-
-
-
-/*
-
-WHEN WE ARE TESTING THIS, WE NEED TO MAKE SURE THAT IT IS ONLY PULLING LIKE 2 DATES
-THIS WAY WE DON'T RUN UP THE CHARGES
-
-*/
-
-
-import { pool } from "./config/databaseConfig.js";
+setInterval(function () {
+    import { pool } from "./config/databaseConfig.js";
 require('dotenv').config();
 
 
@@ -44,7 +30,7 @@ function sendTextMessage(phone_number) {
 var msg = 'Snug App here! Just checking in on you, are you okay? After 15 more minutes we\'ll send a message to all of your contacts. If you are safe, please go to your date on Snug and mark it as safe.';
 var currentDate = new Date(new Date().toUTCString());
 var currentDateConverted = `${currentDate.getFullYear()}-${currentDate.getUTCMonth()}-${currentDate.getUTCDay()} ${currentDate.getUTCHours()}:${currentDate.getUTCMinutes()}`;
-var currentDateConvertedPlusHour = `${currentDate.getFullYear()}-${currentDate.getUTCMonth()}-${currentDate.getUTCDay()} ${currentDate.getUTCHours()}:${currentDate.getUTCMinutes() + 1}`;
+var currentDateConvertedPlusFiveMin = `${currentDate.getFullYear()}-${currentDate.getUTCMonth()}-${currentDate.getUTCDay()} ${currentDate.getUTCHours()}:${currentDate.getUTCMinutes() - 5}`;
 
 var testTimeStart = '2020-05-05 12:45:00';
 
@@ -55,7 +41,7 @@ var dateData = [];
 pool.query(selectQuery, async (err, res) => {
     try {
         // MAKE SURE TO CHANGE THE VARIABLES AT THE END
-        const fetchedUser = await pool.query(selectQuery, [testTimeStart]);
+        const fetchedUser = await pool.query(selectQuery, [currentDateConvertedPlusFiveMin]);
         if (fetchedUser.rows.length) {
             dateData = fetchedUser.rows;
 
@@ -82,6 +68,20 @@ pool.query(selectQuery, async (err, res) => {
         }
     }
 })
+
+}, 60*1000
+);
+
+
+
+/*
+
+WHEN WE ARE TESTING THIS, WE NEED TO MAKE SURE THAT IT IS ONLY PULLING LIKE 2 DATES
+THIS WAY WE DON'T RUN UP THE CHARGES
+
+*/
+
+
 
 
 
