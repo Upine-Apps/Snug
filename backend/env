@@ -1,0 +1,7 @@
+POSTGRES_USERNAME=application
+POSTGRES_PASSWORD=password
+POSTGRES_DATABASE=TEST
+POSTGRES_HOST=test-postgres.c6avwbngrz7p.us-east-1.rds.amazonaws.com
+POSTGRES_PORT=5432
+AWS_REGION=us-east-2
+AWS_COGNITO_POOL_ID=us-east-2_rweyLTmso
