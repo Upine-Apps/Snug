@@ -247,7 +247,7 @@ This is only to be used when they first download the application
     Map<String, dynamic> dateToSend = currentDate.toMapWithoutId();
     dateToSend['user_1'] = userId;
     dateToSend['date_location'] =
-        "(${currentDate.dateLocation['lat']}, ${currentDate.dateLocation['long']})";
+        "(${currentDate.dateLocation['x']}, ${currentDate.dateLocation['y']})";
     dateToSend.remove('who');
     try {
       var responseAddDate = await http.post(Uri.encodeFull(urlAddDate),
