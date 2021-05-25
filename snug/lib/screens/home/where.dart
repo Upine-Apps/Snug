@@ -138,8 +138,8 @@ class _WhereState extends State<Where> {
 
     // update current date with location information
     currentDate.dateLocation = {
-      'lat': place.geometry.location.lat,
-      'long': place.geometry.location.lng
+      'x': place.geometry.location.lat,
+      'y': place.geometry.location.lng
     };
     currentDate.photoReference = place.photos.photoReference;
     currentDate.placeName = place.placeName;

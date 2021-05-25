@@ -585,6 +585,9 @@ class _AddDateState extends State<AddDate> {
                                                         true) {
                                                       log.i(
                                                           'Successfully added date');
+                                                      currentDate.dateId =
+                                                          dateResult['data'];
+                                                      // dateProvider.setRecentDate(updatedDate)
                                                       Navigator.pop(context);
                                                     } else {
                                                       throw AddDateException(
