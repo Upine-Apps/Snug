@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "SMS Service to send messages with AWS SNS with data from Postgres",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
