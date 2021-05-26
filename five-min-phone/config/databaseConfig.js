@@ -9,5 +9,6 @@ const pool = new Pool({
     host: process.env.POSTGRES_HOST,
     port: process.env.POSTGRES_PORT
 });
+// console.log(pool)
 
 export { pool };

@@ -2,13 +2,14 @@
 // STARTS WHATEVER IS INSIDE EVERY HOUR
 
 import { pool } from "./config/databaseConfig.js";
+// console.log(pool)
 import dotenv from 'dotenv';
-
-
 import aws from 'aws-sdk';
-setInterval(function () {
-    dotenv.config();
-   
+
+dotenv.config();
+var AWS = aws;
+
+var msg = 'Snug App here! Just checking in on you, are you okay? After 15 more minutes we\'ll send a message to all of your contacts. If you are safe, please go to your date on Snug and mark it as safe.';
 
 function sendTextMessage(phone_number) {
     var params = {
@@ -27,34 +28,37 @@ function sendTextMessage(phone_number) {
 }
 
 
+setInterval(function () {
 
+var currentDate = new Date(Date.now()-300000).setSeconds(0);
+currentDate = new Date(currentDate).setMilliseconds(0);
+var currentDateISO = new Date(currentDate).toISOString() //real time UTC -5 minutes
 
+var testDateISO = new Date(Date.UTC(2020,4,5,12,50,0)-300000).toISOString(); //test date 5 minutes later then -5 minutes
 
-var msg = 'Snug App here! Just checking in on you, are you okay? After 15 more minutes we\'ll send a message to all of your contacts. If you are safe, please go to your date on Snug and mark it as safe.';
-var currentDate = new Date(new Date().toUTCString());
-var currentDateConverted = `${currentDate.getFullYear()}-${currentDate.getUTCMonth()}-${currentDate.getUTCDay()} ${currentDate.getUTCHours()}:${currentDate.getUTCMinutes()}`;
-var currentDateConvertedPlusFiveMin = `${currentDate.getFullYear()}-${currentDate.getUTCMonth()}-${currentDate.getUTCDay()} ${currentDate.getUTCHours()}:${currentDate.getUTCMinutes() - 5}`;
+console.log(testDateISO)
+
 
 var testTimeStart = '2020-05-05 12:45:00';
 
 //QUERY TO GET ALL DATES WITHIN AN HOUR
-var selectQuery = `select users.phone_number, dates.date_end  from dates left join users on dates.user_1 = users.user_id where date_end = $1`; //make sure you're pulling dates that are not canceled and not marked safe as well
+var selectQuery = `select users.phone_number, dates.date_end  from dates left join users on dates.user_1 = users.user_id where date_end = $1 and safe = false and is_canceled = false`; //make sure you're pulling dates that are not canceled and not marked safe as well
 
 var dateData = [];
 pool.query(selectQuery, async (err, res) => {
     try {
+
         // MAKE SURE TO CHANGE THE VARIABLES AT THE END
-        const fetchedUser = await pool.query(selectQuery, [currentDateConvertedPlusFiveMin]);
+        const fetchedUser = await pool.query(selectQuery, [testDateISO]);
+
         if (fetchedUser.rows.length) {
             dateData = fetchedUser.rows;
-            console.log('------------')
-            console.log(dateData);
 
         } else {
             throw Error("No dates found");
         }
     } catch (err) {
-        console.log('didnt even connect to db');
+        console.log(err);
         var curTime = new Date().toUTCString();
         console.error(`${curTime} -- ${err.message}`); //if this is a console error will it break the service?
     }
@@ -62,7 +66,9 @@ pool.query(selectQuery, async (err, res) => {
 
     // IF STATEMENT SO THAT WE CAN RUN SHIT AFTER THE QUERY IS FULLY DONE
     if (dateData.length > 0) {
-        for (i in dateData) {
+        for (var i in dateData) {
+            // console.log(dateData)  //uncomment this for testing
+            //comment out everything else in this for loop for testing
             var publishTextPromise = sendTextMessage(dateData[i].phone_number);
             publishTextPromise.then(
                 function (data) {
@@ -75,7 +81,7 @@ pool.query(selectQuery, async (err, res) => {
     }
 })
 
-}, 1000
+}, 1000*60
 );
 
 
