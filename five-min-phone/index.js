@@ -1,11 +1,14 @@
 
 // STARTS WHATEVER IS INSIDE EVERY HOUR
+
+import { pool } from "./config/databaseConfig.js";
+import dotenv from 'dotenv';
+
+
+import aws from 'aws-sdk';
 setInterval(function () {
-    import { pool } from "./config/databaseConfig.js";
-require('dotenv').config();
-
-
-var AWS = require('aws-sdk');
+    dotenv.config();
+   
 
 function sendTextMessage(phone_number) {
     var params = {
@@ -44,11 +47,14 @@ pool.query(selectQuery, async (err, res) => {
         const fetchedUser = await pool.query(selectQuery, [currentDateConvertedPlusFiveMin]);
         if (fetchedUser.rows.length) {
             dateData = fetchedUser.rows;
+            console.log('------------')
+            console.log(dateData);
 
         } else {
             throw Error("No dates found");
         }
     } catch (err) {
+        console.log('didnt even connect to db');
         var curTime = new Date().toUTCString();
         console.error(`${curTime} -- ${err.message}`); //if this is a console error will it break the service?
     }
@@ -69,7 +75,7 @@ pool.query(selectQuery, async (err, res) => {
     }
 })
 
-}, 60*1000
+}, 1000
 );
 
 
