@@ -30,26 +30,26 @@ function sendTextMessage(phone_number) {
 
 setInterval(function () {
 
-var currentDate = new Date(Date.now()-300000).setSeconds(0);
-currentDate = new Date(currentDate).setMilliseconds(0);
-var currentDateISO = new Date(currentDate).toISOString() //real time UTC -5 minutes
+var currentDate = new Date(Date.now()-300000).setSeconds(0); //in case our program gets hung up or something and the seconds are more than 0
+currentDate = new Date(currentDate).setMilliseconds(0); //same but with milliseconds
+var currentDateISO = new Date(currentDate).toISOString() //real time UTC -5 minutes in ISO format
 
 var testDateISO = new Date(Date.UTC(2020,4,5,12,50,0)-300000).toISOString(); //test date 5 minutes later then -5 minutes
 
-console.log(testDateISO)
+console.log(currentDateISO); //comment out when testing
+// console.log(testDateISO) //uncomment when testing
 
+// var testTimeStart = '2020-05-05 12:45:00'; //we don't need this anymore bc I generated it but i'll leave it for reference
 
-var testTimeStart = '2020-05-05 12:45:00';
-
-//QUERY TO GET ALL DATES WITHIN AN HOUR
+//query to get dates within last five minutes that are not canceled and haven't been marked safe
+//gets user phone number as well
 var selectQuery = `select users.phone_number, dates.date_end  from dates left join users on dates.user_1 = users.user_id where date_end = $1 and safe = false and is_canceled = false`; //make sure you're pulling dates that are not canceled and not marked safe as well
 
 var dateData = [];
 pool.query(selectQuery, async (err, res) => {
     try {
 
-        // MAKE SURE TO CHANGE THE VARIABLES AT THE END
-        const fetchedUser = await pool.query(selectQuery, [testDateISO]);
+        const fetchedUser = await pool.query(selectQuery, [currentDateISO]); //change stuff in brackets to testDateISO when testing
 
         if (fetchedUser.rows.length) {
             dateData = fetchedUser.rows;
@@ -60,14 +60,14 @@ pool.query(selectQuery, async (err, res) => {
     } catch (err) {
         console.log(err);
         var curTime = new Date().toUTCString();
-        console.error(`${curTime} -- ${err.message}`); //if this is a console error will it break the service?
+        console.error(`${curTime} -- ${err.message}`);
     }
 
 
-    // IF STATEMENT SO THAT WE CAN RUN SHIT AFTER THE QUERY IS FULLY DONE
     if (dateData.length > 0) {
         for (var i in dateData) {
             // console.log(dateData)  //uncomment this for testing
+
             //comment out everything else in this for loop for testing
             var publishTextPromise = sendTextMessage(dateData[i].phone_number);
             publishTextPromise.then(
@@ -81,7 +81,7 @@ pool.query(selectQuery, async (err, res) => {
     }
 })
 
-}, 1000*60
+}, 1000*60 //once a minute
 );
 
 
