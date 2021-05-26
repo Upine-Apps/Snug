@@ -255,7 +255,7 @@ This is only to be used when they first download the application
       var extractData = json.decode(responseAddDate.body);
       if (extractData['status'] == true) {
         log.i('addDate succeeded!');
-        return {'status': true};
+        return {'status': true, 'data': extractData['data'].toString()};
       } else {
         throw AddDateException('Error adding date.');
       }
