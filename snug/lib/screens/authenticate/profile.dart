@@ -387,7 +387,7 @@ class _ProfileState extends State<Profile> {
                         Hair(
                           validator: (val) {
                             if (val == null) {
-                              return "Please choose you'r hair color";
+                              return "Please choose your hair color";
                             }
                           },
                           onChanged: (val) {
