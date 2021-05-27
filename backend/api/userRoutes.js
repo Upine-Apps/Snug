@@ -57,6 +57,7 @@ export default function (app) {
             console.log(req.body);
             console.log(Object.keys(req.body));
             console.log(Object.values(req.body));
+            data.temp = Boolean.parse(data.temp);
             const newUser = await pool.query("INSERT INTO users (first_name, last_name, sex, phone_number, race, eye, hair, trusted_contacts, height, temporary, dob, street, city, state, zip) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) RETURNING *", [data.first_name, data.last_name, data.sex, data.phone_number, data.race, data.eye, data.hair, data.trusted_contacts, data.height, data.temp, data.dob, data.street, data.city, data.state, data.zip]);
             res.json({ status: true, data: newUser.rows[0]['user_id'] });
         } catch (err) {

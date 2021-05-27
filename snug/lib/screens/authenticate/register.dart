@@ -88,6 +88,7 @@ class _RegisterState extends State<Register> {
                                       FilteringTextInputFormatter.allow(
                                           RegExp('[0-9]+')),
                                     ],
+                                    keyboardType: TextInputType.number,
                                     decoration: InputDecoration(
                                         errorStyle: TextStyle(
                                             color: Theme.of(context)

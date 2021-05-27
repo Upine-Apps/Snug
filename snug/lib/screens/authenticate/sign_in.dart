@@ -116,6 +116,7 @@ class _SignInState extends State<SignIn> {
                                 ],
                                 controller: _controller,
                                 focusNode: myFocusNode,
+                                keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                   errorStyle: TextStyle(
                                       color: Theme.of(context)

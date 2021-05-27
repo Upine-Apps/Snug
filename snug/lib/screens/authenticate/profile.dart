@@ -19,7 +19,6 @@ import 'package:snug/custom_widgets/topheader.dart';
 import 'package:snug/models/User.dart';
 import 'package:snug/providers/UserProvider.dart';
 
-import 'package:snug/screens/navigation/MainPage.dart';
 import 'package:snug/screens/sync/sync.dart';
 import 'package:snug/services/cognito/CognitoService.dart';
 import 'package:snug/services/remote_db_service.dart';
@@ -388,7 +387,7 @@ class _ProfileState extends State<Profile> {
                         Hair(
                           validator: (val) {
                             if (val == null) {
-                              return "Please choose you'r hair color";
+                              return "Please choose your hair color";
                             }
                           },
                           onChanged: (val) {
