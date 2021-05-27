@@ -26,6 +26,7 @@ class RemoteDatabaseHelper {
   }
 
   static final _hostUrl = DotEnv().env['BACKEND_IP'];
+
   final log = getLogger('RemoteDatabaseHelper');
 
   RemoteDatabaseHelper._privateConstructor();
@@ -35,6 +36,7 @@ class RemoteDatabaseHelper {
   Get user data from remote and return for updating local yuser profile shared preferences
 */
   Future getUser(String userId, [testing]) async {
+    log.i('Host URl: ${_hostUrl}');
     //testing purposes
     // userId = '1';
     if (testing != null) {

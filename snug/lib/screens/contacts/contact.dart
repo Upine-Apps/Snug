@@ -173,7 +173,8 @@ class _ContactState extends State<Contact> with AutomaticKeepAliveClientMixin {
                               },
                               itemCount: contactList.getContacts.length,
                               itemBuilder: (context, index) {
-                                return Dismissible(
+                                if (contactList.getContacts.length != 1) {
+                                  return Dismissible(
                                     key: UniqueKey(),
                                     onDismissed: (direction) {
                                       contactList.removeContact(index, _userId);
@@ -282,7 +283,109 @@ class _ContactState extends State<Contact> with AutomaticKeepAliveClientMixin {
                                           ),
                                         ),
                                       ],
-                                    ));
+                                    ),
+                                  );
+                                } else {
+                                  return Column(
+                                    children: <Widget>[
+                                      GestureDetector(
+                                        onTap: () {
+                                          launch(
+                                              "tel:${contactList.getContacts[index].phoneNumber}");
+                                        },
+                                        child: Container(
+                                          padding: EdgeInsets.only(
+                                            left: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                .05,
+                                            right: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                .05,
+                                          ),
+                                          child: Container(
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                .075,
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            child: Card(
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            15.0)),
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .secondaryVariant,
+                                                elevation: 10.0,
+                                                child: Container(
+                                                    padding: EdgeInsets.all(10),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      mainAxisSize:
+                                                          MainAxisSize.max,
+                                                      children: <Widget>[
+                                                        Container(
+                                                            width: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width *
+                                                                .35,
+                                                            child: Text(
+                                                              '${contactList.getContacts[index].name}',
+                                                              style: TextStyle(
+                                                                  color: Theme.of(
+                                                                          context)
+                                                                      .dividerColor,
+                                                                  fontSize: 18,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold),
+                                                            )),
+                                                        Text(
+                                                          "(" +
+                                                              contactList
+                                                                  .getContacts[
+                                                                      index]
+                                                                  .phoneNumber
+                                                                  .substring(
+                                                                      0, 3) +
+                                                              ") - " +
+                                                              contactList
+                                                                  .getContacts[
+                                                                      index]
+                                                                  .phoneNumber
+                                                                  .substring(
+                                                                      3, 6) +
+                                                              " - " +
+                                                              contactList
+                                                                  .getContacts[
+                                                                      index]
+                                                                  .phoneNumber
+                                                                  .substring(
+                                                                      6, 10),
+                                                          style: TextStyle(
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .dividerColor,
+                                                              fontSize: 16,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                        ),
+                                                      ],
+                                                    ))),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                }
                               }),
                         )
                       ],

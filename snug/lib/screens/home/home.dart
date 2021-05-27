@@ -548,10 +548,9 @@ class _HomeState extends State<Home> {
             ),
           ),
           onPressed: () async {
-            print('first name');
-            print(dateProvider.getRecentDate.who.first_name);
             if (contactProvider.getContacts.length == 0) {
               log.d('User needs to add a contact before creating a date');
+
               CustomToast.showDialog(
                   'Please add at least one contact before creating a date',
                   context);

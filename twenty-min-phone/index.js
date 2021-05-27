@@ -44,7 +44,7 @@ currentDate = new Date(currentDate).setMilliseconds(0); //same but with millisec
 var currentDateISO = new Date(currentDate).toISOString();
 var testDateISO = new Date(Date.UTC(2021,4,27,1,21,0)-1200000).toISOString(); //test date 5 minutes later then -5 minutes
 
-var selectQuery = `select users.first_name, users.last_name, users.phone_number, dates.trusted_contacts, dates.user_2, dates.date_location from dates left join users on dates.user_1 = users.user_id where date_end = $1 and safe = false and is_canceled = false`; //make sure you're pulling dates that are not canceled and not marked safe as well
+var selectQuery = `select users.first_name, users.last_name, users.phone_number, dates.place_name, dates.trusted_contacts, dates.user_2, dates.date_location from dates left join users on dates.user_1 = users.user_id where date_end = $1 and safe = false and is_canceled = false`; //make sure you're pulling dates that are not canceled and not marked safe as well
 
 var dateData = [];
 pool.query(selectQuery, async (err, res) => {
@@ -96,8 +96,8 @@ Race: ${secondUserInfo[0].race}
 Eye Color: ${secondUserInfo[0].eye}
 Hair Color: ${secondUserInfo[0].hair}
 Height (in): ${secondUserInfo[0].height}
-Their last known location is at 
-(${dateData[i].date_location.x}, ${dateData[i].date_location.y}) (lat,long)`;
+Their last known location is at: ${dateData[i].place_name} 
+Latitude and Longitude: (${dateData[i].date_location.x}, ${dateData[i].date_location.y})`;
                             console.log(dateData[i]);
                             for(var y in dateData[i].trusted_contacts) {
                                 

@@ -209,7 +209,7 @@ class MapScreenState extends State<ProfilePage>
                                     child: CustomShowCase(
                                         globalKey: profileEdit,
                                         description:
-                                            'Edit you\'r profile if something changed',
+                                            'Edit your profile if something changed',
                                         child: RaisedCircularGradientButton(
                                             child: Icon(
                                               Icons.edit,

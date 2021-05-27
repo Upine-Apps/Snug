@@ -11,6 +11,7 @@ import 'package:snug/screens/home/contact_date.dart';
 import 'package:snug/screens/home/where.dart';
 import 'package:snug/screens/home/who.dart';
 import 'package:snug/screens/home/when.dart';
+import 'package:snug/screens/sync/sync.dart';
 import 'package:snug/services/remote_db_service.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -590,7 +591,12 @@ class _AddDateState extends State<AddDate> {
                                                       dateProvider
                                                           .setRecentDate(
                                                               currentDate);
-                                                      Navigator.pop(context);
+                                                      await Future.delayed(
+                                                        Duration(seconds: 2),
+                                                        () {
+                                                      Navigator.pop(
+                                                          context); //POSSIBLE THAT THIS PUSHES THEM BACK AND THEN THE NEXT CATCH PUSHES THEM BACK
+                                                    });
                                                     } else {
                                                       throw AddDateException(
                                                           'Failed to add date');

@@ -64,10 +64,6 @@ class _WhoState extends State<Who> {
   }
 
   findUser(DateProvider dateProvider) async {
-    //what the fuck does this do??
-    // await Future.delayed(Duration(seconds: 1), () {
-    //   log.i('findUser: $dateProvider');
-    // });
     setState(() {
       triedToFindUser = true;
     });
@@ -93,6 +89,7 @@ class _WhoState extends State<Who> {
 
         //set current user 2 info to user data
         currentDate.who = userResult;
+        dateProvider.setRecentDate(currentDate);
 
         setState(() {
           userFound = true;
@@ -221,7 +218,6 @@ class _WhoState extends State<Who> {
                                           return "What's their first name?";
                                         }
                                       },
-                                      onEditingComplete: () => node.nextFocus(),
                                       style: TextStyle(
                                           color: Theme.of(context).brightness ==
                                                   Brightness.dark

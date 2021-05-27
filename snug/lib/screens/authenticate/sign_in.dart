@@ -8,7 +8,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:emojis/emojis.dart';
 import 'package:emojis/emoji.dart';
 import 'package:toast/toast.dart';
-
 import 'package:snug/screens/authenticate/register.dart';
 import 'package:snug/screens/otp/otp.dart';
 import 'package:snug/screens/sync/sync.dart';

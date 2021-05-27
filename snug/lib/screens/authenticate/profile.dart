@@ -20,6 +20,7 @@ import 'package:snug/models/User.dart';
 import 'package:snug/providers/UserProvider.dart';
 
 import 'package:snug/screens/navigation/MainPage.dart';
+import 'package:snug/screens/sync/sync.dart';
 import 'package:snug/services/cognito/CognitoService.dart';
 import 'package:snug/services/remote_db_service.dart';
 
@@ -501,7 +502,7 @@ class _ProfileState extends State<Profile> {
                                     Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => MainPage()),
+                                          builder: (context) => SyncScreen()),
                                     );
                                   } else {
                                     throw AddUserAttributeException(
