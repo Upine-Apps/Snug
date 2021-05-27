@@ -26,5 +26,7 @@ node_modules/
 
 .vscode/
 
+.metadata
+
 **/.idea/workspace.xml
 **/.idea/tasks.xml
