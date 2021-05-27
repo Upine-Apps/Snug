@@ -66,7 +66,7 @@ pool.query(selectQuery, async (err, res) => {
 
     if (dateData.length > 0) {
         for (var i in dateData) {
-            // console.log(dateData)  //uncomment this for testing
+            console.log(dateData)  //uncomment this for testing
 
             //comment out everything else in this for loop for testing
             var publishTextPromise = sendTextMessage(dateData[i].phone_number);
