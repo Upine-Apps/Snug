@@ -59,6 +59,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (context) => MapProvider()),
         ],
         child: MaterialApp(
+          debugShowCheckedModeBanner: false,
           home: Authenticate(),
           theme: AppTheme().lightTheme,
           darkTheme: AppTheme().darkTheme,
