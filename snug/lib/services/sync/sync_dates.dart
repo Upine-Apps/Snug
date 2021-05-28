@@ -16,10 +16,8 @@ Future syncDates(String _userId, BuildContext context) async {
     if (result['status'] == true) {
       for (var _date in result['data']) {
         log.d(_date);
-        var userTwoResponse = await RemoteDatabaseHelper.instance.getUser(
-            _date['user_2'].toString(),
-            _date['user_2']
-                .toString()); //delete the second one when you add in firebase
+        var userTwoResponse = await RemoteDatabaseHelper.instance
+            .getUser(_date['user_2'].toString());
         if (userTwoResponse['status'] == true) {
           _date['who'] = User.fromMap(userTwoResponse['data']);
           Date _tempDate = Date.fromMap(_date);

@@ -25,7 +25,8 @@ class RemoteDatabaseHelper {
     return _headers;
   }
 
-  static final _hostUrl = DotEnv().env['BACKEND_IP'];
+  static final _hostUrl =
+      'http://3.142.239.183:3000'; //DotEnv().env['BACKEND_IP']
 
   final log = getLogger('RemoteDatabaseHelper');
 
@@ -35,14 +36,13 @@ class RemoteDatabaseHelper {
 /*
   Get user data from remote and return for updating local yuser profile shared preferences
 */
-  Future getUser(String userId, [testing]) async {
-    log.i('Host URl: ${_hostUrl}');
+  Future getUser(String userId) async {
+    // log.i('Host URl: ${_hostUrl}');
     //testing purposes
     // userId = '1';
-    if (testing != null) {
-      userId = testing;
-    }
+
     final urlProfile = '$_hostUrl/users/$userId';
+    log.i(urlProfile);
     log.i('getUser | userId: $userId');
     try {
       var _headers = await getHeaders();

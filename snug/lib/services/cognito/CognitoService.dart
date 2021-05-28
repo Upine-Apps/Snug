@@ -5,9 +5,11 @@ import 'package:snug/core/errors/AddUserAttributeException.dart';
 import 'package:snug/core/logger.dart';
 
 class CognitoService {
-  static String userPoolId = DotEnv().env['COGNITO_USER_POOL_ID'];
+  static String userPoolId =
+      'us-east-2_rweyLTmso'; //DotEnv().env['COGNITO_USER_POOL_ID'];
 
-  static String clientId = DotEnv().env['COGNITO_CLIENT_ID'];
+  static String clientId =
+      '26gd072a3jrqsjubrmaj0r4nr3'; //DotEnv().env['COGNITO_CLIENT_ID'];
 
   final log = getLogger('CognitoService');
   final userPool = CognitoUserPool(userPoolId, clientId);
