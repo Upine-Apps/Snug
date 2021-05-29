@@ -80,6 +80,9 @@ class _WhoState extends State<Who> {
         _fNameController.text = userResult.first_name;
         _lNameController.text = userResult.last_name;
         _phoneController.text = phone_number;
+        _firstName = userResult.first_name;
+        _lastName = userResult.last_name;
+
         _race = userResult.race;
         _sex = userResult.sex;
         _eye = userResult.eye;
@@ -429,6 +432,8 @@ class _WhoState extends State<Who> {
                                 currentDate.who.ft = _ft;
                                 currentDate.who.inch = _in;
                                 currentDate.who.temp = 'true';
+                                print('FIRST NAME');
+                                print(currentDate.who.first_name);
                                 dateProvider.setRecentDate(currentDate);
                                 if (userFound = true) {
                                   CustomToast.showDialog(

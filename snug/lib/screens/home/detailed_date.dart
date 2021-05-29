@@ -177,8 +177,7 @@ class _DetailDateState extends State<DetailDate> {
                               right: MediaQuery.of(context).size.width * .025),
                           child: Row(children: <Widget>[
                             Container(
-                                width:
-                                    MediaQuery.of(context).size.width * (.475),
+                                width: MediaQuery.of(context).size.width * (.5),
                                 child: Card(
                                     shape: RoundedRectangleBorder(
                                         borderRadius:
@@ -245,13 +244,20 @@ class _DetailDateState extends State<DetailDate> {
                                                                 .dividerColor),
                                                       )),
                                                   Container(
-                                                      child: Text(
-                                                    _conversion.convertRace(
-                                                        _currentDate.who.race),
-                                                    style: TextStyle(
-                                                        fontSize: 18,
-                                                        color: Theme.of(context)
-                                                            .dividerColor),
+                                                      child: Expanded(
+                                                    child: Text(
+                                                      _conversion.convertRace(
+                                                          _currentDate
+                                                              .who.race),
+                                                      maxLines: 2,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: TextStyle(
+                                                          fontSize: 18,
+                                                          color: Theme.of(
+                                                                  context)
+                                                              .dividerColor),
+                                                    ),
                                                   ))
                                                 ],
                                               )),
