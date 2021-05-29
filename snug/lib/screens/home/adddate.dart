@@ -34,6 +34,8 @@ class _AddDateState extends State<AddDate> {
   @override
   void initState() {
     super.initState();
+    final dateProvider = Provider.of<DateProvider>(context, listen: false);
+    dateProvider.addDate(new Date());
   }
 
   String fName = '';
@@ -592,11 +594,11 @@ class _AddDateState extends State<AddDate> {
                                                           .setRecentDate(
                                                               currentDate);
                                                       await Future.delayed(
-                                                        Duration(seconds: 2),
-                                                        () {
-                                                      Navigator.pop(
-                                                          context); //POSSIBLE THAT THIS PUSHES THEM BACK AND THEN THE NEXT CATCH PUSHES THEM BACK
-                                                    });
+                                                          Duration(seconds: 2),
+                                                          () {
+                                                        Navigator.pop(
+                                                            context); //POSSIBLE THAT THIS PUSHES THEM BACK AND THEN THE NEXT CATCH PUSHES THEM BACK
+                                                      });
                                                     } else {
                                                       throw AddDateException(
                                                           'Failed to add date');

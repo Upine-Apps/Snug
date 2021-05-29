@@ -288,7 +288,7 @@ class _HomeState extends State<Home> {
                                                       top: MediaQuery.of(context)
                                                               .size
                                                               .height *
-                                                          .015),
+                                                          .01),
                                                   child: Align(
                                                       alignment:
                                                           Alignment.centerLeft,
@@ -303,7 +303,7 @@ class _HomeState extends State<Home> {
                                                                   '${dateProvider.getCurrentDates[index].who.first_name} ${dateProvider.getCurrentDates[index].who.last_name}',
                                                                   style: TextStyle(
                                                                       color: Theme.of(context).dividerColor,
-                                                                      fontSize: 28,
+                                                                      fontSize: 24,
                                                                       fontWeight: FontWeight.bold)))))),
                                               Padding(
                                                   padding: EdgeInsets.only(
@@ -311,7 +311,7 @@ class _HomeState extends State<Home> {
                                                           MediaQuery.of(context)
                                                                   .size
                                                                   .height *
-                                                              .015),
+                                                              .01),
                                                   child: Align(
                                                       alignment:
                                                           Alignment.centerLeft,
@@ -555,7 +555,6 @@ class _HomeState extends State<Home> {
                   'Please add at least one contact before creating a date',
                   context);
             } else {
-              dateProvider.addDate(new Date());
               Navigator.push(
                   context, MaterialPageRoute(builder: (context) => AddDate()));
             }
