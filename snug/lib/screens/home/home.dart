@@ -220,9 +220,8 @@ class _HomeState extends State<Home> {
 
                             return GestureDetector(
                                 onTap: () {
-                                  // Navigator.push(context,
-                                  //     MaterialPageRoute(builder: (context) => DetailDate()));
                                   int someIndex = _getIndexValue();
+
                                   Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(

@@ -130,7 +130,6 @@ class _WhoState extends State<Who> {
                   child: Column(children: <Widget>[
                     Container(
                         child: TextFormField(
-                      onEditingComplete: () => node.nextFocus(),
                       inputFormatters: [
                         FilteringTextInputFormatter.allow(RegExp('[0-9]+')),
                       ],
