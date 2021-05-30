@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:snug/models/Date.dart';
 import 'package:snug/models/place.dart';
@@ -16,6 +17,11 @@ class _WhereState extends State<Where> {
   Completer<GoogleMapController> _mapController = Completer();
   StreamSubscription locationSubscription;
   Date currentDate;
+
+  void checkPermissions(MapProvider mp) async {
+    Position p = await mp.determinePosition();
+    print(p);
+  }
 
   @override
   void initState() {
@@ -49,11 +55,12 @@ class _WhereState extends State<Where> {
   @override
   Widget build(BuildContext context) {
     final mapProvider = Provider.of<MapProvider>(context, listen: true);
-
+    // checkPermissions(mapProvider);
     return (mapProvider.currentLocation == null)
         ? Center(
             child: CircularProgressIndicator(),
           )
+        // return SingleChildScrollView(
         : SingleChildScrollView(
             child: Column(children: <Widget>[
               Padding(

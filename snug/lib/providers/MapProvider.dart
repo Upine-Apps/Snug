@@ -10,7 +10,8 @@ import 'package:snug/services/places_services.dart';
 class MapProvider with ChangeNotifier {
   final geoLocatorService = GeolocatorService();
   final placesService = PlacesService();
-
+  bool serviceEnabled;
+  LocationPermission permission;
   //Variables
   Position currentLocation;
   List<PlaceSearch> searchResults;
@@ -23,6 +24,7 @@ class MapProvider with ChangeNotifier {
 
   setCurrentLocation() async {
     currentLocation = await geoLocatorService.getCurrentLocation();
+    print(currentLocation);
     notifyListeners();
   }
 
@@ -35,6 +37,26 @@ class MapProvider with ChangeNotifier {
     selectedLocation.add(await placesService.getPlace(placeId));
     searchResults = null;
     notifyListeners();
+  }
+
+  Future<Position> determinePosition() async {
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return Future.error("Location services disabled");
+    }
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error("Permissions denied");
+      }
+    }
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error("Location permissions are permanently denied");
+    }
+    Position p = await Geolocator.getCurrentPosition();
+    print(p);
+    return await Geolocator.getCurrentPosition();
   }
 
   @override
