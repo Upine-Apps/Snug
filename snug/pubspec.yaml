@@ -58,9 +58,9 @@ dev_dependencies:
   flutter_launcher_icons: ^0.8.1
 
 flutter_icons:
-    image_path: 'assets/image/app_launcher.png'
+    image_path: 'assets/image/app_icon.png'
     android: true
-    ios: true
+    ios: false
     # App icon 864x864
 
 # For information on the generic Dart part of this file, see the

@@ -14,7 +14,6 @@ import 'package:snug/themes/apptheme.dart';
 import 'package:logger/logger.dart';
 
 Future main() async {
-  //await DotEnv().load('.env');
   WidgetsFlutterBinding.ensureInitialized();
   Future<SharedPreferences> prefs = SharedPreferences.getInstance();
   prefs.then((value) {
