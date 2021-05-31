@@ -99,65 +99,72 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: PageView(
-        children: _pages,
-        controller: pageController,
-        onPageChanged: onPageChanged,
-      ),
-      bottomNavigationBar: GradientBottomNavigationBar(
-        backgroundColorEnd: Theme.of(context).colorScheme.secondaryVariant,
-        backgroundColorStart: Theme.of(context).colorScheme.primaryVariant,
-        currentIndex: _selectedIndex,
-        onTap: _onTapped,
-        items: [
-          BottomNavigationBarItem(
-            title: Text(
-              'Home',
-              style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        body: PageView(
+          children: _pages,
+          controller: pageController,
+          onPageChanged: onPageChanged,
+        ),
+        bottomNavigationBar: GradientBottomNavigationBar(
+          backgroundColorEnd: Theme.of(context).colorScheme.secondaryVariant,
+          backgroundColorStart: Theme.of(context).colorScheme.primaryVariant,
+          currentIndex: _selectedIndex,
+          onTap: _onTapped,
+          items: [
+            BottomNavigationBarItem(
+              title: Text(
+                'Home',
+                style:
+                    TextStyle(color: Theme.of(context).colorScheme.secondary),
+              ),
+              // label: "Home",
+              backgroundColor: Theme.of(context).colorScheme.secondary,
+              icon: Icon(
+                Icons.home,
+                color: Theme.of(context).colorScheme.secondary,
+              ),
             ),
-            // label: "Home",
-            backgroundColor: Theme.of(context).colorScheme.secondary,
-            icon: Icon(
-              Icons.home,
-              color: Theme.of(context).colorScheme.secondary,
+            BottomNavigationBarItem(
+              title: Text(
+                'Contacts',
+                style:
+                    TextStyle(color: Theme.of(context).colorScheme.secondary),
+              ),
+              // label: "Contacts",
+              backgroundColor: Theme.of(context).colorScheme.secondary,
+              icon: Icon(
+                Icons.contacts_rounded,
+                color: Theme.of(context).colorScheme.secondary,
+              ),
             ),
-          ),
-          BottomNavigationBarItem(
-            title: Text(
-              'Contacts',
-              style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+            BottomNavigationBarItem(
+              title: Text(
+                'Settings',
+                style:
+                    TextStyle(color: Theme.of(context).colorScheme.secondary),
+              ),
+              // label: "Settings",
+              backgroundColor: Theme.of(context).colorScheme.secondary,
+              icon: Icon(
+                Icons.settings,
+                color: Theme.of(context).colorScheme.secondary,
+              ),
             ),
-            // label: "Contacts",
-            backgroundColor: Theme.of(context).colorScheme.secondary,
-            icon: Icon(
-              Icons.contacts_rounded,
-              color: Theme.of(context).colorScheme.secondary,
+            BottomNavigationBarItem(
+              title: Text(
+                'Profile',
+                style:
+                    TextStyle(color: Theme.of(context).colorScheme.secondary),
+              ),
+              // label: "Profile",
+              backgroundColor: Theme.of(context).colorScheme.secondary,
+              icon: CircleAvatar(
+                  backgroundImage: new AssetImage('assets/image/pug.jpg')),
             ),
-          ),
-          BottomNavigationBarItem(
-            title: Text(
-              'Settings',
-              style: TextStyle(color: Theme.of(context).colorScheme.secondary),
-            ),
-            // label: "Settings",
-            backgroundColor: Theme.of(context).colorScheme.secondary,
-            icon: Icon(
-              Icons.settings,
-              color: Theme.of(context).colorScheme.secondary,
-            ),
-          ),
-          BottomNavigationBarItem(
-            title: Text(
-              'Profile',
-              style: TextStyle(color: Theme.of(context).colorScheme.secondary),
-            ),
-            // label: "Profile",
-            backgroundColor: Theme.of(context).colorScheme.secondary,
-            icon: CircleAvatar(
-                backgroundImage: new AssetImage('assets/image/pug.jpg')),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

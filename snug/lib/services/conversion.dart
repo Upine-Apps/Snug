@@ -80,6 +80,8 @@ class Conversion {
   convertHeight(String feet, String inch) {
     if (feet == 'null') {
       return '';
+    } else if (feet == null) {
+      return '';
     } else {
       String convertedHeight = '';
       convertedHeight = '$feet\' $inch\'\'';

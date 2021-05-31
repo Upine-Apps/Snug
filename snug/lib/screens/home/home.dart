@@ -37,6 +37,7 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _homeFirstLaunch().then((result) {
         if (result)
@@ -126,7 +127,8 @@ class _HomeState extends State<Home> {
     final dateProvider = Provider.of<DateProvider>(context, listen: true);
     final userProvider = Provider.of<UserProvider>(context, listen: true);
     final contactProvider = Provider.of<ContactProvider>(context, listen: true);
-    if (dateProvider.getCurrentDates.length == 0) {
+    if (dateProvider.getCurrentDates.length == 0 ||
+        dateProvider.getCurrentDates.length == null) {
       userHasDate = false;
     }
     User _tempUser = userProvider.getUser;
@@ -214,15 +216,17 @@ class _HomeState extends State<Home> {
                           itemCount: dateProvider.getCurrentDates.length,
                           itemBuilder: (context, index) {
                             _getIndexValue() {
+                              print('PRINTING LENGTH OF DATE LIST');
+
+                              print(dateProvider.getCurrentDates.length);
                               int someIndex = index;
                               return someIndex;
                             }
 
                             return GestureDetector(
                                 onTap: () {
-                                  // Navigator.push(context,
-                                  //     MaterialPageRoute(builder: (context) => DetailDate()));
                                   int someIndex = _getIndexValue();
+
                                   Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(

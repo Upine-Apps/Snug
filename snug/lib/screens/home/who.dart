@@ -130,7 +130,6 @@ class _WhoState extends State<Who> {
                   child: Column(children: <Widget>[
                     Container(
                         child: TextFormField(
-                      onEditingComplete: () => node.nextFocus(),
                       inputFormatters: [
                         FilteringTextInputFormatter.allow(RegExp('[0-9]+')),
                       ],
@@ -418,9 +417,12 @@ class _WhoState extends State<Who> {
                           padding: EdgeInsets.only(
                               top: MediaQuery.of(context).size.height * .0225),
                           child: RaisedRoundedGradientButton(
-                              child: Text(userFound == true
-                                  ? 'Update Info'
-                                  : 'Submit Info'),
+                              child: Text(
+                                  userFound == true
+                                      ? 'Update Info'
+                                      : 'Submit Info',
+                                  style: TextStyle(
+                                      color: Theme.of(context).dividerColor)),
                               onPressed: () {
                                 currentDate.who.phone_number = phone_number;
                                 currentDate.who.first_name = _firstName;
