@@ -144,50 +144,55 @@ class _OtpState extends State<Otp> {
   Widget build(BuildContext context) {
     String text = '';
     final themeNotifier = Provider.of<ThemeNotifier>(context);
-    return MaterialApp(
-        theme: AppTheme().lightTheme,
-        darkTheme: AppTheme().darkTheme,
-        themeMode: themeNotifier.getThemeMode(),
-        debugShowCheckedModeBanner: false,
-        home: Scaffold(
-          extendBodyBehindAppBar: true,
-          appBar: AppBar(
-              elevation: 0,
-              backgroundColor: Colors.transparent,
-              title: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                mainAxisSize: MainAxisSize.max,
-                children: <Widget>[
-                  IconButton(
-                    padding: EdgeInsets.all(0),
-                    icon: Icon(Icons.arrow_back,
-                        color: Theme.of(context).colorScheme.secondaryVariant),
-                    onPressed: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => Authenticate()),
-                      );
-                    },
-                  ),
-                  FlatButton(
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: MaterialApp(
+          theme: AppTheme().lightTheme,
+          darkTheme: AppTheme().darkTheme,
+          themeMode: themeNotifier.getThemeMode(),
+          debugShowCheckedModeBanner: false,
+          home: Scaffold(
+            extendBodyBehindAppBar: true,
+            appBar: AppBar(
+                elevation: 0,
+                backgroundColor: Colors.transparent,
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisSize: MainAxisSize.max,
+                  children: <Widget>[
+                    IconButton(
+                      padding: EdgeInsets.all(0),
+                      icon: Icon(Icons.arrow_back,
+                          color:
+                              Theme.of(context).colorScheme.secondaryVariant),
                       onPressed: () {
-                        //INSERT CODE TO RESEND VERFICATION CODE
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Authenticate()),
+                        );
                       },
-                      child: Text('Resend Code'))
-                ],
-              )),
-          body: OtpScreen.withGradientBackground(
-              topColor: Theme.of(context).colorScheme.primary,
-              bottomColor: Theme.of(context).colorScheme.secondary,
-              otpLength: 6,
-              validateOtp: validateOtp,
-              routeCallback: moveToNextScreen,
-              themeColor: Colors.white,
-              titleColor: Colors.white,
-              title: "Verify your Phone Number",
-              subTitle: "Enter the code sent to ${widget.phonenumber}",
-              icon:
-                  Image.asset('assets/image/smartphone.png', fit: BoxFit.fill)),
-        ));
+                    ),
+                    FlatButton(
+                        onPressed: () {
+                          //INSERT CODE TO RESEND VERFICATION CODE
+                        },
+                        child: Text('Resend Code'))
+                  ],
+                )),
+            body: OtpScreen.withGradientBackground(
+                topColor: Theme.of(context).colorScheme.primary,
+                bottomColor: Theme.of(context).colorScheme.secondary,
+                otpLength: 6,
+                validateOtp: validateOtp,
+                routeCallback: moveToNextScreen,
+                themeColor: Colors.white,
+                titleColor: Colors.white,
+                title: "Verify your Phone Number",
+                subTitle: "Enter the code sent to ${widget.phonenumber}",
+                icon: Image.asset('assets/image/smartphone.png',
+                    fit: BoxFit.fill)),
+          )),
+    );
   }
 }
