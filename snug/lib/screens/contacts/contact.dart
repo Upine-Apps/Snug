@@ -21,8 +21,6 @@ class Contact extends StatefulWidget {
 
 class _ContactState extends State<Contact> with AutomaticKeepAliveClientMixin {
   @override
-  GlobalKey addContact = GlobalKey();
-  GlobalKey deleteContact = GlobalKey();
   bool get wantKeepAlive => true; //somehow makes it work
   String _phone = '';
   String _name = '';
@@ -32,37 +30,6 @@ class _ContactState extends State<Contact> with AutomaticKeepAliveClientMixin {
   final TextEditingController phoneCtrl = new TextEditingController();
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _contactFirstLaunch().then((result) {
-        if (result)
-          ShowCaseWidget.of(context).startShowCase(
-            [addContact],
-          );
-      });
-
-      _deleteContact().then((result) {
-        if (result) ShowCaseWidget.of(context).startShowCase([deleteContact]);
-      });
-
-      // MAKE SURE TO CHECK TO SEE IF THE SHOWCASE WIDGET POPS UP FOR THIS.
-    });
-  }
-
-  Future<bool> _contactFirstLaunch() async {
-    SharedPreferences _contactTutorial = await SharedPreferences.getInstance();
-    if (_contactTutorial.getBool('contactTutorial') == null) {
-      _contactTutorial.setBool('contactTutorial', true);
-    }
-
-    return _contactTutorial.getBool('contactTutorial');
-  }
-
-  Future<bool> _deleteContact() async {
-    SharedPreferences _deleteContact = await SharedPreferences.getInstance();
-    if (_deleteContact.getBool('deleteContact') == null) {
-      _deleteContact.setBool('deleteContact', true);
-    }
-    return _deleteContact.getBool('deleteContact');
   }
 
   bool userHasContact = true;
@@ -394,25 +361,21 @@ class _ContactState extends State<Contact> with AutomaticKeepAliveClientMixin {
             );
           }),
       floatingActionButton: FloatingActionButton(
-          child: CustomShowCase(
-            globalKey: addContact,
-            description: 'Add your contacts here',
-            child: Container(
-              height: 60,
-              width: 60,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle, // circular shape
-                gradient: LinearGradient(
-                  colors: [
-                    Theme.of(context).colorScheme.primaryVariant,
-                    Theme.of(context).colorScheme.secondaryVariant,
-                  ],
-                ),
+          child: Container(
+            height: 60,
+            width: 60,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle, // circular shape
+              gradient: LinearGradient(
+                colors: [
+                  Theme.of(context).colorScheme.primaryVariant,
+                  Theme.of(context).colorScheme.secondaryVariant,
+                ],
               ),
-              child: Icon(
-                Icons.person_add,
-                color: Colors.white,
-              ),
+            ),
+            child: Icon(
+              Icons.person_add,
+              color: Colors.white,
             ),
           ),
           onPressed: () {

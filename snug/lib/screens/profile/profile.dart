@@ -22,21 +22,11 @@ class ProfilePage extends StatefulWidget {
 
 class MapScreenState extends State<ProfilePage>
     with AutomaticKeepAliveClientMixin {
-  GlobalKey profileEdit = GlobalKey();
-  GlobalKey changePic = GlobalKey();
   TextEditingController _controller;
   final Conversion _conversion = Conversion();
   @override
   void initState() {
     _controller = new TextEditingController();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _profileFirstLaunch().then((result) {
-        if (result) {
-          ShowCaseWidget.of(context).startShowCase([changePic, profileEdit]);
-        }
-      });
-    });
   }
 
   _profileFirstLaunch() async {
@@ -160,20 +150,16 @@ class MapScreenState extends State<ProfilePage>
                                     GestureDetector(
                                         //CHECK TO SEE IF THIS FUNCTIONS WORKS ON A REAL MOBILE
                                         onTap: getImage,
-                                        child: CustomShowCase(
-                                            globalKey: changePic,
-                                            description:
-                                                'Add your profile pic here!',
-                                            child: CircleAvatar(
-                                              backgroundColor: Theme.of(context)
-                                                  .colorScheme
-                                                  .primaryVariant,
-                                              radius: 25.0,
-                                              child: new Icon(
-                                                Icons.camera_alt,
-                                                color: Colors.white,
-                                              ),
-                                            )))
+                                        child: CircleAvatar(
+                                          backgroundColor: Theme.of(context)
+                                              .colorScheme
+                                              .primaryVariant,
+                                          radius: 25.0,
+                                          child: new Icon(
+                                            Icons.camera_alt,
+                                            color: Colors.white,
+                                          ),
+                                        ))
                                   ],
                                 )),
                           ]),
@@ -206,27 +192,22 @@ class MapScreenState extends State<ProfilePage>
                                 Container(
                                     width:
                                         MediaQuery.of(context).size.width / 8,
-                                    child: CustomShowCase(
-                                        globalKey: profileEdit,
-                                        description:
-                                            'Edit your profile if something changed',
-                                        child: RaisedCircularGradientButton(
-                                            child: Icon(
-                                              Icons.edit,
-                                              color: Colors.white,
-                                            ),
-                                            onPressed: () async {
-                                              SharedPreferences profile =
-                                                  await SharedPreferences
-                                                      .getInstance();
+                                    child: RaisedCircularGradientButton(
+                                        child: Icon(
+                                          Icons.edit,
+                                          color: Colors.white,
+                                        ),
+                                        onPressed: () async {
+                                          SharedPreferences profile =
+                                              await SharedPreferences
+                                                  .getInstance();
 
-                                              showDialog(
-                                                  context: context,
-                                                  builder:
-                                                      (BuildContext context) {
-                                                    return ProfileEdit();
-                                                  });
-                                            })))
+                                          showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return ProfileEdit();
+                                              });
+                                        }))
                               ],
                             )),
                         Padding(

@@ -28,7 +28,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  GlobalKey addDate = GlobalKey();
   String msg;
 
   String _date = "Not set";
@@ -37,23 +36,6 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _homeFirstLaunch().then((result) {
-        if (result)
-          ShowCaseWidget.of(context).startShowCase(
-            [addDate],
-          );
-      });
-    });
-  }
-
-  Future<bool> _homeFirstLaunch() async {
-    SharedPreferences _homeTutorial = await SharedPreferences.getInstance();
-    if (_homeTutorial.getBool('homeTutorial') == null) {
-      _homeTutorial.setBool('homeTutorial', true);
-    }
-    return _homeTutorial.getBool('homeTutorial');
   }
 
   bool get wantKeepAlive => true;
@@ -542,13 +524,9 @@ class _HomeState extends State<Home> {
                 ],
               ),
             ),
-            child: CustomShowCase(
-              globalKey: addDate,
-              description: 'Add a date!',
-              child: Icon(
-                Icons.favorite,
-                color: Colors.white,
-              ),
+            child: Icon(
+              Icons.favorite,
+              color: Colors.white,
             ),
           ),
           onPressed: () async {

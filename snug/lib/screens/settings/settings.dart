@@ -27,20 +27,6 @@ class _SettingState extends State<SettingScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _getSavedTheme();
-      _settingsFirstLaunch().then((result) {
-        if (result) ShowCaseWidget.of(context).startShowCase([logOut]);
-      });
-    });
-  }
-
-  Future<bool> _settingsFirstLaunch() async {
-    SharedPreferences _settingsTutorial = await SharedPreferences.getInstance();
-    if (_settingsTutorial.getBool('settingsTutorial') == null) {
-      _settingsTutorial.setBool('settingsTutorial', true);
-    }
-    return _settingsTutorial.getBool('settingsTutorial');
   }
 
   _getSavedTheme() async {
@@ -130,13 +116,9 @@ class _SettingState extends State<SettingScreen> {
                 ],
               ),
             ),
-            child: CustomShowCase(
-              globalKey: logOut,
-              description: 'Log out',
-              child: Icon(
-                Icons.logout,
-                color: Colors.white,
-              ),
+            child: Icon(
+              Icons.logout,
+              color: Colors.white,
             ),
           )),
     );

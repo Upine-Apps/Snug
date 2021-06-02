@@ -17,6 +17,7 @@ import 'package:snug/custom_widgets/raised_rounded_gradient_button.dart';
 import 'package:snug/custom_widgets/topheader.dart';
 import 'package:snug/models/User.dart';
 import 'package:snug/providers/UserProvider.dart';
+import 'package:snug/providers/walkthrough/walkthrough.dart';
 
 import 'package:snug/screens/sync/sync.dart';
 import 'package:snug/services/cognito/CognitoService.dart';
@@ -504,7 +505,8 @@ class _ProfileState extends State<Profile> {
                                       Navigator.pushReplacement(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) => SyncScreen()),
+                                            builder: (context) =>
+                                                Walkthrough()),
                                       );
                                     } else {
                                       throw AddUserAttributeException(
