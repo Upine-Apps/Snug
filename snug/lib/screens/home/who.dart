@@ -90,6 +90,8 @@ class _WhoState extends State<Who> {
         _ft = userResult.ft;
         _in = userResult.inch;
 
+        userResult.temp = 'true';
+
         //set current user 2 info to user data
         currentDate.who = userResult;
         dateProvider.setRecentDate(currentDate);

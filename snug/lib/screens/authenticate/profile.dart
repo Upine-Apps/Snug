@@ -1,7 +1,6 @@
 import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:snug/core/errors/AddUserAttributeException.dart';
 import 'package:snug/core/errors/AddUserException.dart';
 import 'package:snug/core/logger.dart';
@@ -83,444 +82,450 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     final node = FocusScope.of(context);
     final _userProvider = Provider.of<UserProvider>(context, listen: true);
-    return Scaffold(
-        body: Container(
-            decoration: BoxDecoration(
-                gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                  Theme.of(context).colorScheme.primary,
-                  Theme.of(context).colorScheme.secondary
-                ])),
-            padding: EdgeInsets.symmetric(
-                vertical: MediaQuery.of(context).size.height * .01,
-                horizontal: MediaQuery.of(context).size.width * .05),
-            child: Container(
-                child: Form(
-                    key: _formKey,
-                    child: ListView(
-                      children: <Widget>[
-                        Header(
-                            child: Image.asset('assets/image/logo1.png',
-                                fit: BoxFit.contain, height: 50)),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height * .05,
-                        ),
-                        Container(
-                            child: Text('Lets get that profile set up!',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 26,
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+          body: Container(
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                    Theme.of(context).colorScheme.primary,
+                    Theme.of(context).colorScheme.secondary
+                  ])),
+              padding: EdgeInsets.symmetric(
+                  vertical: MediaQuery.of(context).size.height * .01,
+                  horizontal: MediaQuery.of(context).size.width * .05),
+              child: Container(
+                  child: Form(
+                      key: _formKey,
+                      child: ListView(
+                        children: <Widget>[
+                          Header(
+                              child: Image.asset('assets/image/logo1.png',
+                                  fit: BoxFit.contain, height: 50)),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * .05,
+                          ),
+                          Container(
+                              child: Text('Let\'s get that profile set up!',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 26,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondaryVariant,
+                                  ))),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * .075,
+                          ),
+                          TextFormField(
+                            validator: (String val) {
+                              if (val.length > 30) {
+                                return "Ya got a shorter first name?";
+                              } else if (val.length == 0) {
+                                return "What's your first name?";
+                              }
+                            },
+                            onEditingComplete: () => node.nextFocus(),
+                            style: TextStyle(color: Colors.white),
+                            controller: _controller,
+                            decoration: InputDecoration(
+                                errorStyle: TextStyle(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondaryVariant),
+                                enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Theme.of(context).primaryColor)),
+                                labelText: 'First Name'),
+                            onChanged: (val) {
+                              log.i('setFirstName | $val');
+                              tempUser.first_name = val;
+                              setState(() => first_name = val);
+                            },
+                          ),
+                          SizedBox(
+                            height: 20.0,
+                          ),
+                          TextFormField(
+                            validator: (String val) {
+                              if (val.length > 30) {
+                                return "Ya got a shorter last name?";
+                              } else if (val.length == 0) {
+                                return "What's your last name?";
+                              }
+                            },
+                            onEditingComplete: () => node.nextFocus(),
+                            style:
+                                TextStyle(color: Theme.of(context).hintColor),
+                            decoration: InputDecoration(
+                                errorStyle: TextStyle(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondaryVariant),
+                                enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Theme.of(context).primaryColor)),
+                                labelText: 'Last Name'),
+                            onChanged: (val) {
+                              log.i('setLastName | $val');
+                              tempUser.last_name = val;
+                              setState(() => last_name = val);
+                            },
+                          ),
+                          SizedBox(
+                            height: 20.0,
+                          ),
+                          TextFormField(
+                            validator: (String val) {
+                              if (val.length == 0) {
+                                return "What's your street address?";
+                              }
+                            },
+                            onEditingComplete: () => node.nextFocus(),
+                            style:
+                                TextStyle(color: Theme.of(context).hintColor),
+                            decoration: InputDecoration(
+                                errorStyle: TextStyle(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondaryVariant),
+                                enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Theme.of(context).primaryColor)),
+                                labelText: 'Street Address'),
+                            onChanged: (val) {
+                              log.i('setStreet | $val');
+                              tempUser.street = val;
+                              setState(() => _street = val);
+                            },
+                          ),
+                          SizedBox(
+                            height: 20.0,
+                          ),
+                          Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisSize: MainAxisSize.max,
+                              children: <Widget>[
+                                Container(
+                                  width: MediaQuery.of(context).size.width *
+                                      (.9 / 2),
+                                  child: TextFormField(
+                                    validator: (String val) {
+                                      if (val.length == 0) {
+                                        return "What city do you live in?";
+                                      }
+                                    },
+                                    onEditingComplete: () => node.nextFocus(),
+                                    style: TextStyle(
+                                        color: Theme.of(context).hintColor),
+                                    decoration: InputDecoration(
+                                        errorStyle: TextStyle(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .secondaryVariant),
+                                        enabledBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Theme.of(context)
+                                                    .primaryColor)),
+                                        labelText: 'City'),
+                                    onChanged: (val) {
+                                      log.i('setCity | $val');
+                                      tempUser.city = val;
+                                      setState(() => _city = val);
+                                    },
+                                  ),
+                                ),
+                                Container(
+                                  width: MediaQuery.of(context).size.width *
+                                      (.9 / 2),
+                                  child: TextFormField(
+                                    keyboardType: TextInputType.number,
+                                    validator: (String val) {
+                                      if (val.length != 5) {
+                                        return "Please enter a valid zip code";
+                                      } else if (val.length == 0) {
+                                        return "What's your zip code?";
+                                      }
+                                    },
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.allow(
+                                          RegExp('[0-9]+')),
+                                    ],
+                                    style: TextStyle(
+                                        color: Theme.of(context).hintColor),
+                                    decoration: InputDecoration(
+                                        errorStyle: TextStyle(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .secondaryVariant),
+                                        enabledBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Theme.of(context)
+                                                    .primaryColor)),
+                                        labelText: 'Zip'),
+                                    onChanged: (val) {
+                                      log.i('setZip | $val');
+                                      tempUser.zip = val;
+                                      setState(() => _zip = val);
+                                    },
+                                  ),
+                                )
+                              ]),
+                          FiftyStates(
+                              validator: (val) {
+                                if (val == null) {
+                                  return "Please choose a state.";
+                                }
+                              },
+                              onChanged: (String val) {
+                                log.i('setState | $val');
+                                tempUser.state = val;
+                                setState(() {
+                                  _state = val;
+                                });
+                              },
+                              value: _state),
+                          SizedBox(
+                            height: 20.0,
+                          ),
+                          GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () async {
+                              DateTime date = await showDatePicker(
+                                  context: context,
+                                  firstDate:
+                                      DateTime(DateTime.now().year - 100),
+                                  lastDate: DateTime(DateTime.now().year,
+                                      DateTime.now().month, DateTime.now().day),
+                                  initialDate: DateTime.now());
+                              _dob = '${date.month}/${date.day}/${date.year}';
+
+                              tempUser.dob = _dob;
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisSize: MainAxisSize.max,
+                              children: <Widget>[
+                                Container(
+                                  child: Text('$_dob',
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          color: Theme.of(context).hintColor)),
+                                ),
+                                Icon(
+                                  Icons.arrow_drop_down,
                                   color: Theme.of(context)
                                       .colorScheme
                                       .secondaryVariant,
-                                ))),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height * .075,
-                        ),
-                        TextFormField(
-                          validator: (String val) {
-                            if (val.length > 30) {
-                              return "Ya got a shorter first name?";
-                            } else if (val.length == 0) {
-                              return "What's your first name?";
-                            }
-                          },
-                          onEditingComplete: () => node.nextFocus(),
-                          style: TextStyle(color: Colors.white),
-                          controller: _controller,
-                          decoration: InputDecoration(
-                              errorStyle: TextStyle(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .secondaryVariant),
-                              enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Theme.of(context).primaryColor)),
-                              labelText: 'First Name'),
-                          onChanged: (val) {
-                            log.i('setFirstName | $val');
-                            tempUser.first_name = val;
-                            setState(() => first_name = val);
-                          },
-                        ),
-                        SizedBox(
-                          height: 20.0,
-                        ),
-                        TextFormField(
-                          validator: (String val) {
-                            if (val.length > 30) {
-                              return "Ya got a shorter last name?";
-                            } else if (val.length == 0) {
-                              return "What's your last name?";
-                            }
-                          },
-                          onEditingComplete: () => node.nextFocus(),
-                          style: TextStyle(color: Theme.of(context).hintColor),
-                          decoration: InputDecoration(
-                              errorStyle: TextStyle(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .secondaryVariant),
-                              enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Theme.of(context).primaryColor)),
-                              labelText: 'Last Name'),
-                          onChanged: (val) {
-                            log.i('setLastName | $val');
-                            tempUser.last_name = val;
-                            setState(() => last_name = val);
-                          },
-                        ),
-                        SizedBox(
-                          height: 20.0,
-                        ),
-                        TextFormField(
-                          validator: (String val) {
-                            if (val.length == 0) {
-                              return "What's your street address?";
-                            }
-                          },
-                          onEditingComplete: () => node.nextFocus(),
-                          style: TextStyle(color: Theme.of(context).hintColor),
-                          decoration: InputDecoration(
-                              errorStyle: TextStyle(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .secondaryVariant),
-                              enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Theme.of(context).primaryColor)),
-                              labelText: 'Street Address'),
-                          onChanged: (val) {
-                            log.i('setStreet | $val');
-                            tempUser.street = val;
-                            setState(() => _street = val);
-                          },
-                        ),
-                        SizedBox(
-                          height: 20.0,
-                        ),
-                        Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            mainAxisSize: MainAxisSize.max,
-                            children: <Widget>[
-                              Container(
-                                width: MediaQuery.of(context).size.width *
-                                    (.9 / 2),
-                                child: TextFormField(
-                                  validator: (String val) {
-                                    if (val.length == 0) {
-                                      return "What city do you live in?";
-                                    }
-                                  },
-                                  onEditingComplete: () => node.nextFocus(),
-                                  style: TextStyle(
-                                      color: Theme.of(context).hintColor),
-                                  decoration: InputDecoration(
-                                      errorStyle: TextStyle(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .secondaryVariant),
-                                      enabledBorder: UnderlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: Theme.of(context)
-                                                  .primaryColor)),
-                                      labelText: 'City'),
-                                  onChanged: (val) {
-                                    log.i('setCity | $val');
-                                    tempUser.city = val;
-                                    setState(() => _city = val);
-                                  },
-                                ),
-                              ),
-                              Container(
-                                width: MediaQuery.of(context).size.width *
-                                    (.9 / 2),
-                                child: TextFormField(
-                                  validator: (String val) {
-                                    if (val.length != 5) {
-                                      return "Please enter a valid zip code";
-                                    } else if (val.length == 0) {
-                                      return "What's your zip code?";
-                                    }
-                                  },
-                                  inputFormatters: [
-                                    FilteringTextInputFormatter.allow(
-                                        RegExp('[0-9]+')),
-                                  ],
-                                  style: TextStyle(
-                                      color: Theme.of(context).hintColor),
-                                  decoration: InputDecoration(
-                                      errorStyle: TextStyle(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .secondaryVariant),
-                                      enabledBorder: UnderlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: Theme.of(context)
-                                                  .primaryColor)),
-                                      labelText: 'Zip'),
-                                  onChanged: (val) {
-                                    log.i('setZip | $val');
-                                    tempUser.zip = val;
-                                    setState(() => _zip = val);
-                                  },
-                                ),
-                              )
-                            ]),
-                        FiftyStates(
+                                )
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: 15.0,
+                          ),
+                          Divider(
+                              thickness: 1,
+                              color: Theme.of(context).primaryColor),
+                          SizedBox(
+                            height: 15.0,
+                          ),
+                          Gender(
                             validator: (val) {
                               if (val == null) {
-                                return "Please choose a state.";
+                                return "Please choose your sex";
                               }
                             },
-                            onChanged: (String val) {
-                              log.i('setState | $val');
-                              tempUser.state = val;
+                            onChanged: (val) {
+                              log.i('setSex | $val');
+                              tempUser.sex = val;
                               setState(() {
-                                _state = val;
+                                _sex = val;
                               });
                             },
-                            value: _state),
-                        SizedBox(
-                          height: 20.0,
-                        ),
-                        GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          onTap: () {
-                            DatePicker.showDatePicker(context,
-                                showTitleActions: true,
-                                minTime: DateTime(1900, 1, 1),
-                                maxTime: DateTime.now(), onConfirm: (date) {
-                              _dob = '${date.month}/${date.day}/${date.year}';
-                              log.i('setDob | $_dob');
-                              tempUser.dob = _dob;
-                              setState(() {});
+                            value: _sex,
+                          ),
+                          SizedBox(
+                            height: 20.0,
+                          ),
+                          Race(
+                            validator: (val) {
+                              if (val == null) {
+                                return "Please choose your race.";
+                              }
                             },
-                                currentTime: DateTime.now(),
-                                locale: LocaleType.en);
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            onChanged: (val) {
+                              log.i('setRace | $val');
+                              tempUser.race = val;
+                              setState(() {
+                                _race = val;
+                              });
+                            },
+                            value: _race,
+                          ),
+                          SizedBox(
+                            height: 20.0,
+                          ),
+                          Eye(
+                            validator: (val) {
+                              if (val == null) {
+                                return "Please choose your eye color.";
+                              }
+                            },
+                            onChanged: (val) {
+                              log.i('setEye | $val');
+                              tempUser.eye = val;
+                              setState(() {
+                                _eye = val;
+                              });
+                            },
+                            value: _eye,
+                          ),
+                          SizedBox(
+                            height: 20.0,
+                          ),
+                          Hair(
+                            validator: (val) {
+                              if (val == null) {
+                                return "Please choose your hair color";
+                              }
+                            },
+                            onChanged: (val) {
+                              log.i('setHair | $val');
+                              tempUser.hair = val;
+                              setState(() {
+                                _hair = val;
+                              });
+                            },
+                            value: _hair,
+                          ),
+                          SizedBox(
+                            height: 20.0,
+                          ),
+                          Text(
+                            'Height',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          Row(
                             mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: <Widget>[
                               Container(
-                                child: Text('$_dob',
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        color: Theme.of(context).hintColor)),
-                              ),
-                              Icon(
-                                Icons.arrow_drop_down,
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .secondaryVariant,
-                              )
+                                  width: MediaQuery.of(context).size.width *
+                                      (.9 / 2),
+                                  child: Feet(
+                                    validator: (val) {
+                                      if (val == null) {
+                                        return "Please choose your height";
+                                      }
+                                    },
+                                    onChanged: (val) {
+                                      log.i('setFt | $val');
+                                      tempUser.ft = val;
+                                      setState(() {
+                                        _ft = val;
+                                      });
+                                    },
+                                    value: _ft,
+                                  )),
+                              Container(
+                                  width: MediaQuery.of(context).size.width *
+                                      (.9 / 2),
+                                  child: Inch(
+                                    validator: (val) {
+                                      if (val == null) {
+                                        return "Please choose your height";
+                                      }
+                                    },
+                                    onChanged: (val) {
+                                      log.i('setInches | $val');
+                                      tempUser.inch = val;
+                                      setState(() {
+                                        _in = val;
+                                      });
+                                    },
+                                    value: _in,
+                                  ))
                             ],
                           ),
-                        ),
-                        SizedBox(
-                          height: 15.0,
-                        ),
-                        Divider(
-                            thickness: 1,
-                            color: Theme.of(context).primaryColor),
-                        SizedBox(
-                          height: 15.0,
-                        ),
-                        Gender(
-                          validator: (val) {
-                            if (val == null) {
-                              return "Please choose your sex";
-                            }
-                          },
-                          onChanged: (val) {
-                            log.i('setSex | $val');
-                            tempUser.sex = val;
-                            setState(() {
-                              _sex = val;
-                            });
-                          },
-                          value: _sex,
-                        ),
-                        SizedBox(
-                          height: 20.0,
-                        ),
-                        Race(
-                          validator: (val) {
-                            if (val == null) {
-                              return "Please choose your race.";
-                            }
-                          },
-                          onChanged: (val) {
-                            log.i('setRace | $val');
-                            tempUser.race = val;
-                            setState(() {
-                              _race = val;
-                            });
-                          },
-                          value: _race,
-                        ),
-                        SizedBox(
-                          height: 20.0,
-                        ),
-                        Eye(
-                          validator: (val) {
-                            if (val == null) {
-                              return "Please choose your eye color.";
-                            }
-                          },
-                          onChanged: (val) {
-                            log.i('setEye | $val');
-                            tempUser.eye = val;
-                            setState(() {
-                              _eye = val;
-                            });
-                          },
-                          value: _eye,
-                        ),
-                        SizedBox(
-                          height: 20.0,
-                        ),
-                        Hair(
-                          validator: (val) {
-                            if (val == null) {
-                              return "Please choose your hair color";
-                            }
-                          },
-                          onChanged: (val) {
-                            log.i('setHair | $val');
-                            tempUser.hair = val;
-                            setState(() {
-                              _hair = val;
-                            });
-                          },
-                          value: _hair,
-                        ),
-                        SizedBox(
-                          height: 20.0,
-                        ),
-                        Text(
-                          'Height',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        Row(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            Container(
-                                width: MediaQuery.of(context).size.width *
-                                    (.9 / 2),
-                                child: Feet(
-                                  validator: (val) {
-                                    if (val == null) {
-                                      return "Please choose your height";
-                                    }
-                                  },
-                                  onChanged: (val) {
-                                    log.i('setFt | $val');
-                                    tempUser.ft = val;
-                                    setState(() {
-                                      _ft = val;
-                                    });
-                                  },
-                                  value: _ft,
-                                )),
-                            Container(
-                                width: MediaQuery.of(context).size.width *
-                                    (.9 / 2),
-                                child: Inch(
-                                  validator: (val) {
-                                    if (val == null) {
-                                      return "Please choose your height";
-                                    }
-                                  },
-                                  onChanged: (val) {
-                                    log.i('setInches | $val');
-                                    tempUser.inch = val;
-                                    setState(() {
-                                      _in = val;
-                                    });
-                                  },
-                                  value: _in,
-                                ))
-                          ],
-                        ),
-                        SizedBox(
-                          height: 20.0,
-                        ),
-                        RaisedRoundedGradientButton(
-                          width: MediaQuery.of(context).size.width * .25,
-                          child: Text(
-                            'Register',
-                            style: TextStyle(color: Colors.white),
+                          SizedBox(
+                            height: 20.0,
                           ),
-                          onPressed: () async {
-                            // print(height);
+                          RaisedRoundedGradientButton(
+                            width: MediaQuery.of(context).size.width * .25,
+                            child: Text(
+                              'Register',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            onPressed: () async {
+                              // print(height);
 //DO ERROR HANDLING HERE
 //NEED TO CHECK IF ALL THE THINGS HAVE BEEN FILLED OUT
 
-                            if (_dob == 'Date of Birth') {
-                              CustomToast.showDialog(
-                                  'Please enter your date of birth', context);
-                            } else if (_formKey.currentState.validate()) {
-                              log.i('convertHeight | _ft: $_ft _in: $_in');
-                              // Convert height into a total of inches for data base.
-                              var ft1 = int.parse(_ft);
-                              var in1 = int.parse(_in);
-                              var h = (ft1 * 12) + in1;
-                              // Convert height into a total of inches for data base.
-                              log.d('Height: $h');
-                              height =
-                                  '$h'; //pretty sure we aren't even doing anything with this variable
-                              // tempUser.phone_number = '1111111111';
-                              tempUser.temp = 'false';
-                              tempUser.phone_number = widget.phonenumber;
-                              //UNCOMMENT THIS WHEN DONE TESTING ^^^^^
-                              try {
-                                dynamic result = await RemoteDatabaseHelper
-                                    .instance
-                                    .addUser(tempUser);
-                                if (result['status'] == true) {
-                                  var user_id = result['user_id'].toString();
-                                  SharedPreferences profile =
-                                      await SharedPreferences.getInstance();
-
-                                  profile.setString('uid', user_id);
-                                  profile.setString(
-                                      'first_name', tempUser.first_name);
-                                  _userProvider.editUser(tempUser);
-                                  Map<String, Object> attributeUpdated =
-                                      await CognitoService.instance
-                                          .addUserAttributes(
-                                              widget.cognitoUser, user_id);
-                                  if (attributeUpdated['status'] == true) {
-                                    log.i('pushToMainPage');
-                                    Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => SyncScreen()),
-                                    );
-                                  } else {
-                                    throw AddUserAttributeException(
-                                        'Failed to add user attribute');
-                                  }
-                                } else {
-                                  throw AddUserException(
-                                      'Failed to add the user');
-                                }
-                              } catch (e) {
-                                log.e('Failed to add user profile. Error: $e');
+                              if (_dob == 'Date of Birth') {
                                 CustomToast.showDialog(
-                                    'Looks like we ran into an error. Please try again later! $somethingWentWrong',
-                                    context);
+                                    'Please enter your date of birth', context);
+                              } else if (_formKey.currentState.validate()) {
+                                log.i('convertHeight | _ft: $_ft _in: $_in');
+                                // Convert height into a total of inches for data base.
+                                var ft1 = int.parse(_ft);
+                                var in1 = int.parse(_in);
+                                var h = (ft1 * 12) + in1;
+                                // Convert height into a total of inches for data base.
+                                log.d('Height: $h');
+                                height =
+                                    '$h'; //pretty sure we aren't even doing anything with this variable
+                                // tempUser.phone_number = '1111111111';
+                                tempUser.temp = 'false';
+                                tempUser.phone_number = widget.phonenumber;
+                                //UNCOMMENT THIS WHEN DONE TESTING ^^^^^
+                                try {
+                                  dynamic result = await RemoteDatabaseHelper
+                                      .instance
+                                      .addUser(tempUser);
+                                  if (result['status'] == true) {
+                                    var user_id = result['user_id'].toString();
+                                    SharedPreferences profile =
+                                        await SharedPreferences.getInstance();
+
+                                    profile.setString('uid', user_id);
+                                    profile.setString(
+                                        'first_name', tempUser.first_name);
+                                    _userProvider.editUser(tempUser);
+                                    Map<String, Object> attributeUpdated =
+                                        await CognitoService.instance
+                                            .addUserAttributes(
+                                                widget.cognitoUser, user_id);
+                                    if (attributeUpdated['status'] == true) {
+                                      log.i('pushToMainPage');
+                                      Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => SyncScreen()),
+                                      );
+                                    } else {
+                                      throw AddUserAttributeException(
+                                          'Failed to add user attribute');
+                                    }
+                                  } else {
+                                    throw AddUserException(
+                                        'Failed to add the user');
+                                  }
+                                } catch (e) {
+                                  log.e(
+                                      'Failed to add user profile. Error: $e');
+                                  CustomToast.showDialog(
+                                      'Looks like we ran into an error. Please try again later! $somethingWentWrong',
+                                      context);
+                                }
                               }
-                            }
-                          },
-                        )
-                      ],
-                    )))));
+                            },
+                          )
+                        ],
+                      ))))),
+    );
   }
 }

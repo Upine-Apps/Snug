@@ -162,7 +162,7 @@ class _ContactState extends State<Contact> with AutomaticKeepAliveClientMixin {
                           )),
                         ),
                         Container(
-                          height: MediaQuery.of(context).size.height * .8,
+                          height: MediaQuery.of(context).size.height * .875,
                           child: ListView.separated(
                               separatorBuilder:
                                   (BuildContext context, int index) {

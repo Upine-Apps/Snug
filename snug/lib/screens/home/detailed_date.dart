@@ -865,6 +865,13 @@ class _DetailDateState extends State<DetailDate> {
                                           await RemoteDatabaseHelper.instance
                                               .deleteDate(_currentDate.dateId);
                                       if (cancelResponse['status'] == true) {
+                                        Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    LoadingScreen(
+                                                      someIndex: someIndex,
+                                                    )));
                                       } else {
                                         throw DateNotCanceledException(
                                             'Failed to cancel date');
