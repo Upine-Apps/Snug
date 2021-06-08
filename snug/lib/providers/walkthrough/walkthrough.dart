@@ -156,7 +156,7 @@ class _WalkthroughState extends State<Walkthrough> {
                                     height: 15,
                                   ),
                                   Text(
-                                    'The above button is displayed on the home screen. Use it to create a date! Once the date is created we will make sure that your are safe throughout. If something happens we\'ll let your contact know. ',
+                                    'The above button is displayed on the home screen. Use it to create a date! Once the date is created we will make sure that you are safe throughout. If something happens, we\'ll let your contact know. ',
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 18,
@@ -206,7 +206,7 @@ class _WalkthroughState extends State<Walkthrough> {
                                   height: 15,
                                 ),
                                 Text(
-                                  'The above button is displayed on the contact screen. Use it to create your contacts! These are the people that got your back if anything happens',
+                                  'The above button is displayed on the contact screen. Use it to create your contacts! These are the people that got your back if anything happens.',
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 18,
