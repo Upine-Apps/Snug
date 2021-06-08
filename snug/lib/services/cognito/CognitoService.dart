@@ -39,6 +39,29 @@ class CognitoService {
     }
   }
 
+  Future<void> logoutUser(CognitoUser cognitoUser) async {
+    await cognitoUser.signOut();
+  }
+
+  Future<Map<String, Object>> deleteUser(CognitoUser cognitoUser) async {
+    log.i('deleteUser | cognitoUser: $cognitoUser');
+    bool userDeleted = false;
+    try {
+      userDeleted = await cognitoUser.deleteUser();
+      //DELETE FROM DATABASE TOO
+      //DELETE SHARED PREFERENCES
+      //CLEAR PROVIDERS
+      if (userDeleted == true) {
+        return {'status': true, 'data': 'User successfully deleted'};
+      } else {
+        throw Error;
+      }
+    } catch (e) {
+      log.e(e);
+      return {'status': false, 'data': e};
+    }
+  }
+
   Future<Map<String, Object>> registerUser(
       String username, String password) async {
     log.i('registerUser | username: $username password: *******');

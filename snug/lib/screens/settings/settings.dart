@@ -1,9 +1,13 @@
+import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 import 'package:flutter/material.dart';
 import 'package:snug/custom_widgets/customshowcase.dart';
 import 'package:snug/custom_widgets/topheader.dart';
 import 'package:snug/providers/ContactProvider.dart';
 import 'package:snug/providers/DateProvider.dart';
+import 'package:snug/providers/UserProvider.dart';
 import 'package:snug/screens/authenticate/authenticate.dart';
+import 'package:snug/screens/settings/verifydelete.dart';
+import 'package:snug/services/cognito/CognitoService.dart';
 import 'package:snug/themes/colors.dart';
 import 'package:snug/themes/constants.dart';
 import 'package:snug/themes/themeNotifier.dart';
@@ -72,21 +76,74 @@ class _SettingState extends State<SettingScreen> {
                 )),
               ),
               Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Container(
-                  height: MediaQuery.of(context).size.height * .125,
-                  child: ListView.builder(
-                    itemBuilder: (context, position) {
-                      return _createList(context, themes[position], position);
-                    },
-                    itemCount: themes.length,
-                  ),
+                padding: EdgeInsets.only(right: 16.0, left: 16, top: 16),
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Themes',
+                          style: TextStyle(
+                              color: Theme.of(context).hintColor, fontSize: 16),
+                        )),
+                    Container(
+                      height: MediaQuery.of(context).size.height * .125,
+                      child: ListView.builder(
+                        itemBuilder: (context, position) {
+                          return _createList(
+                              context, themes[position], position);
+                        },
+                        itemCount: themes.length,
+                      ),
+                    ),
+                  ],
                 ),
               ),
+              Padding(
+                padding: EdgeInsets.only(right: 16.0, left: 16, top: 16),
+                child: Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.only(
+                          bottom: MediaQuery.of(context).size.height * .01),
+                      child: Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Account Management',
+                            style: TextStyle(
+                                color: Theme.of(context).hintColor,
+                                fontSize: 16),
+                          )),
+                    ),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: FlatButton(
+                          color: Theme.of(context).colorScheme.secondaryVariant,
+                          onPressed: () async => showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return VerifyDelete();
+                              }),
+                          child: Container(
+                              width: MediaQuery.of(context).size.width * .40,
+                              padding: EdgeInsets.all(0),
+                              height: MediaQuery.of(context).size.height * .065,
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                'Delete Account',
+                                style: TextStyle(
+                                    color: Theme.of(context).dividerColor,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold),
+                              ))),
+                    )
+                  ],
+                ),
+              )
             ],
           )),
       floatingActionButton: FloatingActionButton(
-          onPressed: () {
+          onPressed: () async {
             final contactProvider =
                 Provider.of<ContactProvider>(context, listen: false);
             final dateProvider =
@@ -101,6 +158,11 @@ class _SettingState extends State<SettingScreen> {
                 contactProvider.removeContactFromProvider(y);
               }
             }
+            final userProvider =
+                Provider.of<UserProvider>(context, listen: false);
+            CognitoUser cognitoUser = userProvider.getCognitoUser;
+            await CognitoService.instance.logoutUser(cognitoUser);
+
             Navigator.pushReplacement(context,
                 MaterialPageRoute(builder: (context) => Authenticate()));
           },
