@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:snug/core/logger.dart';
 import 'package:snug/custom_widgets/CustomToast.dart';
 import 'package:snug/custom_widgets/raised_rounded_gradient_button.dart';
@@ -7,6 +8,7 @@ import 'package:snug/custom_widgets/raised_rounded_gradient_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:emojis/emojis.dart';
 import 'package:emojis/emoji.dart';
+import 'package:snug/providers/UserProvider.dart';
 import 'package:toast/toast.dart';
 import 'package:snug/screens/authenticate/register.dart';
 import 'package:snug/screens/otp/otp.dart';
@@ -80,6 +82,7 @@ class _SignInState extends State<SignIn> {
 
   @override
   Widget build(BuildContext context) {
+    final _userProvider = Provider.of<UserProvider>(context, listen: true);
     final node = FocusScope.of(context);
     return WillPopScope(
       onWillPop: () async => false,
@@ -181,6 +184,12 @@ class _SignInState extends State<SignIn> {
                                           if (result['status'] == true) {
                                             CognitoUser confirmedUser =
                                                 result['cognitoUser'];
+                                            CognitoUserSession userSession =
+                                                result['cognitoSession'];
+                                            _userProvider
+                                                .setCognitoUser(confirmedUser);
+                                            _userProvider
+                                                .setUserSession(userSession);
                                             try {
                                               Map<String, Object>
                                                   getAttributesResult =
