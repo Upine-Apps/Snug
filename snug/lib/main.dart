@@ -5,6 +5,7 @@ import 'package:snug/providers/ContactProvider.dart';
 import 'package:snug/providers/DateProvider.dart';
 import 'package:snug/providers/MapProvider.dart';
 import 'package:snug/providers/UserProvider.dart';
+import 'package:snug/providers/walkthrough/walkthrough.dart';
 import 'package:snug/screens/authenticate/authenticate.dart';
 import 'package:snug/screens/authenticate/profile.dart';
 import 'package:snug/themes/constants.dart';
@@ -60,7 +61,7 @@ class MyApp extends StatelessWidget {
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
-          home: Authenticate(),
+          home: Walkthrough(),
           theme: AppTheme().lightTheme,
           darkTheme: AppTheme().darkTheme,
           themeMode: themeNotifier.getThemeMode(),
