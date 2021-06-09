@@ -149,14 +149,10 @@ class _SettingState extends State<SettingScreen> {
             final dateProvider =
                 Provider.of<DateProvider>(context, listen: false);
             if (dateProvider.getCurrentDates.length != null) {
-              for (var i = 0; i < dateProvider.getCurrentDates.length; i + 1) {
-                dateProvider.removeDate(i);
-              }
+              dateProvider.removeAllDates();
             }
             if (contactProvider.getContacts.length != null) {
-              for (var y = 0; y < contactProvider.getContacts.length; y + 1) {
-                contactProvider.removeContactFromProvider(y);
-              }
+              contactProvider.removeAllContacts();
             }
             final userProvider =
                 Provider.of<UserProvider>(context, listen: false);

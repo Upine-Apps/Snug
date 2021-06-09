@@ -1,7 +1,11 @@
 import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:snug/custom_widgets/CustomToast.dart';
+import 'package:snug/models/Contact.dart';
+import 'package:snug/providers/ContactProvider.dart';
+import 'package:snug/providers/DateProvider.dart';
 import 'package:snug/providers/UserProvider.dart';
 import 'package:snug/screens/authenticate/authenticate.dart';
 import 'package:snug/services/cognito/CognitoService.dart';
@@ -27,6 +31,12 @@ class _VerifyDeleteState extends State<VerifyDelete> {
             onPressed: () async {
               final userProvider =
                   Provider.of<UserProvider>(context, listen: false);
+              final dateProvider =
+                  Provider.of<DateProvider>(context, listen: false);
+              final contactProvider =
+                  Provider.of<ContactProvider>(context, listen: false);
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+
               CognitoUser cognitoUser = userProvider.getCognitoUser;
               try {
                 String _userId = userProvider.getUser.uid;
@@ -41,6 +51,12 @@ class _VerifyDeleteState extends State<VerifyDelete> {
                     Map<String, Object> deleteCognitoResult =
                         await CognitoService.instance.deleteUser(cognitoUser);
                     if (deleteCognitoResult['status'] == true) {
+                      //clear all data from app
+                      userProvider.removeUser();
+                      contactProvider.removeAllContacts();
+                      dateProvider.removeAllDates();
+                      prefs.clear();
+
                       CustomToast.showDialog(
                           'Thanks for using Snug! See ya later.', context);
                       await Future.delayed(Duration(seconds: 2), () {

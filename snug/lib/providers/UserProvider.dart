@@ -42,4 +42,9 @@ class UserProvider extends ChangeNotifier {
     _user = User.fromMap(curUser);
     notifyListeners();
   }
+
+  removeUser() {
+    _user = User();
+    notifyListeners();
+  }
 }

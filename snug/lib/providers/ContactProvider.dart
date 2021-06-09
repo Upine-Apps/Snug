@@ -31,8 +31,8 @@ class ContactProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void removeContactFromProvider(int index) {
-    _contacts.removeAt(index);
+  void removeAllContacts() {
+    _contacts = <Contact>[]; //new syntax yuh not deprecated
     notifyListeners();
   }
 }
