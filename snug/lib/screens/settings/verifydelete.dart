@@ -5,6 +5,7 @@ import 'package:snug/custom_widgets/CustomToast.dart';
 import 'package:snug/providers/UserProvider.dart';
 import 'package:snug/screens/authenticate/authenticate.dart';
 import 'package:snug/services/cognito/CognitoService.dart';
+import 'package:snug/services/remote_db_service.dart';
 
 class VerifyDelete extends StatefulWidget {
   @override
@@ -28,17 +29,33 @@ class _VerifyDeleteState extends State<VerifyDelete> {
                   Provider.of<UserProvider>(context, listen: false);
               CognitoUser cognitoUser = userProvider.getCognitoUser;
               try {
-                Map<String, Object> deleteResult =
-                    await CognitoService.instance.deleteUser(cognitoUser);
-                if (deleteResult['status'] == true) {
-                  CustomToast.showDialog(
-                      'Thanks for using Snug! See ya later.', context);
-                  await Future.delayed(Duration(seconds: 2), () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => Authenticate()),
-                    );
-                  });
+                String _userId = userProvider.getUser.uid;
+
+                Map<String, Object> deleteDatesResult =
+                    await RemoteDatabaseHelper.instance
+                        .deleteUserDates(_userId);
+                if (deleteDatesResult['status' == true]) {
+                  Map<String, Object> deleteUserResult =
+                      await RemoteDatabaseHelper.instance.deleteUser(_userId);
+                  if (deleteUserResult['status'] == true) {
+                    Map<String, Object> deleteCognitoResult =
+                        await CognitoService.instance.deleteUser(cognitoUser);
+                    if (deleteCognitoResult['status'] == true) {
+                      CustomToast.showDialog(
+                          'Thanks for using Snug! See ya later.', context);
+                      await Future.delayed(Duration(seconds: 2), () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Authenticate()),
+                        );
+                      });
+                    } else {
+                      throw Error;
+                    }
+                  } else {
+                    throw Error;
+                  }
                 } else {
                   throw Error;
                 }
