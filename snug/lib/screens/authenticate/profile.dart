@@ -7,7 +7,6 @@ import 'package:snug/core/logger.dart';
 import 'package:snug/custom_widgets/CustomToast.dart';
 import 'package:snug/custom_widgets/eye.dart';
 import 'package:snug/custom_widgets/feet.dart';
-import 'package:snug/custom_widgets/fifty_states.dart';
 import 'package:snug/custom_widgets/gender.dart';
 import 'package:snug/custom_widgets/hair.dart';
 import 'package:snug/custom_widgets/inch.dart';
@@ -71,10 +70,6 @@ class _ProfileState extends State<Profile> {
   String _day;
   String _year;
   String _dob = 'Date of Birth';
-  String _address;
-  String _state;
-  String _city;
-  String _street;
   String _zip;
 
   final log = getLogger('CreateProfile');
@@ -179,66 +174,10 @@ class _ProfileState extends State<Profile> {
                           SizedBox(
                             height: 20.0,
                           ),
-                          TextFormField(
-                            validator: (String val) {
-                              if (val.length == 0) {
-                                return "What's your street address?";
-                              }
-                            },
-                            onEditingComplete: () => node.nextFocus(),
-                            style:
-                                TextStyle(color: Theme.of(context).hintColor),
-                            decoration: InputDecoration(
-                                errorStyle: TextStyle(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .secondaryVariant),
-                                enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Theme.of(context).primaryColor)),
-                                labelText: 'Street Address'),
-                            onChanged: (val) {
-                              log.i('setStreet | $val');
-                              tempUser.street = val;
-                              setState(() => _street = val);
-                            },
-                          ),
-                          SizedBox(
-                            height: 20.0,
-                          ),
                           Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               mainAxisSize: MainAxisSize.max,
                               children: <Widget>[
-                                Container(
-                                  width: MediaQuery.of(context).size.width *
-                                      (.9 / 2),
-                                  child: TextFormField(
-                                    validator: (String val) {
-                                      if (val.length == 0) {
-                                        return "What city do you live in?";
-                                      }
-                                    },
-                                    onEditingComplete: () => node.nextFocus(),
-                                    style: TextStyle(
-                                        color: Theme.of(context).hintColor),
-                                    decoration: InputDecoration(
-                                        errorStyle: TextStyle(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .secondaryVariant),
-                                        enabledBorder: UnderlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Theme.of(context)
-                                                    .primaryColor)),
-                                        labelText: 'City'),
-                                    onChanged: (val) {
-                                      log.i('setCity | $val');
-                                      tempUser.city = val;
-                                      setState(() => _city = val);
-                                    },
-                                  ),
-                                ),
                                 Container(
                                   width: MediaQuery.of(context).size.width *
                                       (.9 / 2),
@@ -275,20 +214,6 @@ class _ProfileState extends State<Profile> {
                                   ),
                                 )
                               ]),
-                          FiftyStates(
-                              validator: (val) {
-                                if (val == null) {
-                                  return "Please choose a state.";
-                                }
-                              },
-                              onChanged: (String val) {
-                                log.i('setState | $val');
-                                tempUser.state = val;
-                                setState(() {
-                                  _state = val;
-                                });
-                              },
-                              value: _state),
                           SizedBox(
                             height: 20.0,
                           ),
@@ -482,6 +407,7 @@ class _ProfileState extends State<Profile> {
                                 // tempUser.phone_number = '1111111111';
                                 tempUser.temp = 'false';
                                 tempUser.phone_number = widget.phonenumber;
+                                tempUser.legal = 'true';
                                 //UNCOMMENT THIS WHEN DONE TESTING ^^^^^
                                 try {
                                   dynamic result = await RemoteDatabaseHelper

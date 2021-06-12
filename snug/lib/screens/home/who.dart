@@ -91,6 +91,7 @@ class _WhoState extends State<Who> {
         _in = userResult.inch;
 
         userResult.temp = 'true';
+        userResult.legal = 'false';
 
         //set current user 2 info to user data
         currentDate.who = userResult;

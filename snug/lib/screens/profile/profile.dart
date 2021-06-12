@@ -462,51 +462,17 @@ class MapScreenState extends State<ProfilePage>
                           endIndent: 25,
                           color: Theme.of(context).hintColor,
                         ),
-                        Padding(
-                            padding: EdgeInsets.only(
-                                left: 25, right: 25.0, top: 15.0),
-                            child: new Row(
-                              mainAxisSize: MainAxisSize.max,
-                              children: <Widget>[
-                                new Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    new Text(
-                                      'Street',
-                                      style: TextStyle(
-                                          fontSize: 16.0,
-                                          fontWeight: FontWeight.bold,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .secondaryVariant),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            )),
+
                         SizedBox(
                           height: 5,
                         ),
                         Padding(
-                            padding: EdgeInsets.only(
-                              left: 25,
-                              right: 25.0,
-                              top: 5,
-                            ),
-                            child: new Row(
-                              mainAxisSize: MainAxisSize.max,
-                              children: <Widget>[
-                                Container(
-                                    child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    Text('${currentUser.street}')
-                                  ],
-                                ))
-                              ],
-                            )),
+                          padding: EdgeInsets.only(
+                            left: 25,
+                            right: 25.0,
+                            top: 5,
+                          ),
+                        ),
                         Divider(
                             indent: 25,
                             endIndent: 25,
@@ -518,30 +484,6 @@ class MapScreenState extends State<ProfilePage>
                               mainAxisSize: MainAxisSize.max,
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: <Widget>[
-                                new Container(
-                                  width: MediaQuery.of(context).size.width / 3,
-                                  child: Text(
-                                    'City',
-                                    style: TextStyle(
-                                        fontSize: 16.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .secondaryVariant),
-                                  ),
-                                ),
-                                Container(
-                                  width: MediaQuery.of(context).size.width / 3,
-                                  child: Text(
-                                    'State',
-                                    style: TextStyle(
-                                        fontSize: 16.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .secondaryVariant),
-                                  ),
-                                ),
                                 new Container(
                                   child: Text(
                                     'Zip',
@@ -562,18 +504,6 @@ class MapScreenState extends State<ProfilePage>
                               mainAxisSize: MainAxisSize.max,
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: <Widget>[
-                                Container(
-                                  width: MediaQuery.of(context).size.width / 3,
-                                  child: Text(
-                                    '${currentUser.city}',
-                                  ),
-                                ),
-                                Container(
-                                  width: MediaQuery.of(context).size.width / 3,
-                                  child: Text(
-                                    '${currentUser.state}',
-                                  ),
-                                ),
                                 new Container(child: Text("${currentUser.zip}"))
                               ],
                             )),

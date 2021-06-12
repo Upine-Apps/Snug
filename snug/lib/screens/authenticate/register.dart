@@ -13,6 +13,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:emojis/emojis.dart';
 import 'package:emojis/emoji.dart';
 
+import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_parsed_text/flutter_parsed_text.dart';
+
 class Register extends StatefulWidget {
   final Function toggleView;
   Register({this.toggleView});
@@ -32,6 +35,8 @@ class _RegisterState extends State<Register> {
   String password1 = '';
   String password2 = '';
   String error = '';
+  bool checkPrivacyPolicy = false;
+  bool checkEULA = false;
   final log = getLogger('Register');
   @override
   Widget build(BuildContext context) {
@@ -67,7 +72,7 @@ class _RegisterState extends State<Register> {
                   ], begin: Alignment.topLeft, end: Alignment.bottomRight)),
                   child: Padding(
                       padding: const EdgeInsets.only(
-                          bottom: 100, right: 36.0, left: 36.0),
+                          bottom: 60, right: 36.0, left: 36.0),
                       child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -101,7 +106,7 @@ class _RegisterState extends State<Register> {
                                           labelText: 'Phone Number'),
                                       validator: (String val) {
                                         if (val.length != 10) {
-                                          return "Please enter a valid Phone Number";
+                                          return "Please enter a valid phone number";
                                         }
                                       },
                                       onChanged: (val) {
@@ -156,6 +161,112 @@ class _RegisterState extends State<Register> {
                                     SizedBox(
                                       height: 20,
                                     ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        SizedBox(
+                                          width: 20,
+                                        ),
+                                        ParsedText(
+                                            selectable: false,
+                                            alignment: TextAlign.start,
+                                            style:
+                                                TextStyle(color: Colors.black),
+                                            text:
+                                                "You agree to Snug's Privacy Policy",
+                                            parse: <MatchText>[
+                                              MatchText(
+                                                type: ParsedType.CUSTOM,
+                                                pattern: r"Privacy Policy",
+                                                style: TextStyle(
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .secondaryVariant),
+                                                onTap: (url) async {
+                                                  log.i('openPrivacyPolicy');
+                                                  const privacyPolicyUrl =
+                                                      "https://upineapps.com/snug-privacy-policy";
+                                                  try {
+                                                    if (await canLaunch(
+                                                        privacyPolicyUrl)) {
+                                                      await launch(
+                                                          privacyPolicyUrl);
+                                                    } else {
+                                                      throw "Can't launch url";
+                                                    }
+                                                  } catch (e) {
+                                                    CustomToast.showDialog(
+                                                        'Failed to open privacy policy. Please try again later.',
+                                                        context);
+                                                  }
+                                                },
+                                              ),
+                                            ]),
+                                        Checkbox(
+                                            value: this.checkPrivacyPolicy,
+                                            onChanged: (bool value) {
+                                              setState(() {
+                                                this.checkPrivacyPolicy = value;
+                                              });
+                                            })
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        SizedBox(
+                                          width: 50,
+                                        ),
+                                        ParsedText(
+                                            selectable: false,
+                                            alignment: TextAlign.start,
+                                            style:
+                                                TextStyle(color: Colors.black),
+                                            text: "You agree to Snug's EULA",
+                                            parse: <MatchText>[
+                                              MatchText(
+                                                type: ParsedType.CUSTOM,
+                                                pattern: r"EULA",
+                                                style: TextStyle(
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .secondaryVariant),
+                                                onTap: (url) async {
+                                                  log.i('openEULA');
+                                                  const eulaUrl =
+                                                      "https://upineapps.com/snug-eula";
+                                                  try {
+                                                    if (await canLaunch(
+                                                        eulaUrl)) {
+                                                      await launch(eulaUrl);
+                                                    } else {
+                                                      throw "Can't launch url";
+                                                    }
+                                                  } catch (e) {
+                                                    CustomToast.showDialog(
+                                                        'Failed to open EULA. Please try again later.',
+                                                        context);
+                                                  }
+                                                },
+                                              ),
+                                            ]),
+                                        Checkbox(
+                                            // checkColor: Theme.of(context)
+                                            //     .colorScheme
+                                            //     .secondaryVariant,
+                                            value: this.checkEULA,
+                                            onChanged: (bool value) {
+                                              setState(() {
+                                                this.checkEULA = value;
+                                              });
+                                            })
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: 20,
+                                    ),
                                     RaisedRoundedGradientButton(
                                       width: MediaQuery.of(context).size.width *
                                           .5,
@@ -165,47 +276,54 @@ class _RegisterState extends State<Register> {
                                       ),
                                       onPressed: () async {
                                         if (_formKey.currentState.validate()) {
-                                          try {
-                                            Map<String, Object> result =
-                                                await CognitoService.instance
-                                                    .registerUser(
-                                                        phonenumber, password2);
-                                            if (result['status'] == false) {
-                                              if (result['message'] ==
-                                                  'ERROR') {
-                                                CustomToast.showDialog(
-                                                    'Something went wrong, please try again. $somethingWentWrong',
-                                                    context);
-                                              } else if (result['message'] ==
-                                                  'REGISTRATION_FAILED') {
-                                                CustomToast.showDialog(
-                                                    'Registration failed, please try again later. $somethingWentWrong',
-                                                    context);
-                                                //toast to say registration failed and give reason
-                                                //LOOK INTO THE POSSIBLE REASONS AND RETURN FROM THE COGNITO SERVICE CLASS
-                                              }
-                                            } else if (result['status'] ==
-                                                true) {
-                                              SharedPreferences _profile =
-                                                  await SharedPreferences
-                                                      .getInstance();
-                                              _profile.setString(
-                                                  'phonenumber', phonenumber);
+                                          if (this.checkEULA == true &&
+                                              this.checkPrivacyPolicy == true) {
+                                            try {
+                                              Map<String, Object> result =
+                                                  await CognitoService.instance
+                                                      .registerUser(phonenumber,
+                                                          password2);
+                                              if (result['status'] == false) {
+                                                if (result['message'] ==
+                                                    'ERROR') {
+                                                  CustomToast.showDialog(
+                                                      'Something went wrong, please try again. $somethingWentWrong',
+                                                      context);
+                                                } else if (result['message'] ==
+                                                    'REGISTRATION_FAILED') {
+                                                  CustomToast.showDialog(
+                                                      'Registration failed, please try again later. $somethingWentWrong',
+                                                      context);
+                                                  //toast to say registration failed and give reason
+                                                  //LOOK INTO THE POSSIBLE REASONS AND RETURN FROM THE COGNITO SERVICE CLASS
+                                                }
+                                              } else if (result['status'] ==
+                                                  true) {
+                                                SharedPreferences _profile =
+                                                    await SharedPreferences
+                                                        .getInstance();
+                                                _profile.setString(
+                                                    'phonenumber', phonenumber);
 
-                                              Navigator.pushReplacement(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) => Otp(
-                                                          phonenumber:
-                                                              phonenumber,
-                                                          password: password2,
-                                                          fromSignIn: false,
-                                                        )),
-                                              );
+                                                Navigator.pushReplacement(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) => Otp(
+                                                            phonenumber:
+                                                                phonenumber,
+                                                            password: password2,
+                                                            fromSignIn: false,
+                                                          )),
+                                                );
+                                              }
+                                            } catch (e) {
+                                              log.d('registration error');
+                                              log.e(e);
                                             }
-                                          } catch (e) {
-                                            log.d('registration error');
-                                            log.e(e);
+                                          } else {
+                                            CustomToast.showDialog(
+                                                'You must accept the privacy policy and the EULA to use the Snug app',
+                                                context);
                                           }
                                         }
                                       },
