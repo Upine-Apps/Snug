@@ -125,7 +125,8 @@ class _ProfileState extends State<Profile> {
                               }
                             },
                             onEditingComplete: () => node.nextFocus(),
-                            style: TextStyle(color: Colors.white),
+                            style:
+                                TextStyle(color: Theme.of(context).hintColor),
                             controller: _controller,
                             decoration: InputDecoration(
                                 errorStyle: TextStyle(
@@ -143,7 +144,7 @@ class _ProfileState extends State<Profile> {
                             },
                           ),
                           SizedBox(
-                            height: 20.0,
+                            height: 10.0,
                           ),
                           TextFormField(
                             validator: (String val) {
@@ -172,50 +173,7 @@ class _ProfileState extends State<Profile> {
                             },
                           ),
                           SizedBox(
-                            height: 20.0,
-                          ),
-                          Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              mainAxisSize: MainAxisSize.max,
-                              children: <Widget>[
-                                Container(
-                                  width: MediaQuery.of(context).size.width *
-                                      (.9 / 2),
-                                  child: TextFormField(
-                                    keyboardType: TextInputType.number,
-                                    validator: (String val) {
-                                      if (val.length != 5) {
-                                        return "Please enter a valid zip code";
-                                      } else if (val.length == 0) {
-                                        return "What's your zip code?";
-                                      }
-                                    },
-                                    inputFormatters: [
-                                      FilteringTextInputFormatter.allow(
-                                          RegExp('[0-9]+')),
-                                    ],
-                                    style: TextStyle(
-                                        color: Theme.of(context).hintColor),
-                                    decoration: InputDecoration(
-                                        errorStyle: TextStyle(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .secondaryVariant),
-                                        enabledBorder: UnderlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Theme.of(context)
-                                                    .primaryColor)),
-                                        labelText: 'Zip'),
-                                    onChanged: (val) {
-                                      log.i('setZip | $val');
-                                      tempUser.zip = val;
-                                      setState(() => _zip = val);
-                                    },
-                                  ),
-                                )
-                              ]),
-                          SizedBox(
-                            height: 20.0,
+                            height: 30.0,
                           ),
                           GestureDetector(
                             behavior: HitTestBehavior.opaque,
@@ -251,14 +209,11 @@ class _ProfileState extends State<Profile> {
                             ),
                           ),
                           SizedBox(
-                            height: 15.0,
+                            height: 20.0,
                           ),
                           Divider(
                               thickness: 1,
                               color: Theme.of(context).primaryColor),
-                          SizedBox(
-                            height: 15.0,
-                          ),
                           Gender(
                             validator: (val) {
                               if (val == null) {
@@ -273,9 +228,6 @@ class _ProfileState extends State<Profile> {
                               });
                             },
                             value: _sex,
-                          ),
-                          SizedBox(
-                            height: 20.0,
                           ),
                           Race(
                             validator: (val) {
@@ -292,9 +244,6 @@ class _ProfileState extends State<Profile> {
                             },
                             value: _race,
                           ),
-                          SizedBox(
-                            height: 20.0,
-                          ),
                           Eye(
                             validator: (val) {
                               if (val == null) {
@@ -309,9 +258,6 @@ class _ProfileState extends State<Profile> {
                               });
                             },
                             value: _eye,
-                          ),
-                          SizedBox(
-                            height: 20.0,
                           ),
                           Hair(
                             validator: (val) {
@@ -329,11 +275,14 @@ class _ProfileState extends State<Profile> {
                             value: _hair,
                           ),
                           SizedBox(
-                            height: 20.0,
+                            height: 25.0,
                           ),
                           Text(
-                            'Height',
-                            style: TextStyle(fontSize: 16),
+                            'Height:',
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Theme.of(context).hintColor,
+                            ),
                           ),
                           Row(
                             mainAxisSize: MainAxisSize.max,
@@ -379,6 +328,49 @@ class _ProfileState extends State<Profile> {
                           ),
                           SizedBox(
                             height: 20.0,
+                          ),
+                          Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisSize: MainAxisSize.max,
+                              children: <Widget>[
+                                Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * (.9),
+                                  child: TextFormField(
+                                    keyboardType: TextInputType.number,
+                                    validator: (String val) {
+                                      if (val.length != 5) {
+                                        return "Please enter a valid zip code";
+                                      } else if (val.length == 0) {
+                                        return "What's your zip code?";
+                                      }
+                                    },
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.allow(
+                                          RegExp('[0-9]+')),
+                                    ],
+                                    style: TextStyle(
+                                        color: Theme.of(context).hintColor),
+                                    decoration: InputDecoration(
+                                        errorStyle: TextStyle(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .secondaryVariant),
+                                        enabledBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Theme.of(context)
+                                                    .primaryColor)),
+                                        labelText: 'Zip Code'),
+                                    onChanged: (val) {
+                                      log.i('setZip | $val');
+                                      tempUser.zip = val;
+                                      setState(() => _zip = val);
+                                    },
+                                  ),
+                                )
+                              ]),
+                          SizedBox(
+                            height: 25.0,
                           ),
                           RaisedRoundedGradientButton(
                             width: MediaQuery.of(context).size.width * .25,

@@ -32,20 +32,126 @@ class Hair extends StatelessWidget {
         isExpanded: false,
         items: [
           DropdownMenuItem<String>(
-            child: Text('Bald'),
+            child: Text(
+              'Bald',
+              style: TextStyle(
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.black54
+                    : Colors.white,
+              ),
+            ),
             value: 'BLD',
           ),
-          DropdownMenuItem<String>(child: Text('Brown'), value: 'BRN'),
-          DropdownMenuItem<String>(child: Text('Black'), value: 'BLK'),
-          DropdownMenuItem<String>(child: Text('Blonde'), value: 'BLN'),
-          DropdownMenuItem<String>(child: Text('Blue'), value: 'BLU'),
-          DropdownMenuItem<String>(child: Text('Gray'), value: 'GRY'),
-          DropdownMenuItem<String>(child: Text('Green'), value: 'GRN'),
-          DropdownMenuItem<String>(child: Text('Orange'), value: 'ONG'),
-          DropdownMenuItem<String>(child: Text('Pink'), value: 'PNK'),
-          DropdownMenuItem<String>(child: Text('Red'), value: 'RED'),
-          DropdownMenuItem<String>(child: Text('White'), value: 'WHI'),
-          DropdownMenuItem<String>(child: Text('Other'), value: 'OTH'),
+          DropdownMenuItem<String>(
+              child: Text(
+                'Brown',
+                style: TextStyle(
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.black54
+                      : Colors.white,
+                ),
+              ),
+              value: 'BRN'),
+          DropdownMenuItem<String>(
+              child: Text(
+                'Black',
+                style: TextStyle(
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.black54
+                      : Colors.white,
+                ),
+              ),
+              value: 'BLK'),
+          DropdownMenuItem<String>(
+              child: Text(
+                'Blonde',
+                style: TextStyle(
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.black54
+                      : Colors.white,
+                ),
+              ),
+              value: 'BLN'),
+          DropdownMenuItem<String>(
+              child: Text(
+                'Blue',
+                style: TextStyle(
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.black54
+                      : Colors.white,
+                ),
+              ),
+              value: 'BLU'),
+          DropdownMenuItem<String>(
+              child: Text(
+                'Gray',
+                style: TextStyle(
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.black54
+                      : Colors.white,
+                ),
+              ),
+              value: 'GRY'),
+          DropdownMenuItem<String>(
+              child: Text(
+                'Green',
+                style: TextStyle(
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.black54
+                      : Colors.white,
+                ),
+              ),
+              value: 'GRN'),
+          DropdownMenuItem<String>(
+              child: Text(
+                'Orange',
+                style: TextStyle(
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.black54
+                      : Colors.white,
+                ),
+              ),
+              value: 'ONG'),
+          DropdownMenuItem<String>(
+              child: Text(
+                'Pink',
+                style: TextStyle(
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.black54
+                      : Colors.white,
+                ),
+              ),
+              value: 'PNK'),
+          DropdownMenuItem<String>(
+              child: Text(
+                'Red',
+                style: TextStyle(
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.black54
+                      : Colors.white,
+                ),
+              ),
+              value: 'RED'),
+          DropdownMenuItem<String>(
+              child: Text(
+                'White',
+                style: TextStyle(
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.black54
+                      : Colors.white,
+                ),
+              ),
+              value: 'WHI'),
+          DropdownMenuItem<String>(
+              child: Text(
+                'Other',
+                style: TextStyle(
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.black54
+                      : Colors.white,
+                ),
+              ),
+              value: 'OTH'),
         ],
         onChanged: onChanged,
         hint: Text('Hair Color',

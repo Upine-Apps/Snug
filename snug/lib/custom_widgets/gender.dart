@@ -31,10 +31,26 @@ class Gender extends StatelessWidget {
         isExpanded: false,
         items: [
           DropdownMenuItem<String>(
-            child: Text('Female'),
+            child: Text(
+              'Female',
+              style: TextStyle(
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.black54
+                    : Colors.white,
+              ),
+            ),
             value: 'F',
           ),
-          DropdownMenuItem<String>(child: Text('Male'), value: 'M'),
+          DropdownMenuItem<String>(
+              child: Text(
+                'Male',
+                style: TextStyle(
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.black54
+                      : Colors.white,
+                ),
+              ),
+              value: 'M'),
         ],
         onChanged: onChanged,
         hint: Text(

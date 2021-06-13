@@ -33,16 +33,86 @@ class Eye extends StatelessWidget {
             isExpanded: false,
             items: [
               DropdownMenuItem<String>(
-                child: Text('Black'),
+                child: Text(
+                  'Black',
+                  style: TextStyle(
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.black54
+                        : Colors.white,
+                  ),
+                ),
                 value: 'BLK',
               ),
-              DropdownMenuItem<String>(child: Text('Blue'), value: 'BLU'),
-              DropdownMenuItem<String>(child: Text('Green'), value: 'GRN'),
-              DropdownMenuItem<String>(child: Text('Brown'), value: 'BRO'),
-              DropdownMenuItem<String>(child: Text('Pink'), value: 'PNK'),
-              DropdownMenuItem<String>(child: Text('Gray'), value: 'GRY'),
-              DropdownMenuItem<String>(child: Text('Hazel'), value: 'HZL'),
-              DropdownMenuItem<String>(child: Text('Other'), value: 'OTH'),
+              DropdownMenuItem<String>(
+                  child: Text(
+                    'Blue',
+                    style: TextStyle(
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.black54
+                          : Colors.white,
+                    ),
+                  ),
+                  value: 'BLU'),
+              DropdownMenuItem<String>(
+                  child: Text(
+                    'Green',
+                    style: TextStyle(
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.black54
+                          : Colors.white,
+                    ),
+                  ),
+                  value: 'GRN'),
+              DropdownMenuItem<String>(
+                  child: Text(
+                    'Brown',
+                    style: TextStyle(
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.black54
+                          : Colors.white,
+                    ),
+                  ),
+                  value: 'BRO'),
+              DropdownMenuItem<String>(
+                  child: Text(
+                    'Pink',
+                    style: TextStyle(
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.black54
+                          : Colors.white,
+                    ),
+                  ),
+                  value: 'PNK'),
+              DropdownMenuItem<String>(
+                  child: Text(
+                    'Gray',
+                    style: TextStyle(
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.black54
+                          : Colors.white,
+                    ),
+                  ),
+                  value: 'GRY'),
+              DropdownMenuItem<String>(
+                  child: Text(
+                    'Hazel',
+                    style: TextStyle(
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.black54
+                          : Colors.white,
+                    ),
+                  ),
+                  value: 'HZL'),
+              DropdownMenuItem<String>(
+                  child: Text(
+                    'Other',
+                    style: TextStyle(
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.black54
+                          : Colors.white,
+                    ),
+                  ),
+                  value: 'OTH'),
             ],
             onChanged: onChanged,
             hint: Text('Eye Color',

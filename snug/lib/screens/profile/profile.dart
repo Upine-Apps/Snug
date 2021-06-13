@@ -1,19 +1,24 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:snug/custom_widgets/CustomToast.dart';
 import 'package:snug/custom_widgets/customshowcase.dart';
 import 'package:snug/custom_widgets/raise_gradient_circular_button.dart';
 import 'package:snug/custom_widgets/topheader.dart';
 import 'package:snug/models/User.dart';
 import 'package:snug/providers/UserProvider.dart';
+import 'package:snug/screens/authenticate/authenticate.dart';
 import 'package:snug/screens/profile/profile_edit.dart';
+import 'package:snug/services/cognito/CognitoService.dart';
 import 'package:snug/services/conversion.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:showcaseview/showcaseview.dart';
+import 'package:snug/core/logger.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -21,25 +26,57 @@ class ProfilePage extends StatefulWidget {
 }
 
 class MapScreenState extends State<ProfilePage>
-    with AutomaticKeepAliveClientMixin {
+    with AutomaticKeepAliveClientMixin, WidgetsBindingObserver {
   TextEditingController _controller;
   final Conversion _conversion = Conversion();
+
   @override
   void initState() {
+    WidgetsBinding.instance.addObserver(this);
     _controller = new TextEditingController();
   }
 
-  _profileFirstLaunch() async {
-    SharedPreferences _profileTutorial = await SharedPreferences.getInstance();
-    if (_profileTutorial.getBool('profileTutorial') == null) {
-      _profileTutorial.setBool('profileTutorial', true);
-    }
-    return _profileTutorial.getBool('profileTutorial');
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   @override
   bool get wantKeepAlive => true;
   bool _status = true;
+  final log = getLogger('Profile');
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    // I think this will successfully refresh the user session
+    log.i("APP_STATE: $state");
+
+    if (state == AppLifecycleState.resumed) {
+      // user returned to our app
+      final prefs = await SharedPreferences.getInstance();
+      log.i('Current user auth token: ${prefs.getString('accessToken')}');
+      final _userProvider = Provider.of<UserProvider>(context, listen: false);
+      Map<String, dynamic> refreshResponse = await CognitoService.instance
+          .refreshAuth(
+              _userProvider.getCognitoUser, prefs.getString('refreshToken'));
+      if (refreshResponse['status'] == true) {
+        final prefs = await SharedPreferences.getInstance();
+        log.i('Successfully refreshed user session');
+        CognitoUserSession userSession = refreshResponse['data'];
+        _userProvider.setUserSession(userSession);
+        log.i('New user auth token: ${prefs.getString('accessToken')}');
+      } else {
+        log.e('Failed to refresh user session. Returning to home screen');
+        CustomToast.showDialog(
+            'Failed to refresh your session. Please sign in again', context);
+        await Future.delayed(Duration(seconds: 2), () {
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => Authenticate()));
+        });
+      }
+    }
+  }
 
   final FocusNode myFocusNode = FocusNode();
 
@@ -383,6 +420,9 @@ class MapScreenState extends State<ProfilePage>
                                 ),
                               ],
                             )),
+                        SizedBox(
+                          height: 5,
+                        ),
                         Divider(
                           indent: 25,
                           endIndent: 25,
@@ -457,11 +497,6 @@ class MapScreenState extends State<ProfilePage>
                                         "${currentUser.ft}' ${currentUser.inch}\""))
                               ],
                             )),
-                        Divider(
-                          indent: 25,
-                          endIndent: 25,
-                          color: Theme.of(context).hintColor,
-                        ),
 
                         SizedBox(
                           height: 5,

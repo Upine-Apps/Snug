@@ -1,5 +1,6 @@
 import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 import 'package:flutter/material.dart';
+import 'package:snug/custom_widgets/CustomToast.dart';
 import 'package:snug/custom_widgets/customshowcase.dart';
 import 'package:snug/custom_widgets/topheader.dart';
 import 'package:snug/providers/ContactProvider.dart';
@@ -13,24 +14,32 @@ import 'package:snug/themes/constants.dart';
 import 'package:snug/themes/themeNotifier.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:showcaseview/showcaseview.dart';
+import 'package:snug/core/logger.dart';
 
 class SettingScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _SettingState();
 }
 
-class _SettingState extends State<SettingScreen> {
+class _SettingState extends State<SettingScreen> with WidgetsBindingObserver {
   GlobalKey logOut = GlobalKey();
   int _selectedPosition = 0;
   var isDarkTheme;
   List themes = Constants.themes;
   SharedPreferences prefs;
   ThemeNotifier themeNotifier;
+  final log = getLogger('Settings');
 
   @override
   void initState() {
+    WidgetsBinding.instance.addObserver(this);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   _getSavedTheme() async {
@@ -39,6 +48,37 @@ class _SettingState extends State<SettingScreen> {
       _selectedPosition = themes.indexOf(
           prefs.getString(Constants.APP_THEME) ?? Constants.SYSTEM_DEFAULT);
     });
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    // I think this will successfully refresh the user session
+    log.i("APP_STATE: $state");
+
+    if (state == AppLifecycleState.resumed) {
+      // user returned to our app
+      final prefs = await SharedPreferences.getInstance();
+      log.i('Current user auth token: ${prefs.getString('accessToken')}');
+      final _userProvider = Provider.of<UserProvider>(context, listen: false);
+      Map<String, dynamic> refreshResponse = await CognitoService.instance
+          .refreshAuth(
+              _userProvider.getCognitoUser, prefs.getString('refreshToken'));
+      if (refreshResponse['status'] == true) {
+        final prefs = await SharedPreferences.getInstance();
+        log.i('Successfully refreshed user session');
+        CognitoUserSession userSession = refreshResponse['data'];
+        _userProvider.setUserSession(userSession);
+        log.i('New user auth token: ${prefs.getString('accessToken')}');
+      } else {
+        log.e('Failed to refresh user session. Returning to home screen');
+        CustomToast.showDialog(
+            'Failed to refresh your session. Please sign in again', context);
+        await Future.delayed(Duration(seconds: 2), () {
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => Authenticate()));
+        });
+      }
+    }
   }
 
   @override

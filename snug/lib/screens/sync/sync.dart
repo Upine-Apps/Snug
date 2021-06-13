@@ -47,16 +47,18 @@ class _SyncScreenState extends State<SyncScreen> {
     setState(() {
       _loadingMessage = 'Loading your trusted contacts';
     });
-    var contactResponse =
-        await syncContact(userResponse['trusted_contacts'], context);
-    if (contactResponse['status'] == true) {
-      log.i('Successfully synced trusted contacts');
-    } else {
-      //toast user that we couldn't sync their contacts
-      log.w('Failed to sync trusted contacts. Try again');
-      failedASync = true;
+    if (userResponse['trusted_contacts'] != null) {
+      var contactResponse =
+          await syncContact(userResponse['trusted_contacts'], context);
+      if (contactResponse['status'] == true) {
+        log.i('Successfully synced trusted contacts');
+      } else {
+        //toast user that we couldn't sync their contacts
+        log.w('Failed to sync trusted contacts. Try again');
+        failedASync = true;
 
-      //SHOULD WE TELL THE USER THAT THEY CAN JUST REMAKE THEIR CONTACTS???
+        //SHOULD WE TELL THE USER THAT THEY CAN JUST REMAKE THEIR CONTACTS???
+      }
     }
     setState(() {
       _loadingMessage = 'Loading your current dates';

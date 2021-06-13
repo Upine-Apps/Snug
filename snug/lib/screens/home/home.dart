@@ -30,7 +30,7 @@ class Home extends StatefulWidget {
   _HomeState createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> {
+class _HomeState extends State<Home> with WidgetsBindingObserver {
   String msg;
 
   String _date = "Not set";
@@ -38,27 +38,35 @@ class _HomeState extends State<Home> {
   String _who;
   @override
   void initState() {
+    WidgetsBinding.instance.addObserver(this);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     // I think this will successfully refresh the user session
-    print("APP_STATE: $state");
+    log.i("APP_STATE: $state");
 
     if (state == AppLifecycleState.resumed) {
       // user returned to our app
       final prefs = await SharedPreferences.getInstance();
-      log.i('Current user auth token: ${prefs.getString('authToken')}');
-      final _userProvider = Provider.of<UserProvider>(context, listen: true);
+      log.i('Current user auth token: ${prefs.getString('accessToken')}');
+      final _userProvider = Provider.of<UserProvider>(context, listen: false);
       Map<String, dynamic> refreshResponse = await CognitoService.instance
           .refreshAuth(
               _userProvider.getCognitoUser, prefs.getString('refreshToken'));
       if (refreshResponse['status'] == true) {
+        final prefs = await SharedPreferences.getInstance();
         log.i('Successfully refreshed user session');
         CognitoUserSession userSession = refreshResponse['data'];
         _userProvider.setUserSession(userSession);
-        log.i('New user auth token: ${prefs.getString('authToken')}');
+        log.i('New user auth token: ${prefs.getString('accessToken')}');
       } else {
         log.e('Failed to refresh user session. Returning to home screen');
         CustomToast.showDialog(

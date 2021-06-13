@@ -163,18 +163,24 @@ class _RegisterState extends State<Register> {
                                     ),
                                     Row(
                                       mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                          MainAxisAlignment.start,
                                       children: <Widget>[
                                         SizedBox(
-                                          width: 20,
+                                          width: 25,
                                         ),
+                                        Checkbox(
+                                            value: this.checkPrivacyPolicy,
+                                            onChanged: (bool value) {
+                                              setState(() {
+                                                this.checkPrivacyPolicy = value;
+                                              });
+                                            }),
                                         ParsedText(
                                             selectable: false,
                                             alignment: TextAlign.start,
                                             style:
                                                 TextStyle(color: Colors.black),
-                                            text:
-                                                "You agree to Snug's Privacy Policy",
+                                            text: "Agree to our Privacy Policy",
                                             parse: <MatchText>[
                                               MatchText(
                                                 type: ParsedType.CUSTOM,
@@ -202,33 +208,38 @@ class _RegisterState extends State<Register> {
                                                   }
                                                 },
                                               ),
-                                            ]),
-                                        Checkbox(
-                                            value: this.checkPrivacyPolicy,
-                                            onChanged: (bool value) {
-                                              setState(() {
-                                                this.checkPrivacyPolicy = value;
-                                              });
-                                            })
+                                            ])
                                       ],
                                     ),
                                     Row(
                                       mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                          MainAxisAlignment.start,
                                       children: <Widget>[
                                         SizedBox(
-                                          width: 50,
+                                          width: 25,
                                         ),
+                                        Checkbox(
+                                            // checkColor: Theme.of(context)
+                                            //     .colorScheme
+                                            //     .secondaryVariant,
+                                            value: this.checkEULA,
+                                            onChanged: (bool value) {
+                                              setState(() {
+                                                this.checkEULA = value;
+                                              });
+                                            }),
                                         ParsedText(
                                             selectable: false,
                                             alignment: TextAlign.start,
                                             style:
                                                 TextStyle(color: Colors.black),
-                                            text: "You agree to Snug's EULA",
+                                            text:
+                                                "Agree to our Terms and Conditions",
                                             parse: <MatchText>[
                                               MatchText(
                                                 type: ParsedType.CUSTOM,
-                                                pattern: r"EULA",
+                                                pattern:
+                                                    r"Terms and Conditions",
                                                 style: TextStyle(
                                                     color: Theme.of(context)
                                                         .colorScheme
@@ -252,16 +263,6 @@ class _RegisterState extends State<Register> {
                                                 },
                                               ),
                                             ]),
-                                        Checkbox(
-                                            // checkColor: Theme.of(context)
-                                            //     .colorScheme
-                                            //     .secondaryVariant,
-                                            value: this.checkEULA,
-                                            onChanged: (bool value) {
-                                              setState(() {
-                                                this.checkEULA = value;
-                                              });
-                                            })
                                       ],
                                     ),
                                     SizedBox(
