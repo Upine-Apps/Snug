@@ -21,6 +21,7 @@ import 'package:snug/services/conversion.dart';
 import 'package:snug/services/remote_db_service.dart';
 import 'package:provider/provider.dart';
 import 'package:snug/custom_widgets/header_with_back_button.dart';
+import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class DetailDate extends StatefulWidget {
@@ -881,7 +882,8 @@ class _DetailDateState extends State<DetailDate> {
                                           'Failed to cancel date. Caught exception: $e');
                                       CustomToast.showDialog(
                                           'Failed to cancel date. Please try again later $somethingWentWrong',
-                                          context);
+                                          context,
+                                          Toast.BOTTOM);
                                     }
                                   } else {
                                     try {
@@ -906,7 +908,8 @@ class _DetailDateState extends State<DetailDate> {
                                           'Failed to mark date safe. Caught exception: $e');
                                       CustomToast.showDialog(
                                           'Failed to mark date safe. Please try again later $somethingWentWrong',
-                                          context);
+                                          context,
+                                          Toast.BOTTOM);
                                     }
                                   }
 

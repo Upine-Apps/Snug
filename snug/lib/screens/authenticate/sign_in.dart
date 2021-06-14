@@ -257,7 +257,9 @@ class _SignInState extends State<SignIn> {
                                               //toast to let them know there was an error getting their user_id
                                               //wait one second
                                               CustomToast.showDialog(
-                                                  'No userId found', context);
+                                                  'No userId found',
+                                                  context,
+                                                  Toast.BOTTOM);
                                               log.e("Code | $e");
                                             }
                                           } else if (result['status'] ==
@@ -279,7 +281,8 @@ class _SignInState extends State<SignIn> {
                                             } else {
                                               CustomToast.showDialog(
                                                   'Something went wrong',
-                                                  context);
+                                                  context,
+                                                  Toast.BOTTOM);
                                             }
                                           }
                                         } on CognitoUserNewPasswordRequiredException catch (e) {

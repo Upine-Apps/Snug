@@ -12,6 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:emojis/emojis.dart';
 import 'package:emojis/emoji.dart';
+import 'package:toast/toast.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_parsed_text/flutter_parsed_text.dart';
@@ -204,7 +205,8 @@ class _RegisterState extends State<Register> {
                                                   } catch (e) {
                                                     CustomToast.showDialog(
                                                         'Failed to open privacy policy. Please try again later.',
-                                                        context);
+                                                        context,
+                                                        Toast.BOTTOM);
                                                   }
                                                 },
                                               ),
@@ -258,7 +260,8 @@ class _RegisterState extends State<Register> {
                                                   } catch (e) {
                                                     CustomToast.showDialog(
                                                         'Failed to open EULA. Please try again later.',
-                                                        context);
+                                                        context,
+                                                        Toast.BOTTOM);
                                                   }
                                                 },
                                               ),
@@ -289,12 +292,14 @@ class _RegisterState extends State<Register> {
                                                     'ERROR') {
                                                   CustomToast.showDialog(
                                                       'Something went wrong, please try again. $somethingWentWrong',
-                                                      context);
+                                                      context,
+                                                      Toast.BOTTOM);
                                                 } else if (result['message'] ==
                                                     'REGISTRATION_FAILED') {
                                                   CustomToast.showDialog(
                                                       'Registration failed, please try again later. $somethingWentWrong',
-                                                      context);
+                                                      context,
+                                                      Toast.BOTTOM);
                                                   //toast to say registration failed and give reason
                                                   //LOOK INTO THE POSSIBLE REASONS AND RETURN FROM THE COGNITO SERVICE CLASS
                                                 }
@@ -324,7 +329,8 @@ class _RegisterState extends State<Register> {
                                           } else {
                                             CustomToast.showDialog(
                                                 'You must accept the privacy policy and the EULA to use the Snug app',
-                                                context);
+                                                context,
+                                                Toast.BOTTOM);
                                           }
                                         }
                                       },

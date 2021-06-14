@@ -26,6 +26,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:emojis/emojis.dart';
 import 'package:emojis/emoji.dart';
+import 'package:toast/toast.dart';
 
 class Profile extends StatefulWidget {
   final Function toggleView;
@@ -385,7 +386,9 @@ class _ProfileState extends State<Profile> {
 
                               if (_dob == 'Date of Birth') {
                                 CustomToast.showDialog(
-                                    'Please enter your date of birth', context);
+                                    'Please enter your date of birth',
+                                    context,
+                                    Toast.BOTTOM);
                               } else if (_formKey.currentState.validate()) {
                                 log.i('convertHeight | _ft: $_ft _in: $_in');
                                 // Convert height into a total of inches for data base.
@@ -424,7 +427,7 @@ class _ProfileState extends State<Profile> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                                Walkthrough()),
+                                                Walkthrough(isFirst: true,)),
                                       );
                                     } else {
                                       throw AddUserAttributeException(
@@ -439,7 +442,8 @@ class _ProfileState extends State<Profile> {
                                       'Failed to add user profile. Error: $e');
                                   CustomToast.showDialog(
                                       'Looks like we ran into an error. Please try again later! $somethingWentWrong',
-                                      context);
+                                      context,
+                                      Toast.BOTTOM);
                                 }
                               }
                             },

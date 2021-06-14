@@ -20,6 +20,7 @@ import 'package:showcaseview/showcaseview.dart';
 
 import 'package:provider/provider.dart';
 import 'package:snug/services/cognito/CognitoService.dart';
+import 'package:toast/toast.dart';
 
 import 'adddate.dart';
 
@@ -70,7 +71,9 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       } else {
         log.e('Failed to refresh user session. Returning to home screen');
         CustomToast.showDialog(
-            'Failed to refresh your session. Please sign in again', context);
+            'Failed to refresh your session. Please sign in again',
+            context,
+            Toast.CENTER);
         await Future.delayed(Duration(seconds: 2), () {
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => Authenticate()));
@@ -581,7 +584,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
               CustomToast.showDialog(
                   'Please add at least one contact before creating a date',
-                  context);
+                  context,
+                  Toast.CENTER);
             } else {
               Navigator.push(
                   context, MaterialPageRoute(builder: (context) => AddDate()));

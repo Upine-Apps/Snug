@@ -16,6 +16,7 @@ import 'package:snug/themes/themeNotifier.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:snug/core/logger.dart';
+import 'package:toast/toast.dart';
 
 class SettingScreen extends StatefulWidget {
   @override
@@ -76,7 +77,9 @@ class _SettingState extends State<SettingScreen> with WidgetsBindingObserver {
       } else {
         log.e('Failed to refresh user session. Returning to home screen');
         CustomToast.showDialog(
-            'Failed to refresh your session. Please sign in again', context);
+            'Failed to refresh your session. Please sign in again',
+            context,
+            Toast.CENTER);
         await Future.delayed(Duration(seconds: 2), () {
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => Authenticate()));
@@ -213,7 +216,9 @@ class _SettingState extends State<SettingScreen> with WidgetsBindingObserver {
                           onPressed: () async => Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => Walkthrough()),
+                                    builder: (context) => Walkthrough(
+                                          isFirst: false,
+                                        )),
                               ),
                           child: Container(
                               width: MediaQuery.of(context).size.width * .40,

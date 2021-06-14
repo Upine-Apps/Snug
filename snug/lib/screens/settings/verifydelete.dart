@@ -10,6 +10,7 @@ import 'package:snug/providers/UserProvider.dart';
 import 'package:snug/screens/authenticate/authenticate.dart';
 import 'package:snug/services/cognito/CognitoService.dart';
 import 'package:snug/services/remote_db_service.dart';
+import 'package:toast/toast.dart';
 
 class VerifyDelete extends StatefulWidget {
   @override
@@ -58,7 +59,9 @@ class _VerifyDeleteState extends State<VerifyDelete> {
                       prefs.clear();
 
                       CustomToast.showDialog(
-                          'Thanks for using Snug! See ya later.', context);
+                          'Thanks for using Snug! See ya later.',
+                          context,
+                          Toast.BOTTOM);
                       await Future.delayed(Duration(seconds: 2), () {
                         Navigator.pushReplacement(
                           context,
@@ -77,7 +80,9 @@ class _VerifyDeleteState extends State<VerifyDelete> {
                 }
               } catch (e) {
                 CustomToast.showDialog(
-                    'Failed to delete account, please try again.', context);
+                    'Failed to delete account, please try again.',
+                    context,
+                    Toast.BOTTOM);
                 await Future.delayed(Duration(seconds: 2), () {
                   Navigator.of(context).pop(false);
                 });

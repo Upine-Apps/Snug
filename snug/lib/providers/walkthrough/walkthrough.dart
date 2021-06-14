@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:snug/screens/navigation/MainPage.dart';
 import 'package:snug/screens/sync/sync.dart';
 
 class Walkthrough extends StatefulWidget {
+  final bool isFirst;
+
+  Walkthrough({this.isFirst});
+
   @override
   _WalkthroughState createState() => _WalkthroughState();
 }
@@ -57,11 +62,15 @@ class _WalkthroughState extends State<Walkthrough> {
                       alignment: Alignment.centerRight,
                       child: FlatButton(
                         onPressed: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => SyncScreen()),
-                          );
+                          if (widget.isFirst == true) {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => MainPage()),
+                            );
+                          } else {
+                            Navigator.of(context).pop();
+                          }
                         },
                         child: Text(
                           'Skip',
@@ -404,10 +413,14 @@ class _WalkthroughState extends State<Walkthrough> {
                 color: Colors.white,
                 child: GestureDetector(
                   onTap: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => SyncScreen()),
-                    );
+                    if (widget.isFirst == true) {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => SyncScreen()),
+                      );
+                    } else {
+                      Navigator.of(context).pop();
+                    }
                   },
                   child: Center(
                     child: Text(
