@@ -1,11 +1,30 @@
+import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 import 'package:flutter/material.dart';
 import 'package:snug/models/User.dart';
 
 class UserProvider extends ChangeNotifier {
   User _user = new User();
+  CognitoUserSession _userSession;
+  CognitoUser _cognitoUser;
 
   User get getUser {
     return _user;
+  }
+
+  CognitoUserSession get getUserSession {
+    return _userSession;
+  }
+
+  CognitoUser get getCognitoUser {
+    return _cognitoUser;
+  }
+
+  setCognitoUser(CognitoUser curCognitoUser) {
+    _cognitoUser = curCognitoUser;
+  }
+
+  setUserSession(CognitoUserSession curSession) {
+    _userSession = curSession;
   }
 
   editUser(User tempUser) {
@@ -21,6 +40,11 @@ class UserProvider extends ChangeNotifier {
 
     }
     _user = User.fromMap(curUser);
+    notifyListeners();
+  }
+
+  removeUser() {
+    _user = User();
     notifyListeners();
   }
 }

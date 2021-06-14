@@ -29,13 +29,76 @@ class Feet extends StatelessWidget {
         isDense: false,
         isExpanded: false,
         items: [
-          DropdownMenuItem<String>(child: Text('2'), value: '2'),
-          DropdownMenuItem<String>(child: Text('3'), value: '3'),
-          DropdownMenuItem<String>(child: Text('4'), value: '4'),
-          DropdownMenuItem<String>(child: Text('5'), value: '5'),
-          DropdownMenuItem<String>(child: Text('6'), value: '6'),
-          DropdownMenuItem<String>(child: Text('7'), value: '7'),
-          DropdownMenuItem<String>(child: Text('8'), value: '8'),
+          DropdownMenuItem<String>(
+              child: Text(
+                '2',
+                style: TextStyle(
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.black54
+                      : Colors.white,
+                ),
+              ),
+              value: '2'),
+          DropdownMenuItem<String>(
+              child: Text(
+                '3',
+                style: TextStyle(
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.black54
+                      : Colors.white,
+                ),
+              ),
+              value: '3'),
+          DropdownMenuItem<String>(
+              child: Text(
+                '4',
+                style: TextStyle(
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.black54
+                      : Colors.white,
+                ),
+              ),
+              value: '4'),
+          DropdownMenuItem<String>(
+              child: Text(
+                '5',
+                style: TextStyle(
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.black54
+                      : Colors.white,
+                ),
+              ),
+              value: '5'),
+          DropdownMenuItem<String>(
+              child: Text(
+                '6',
+                style: TextStyle(
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.black54
+                      : Colors.white,
+                ),
+              ),
+              value: '6'),
+          DropdownMenuItem<String>(
+              child: Text(
+                '7',
+                style: TextStyle(
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.black54
+                      : Colors.white,
+                ),
+              ),
+              value: '7'),
+          DropdownMenuItem<String>(
+              child: Text(
+                '8',
+                style: TextStyle(
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.black54
+                      : Colors.white,
+                ),
+              ),
+              value: '8'),
         ],
         onChanged: onChanged,
         hint: Text('Feet',

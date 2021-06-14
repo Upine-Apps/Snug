@@ -7,7 +7,6 @@ import 'package:snug/core/logger.dart';
 import 'package:snug/custom_widgets/CustomToast.dart';
 import 'package:snug/custom_widgets/eye.dart';
 import 'package:snug/custom_widgets/feet.dart';
-import 'package:snug/custom_widgets/fifty_states.dart';
 import 'package:snug/custom_widgets/gender.dart';
 import 'package:snug/custom_widgets/hair.dart';
 import 'package:snug/custom_widgets/inch.dart';
@@ -17,6 +16,7 @@ import 'package:snug/custom_widgets/raised_rounded_gradient_button.dart';
 import 'package:snug/custom_widgets/topheader.dart';
 import 'package:snug/models/User.dart';
 import 'package:snug/providers/UserProvider.dart';
+import 'package:snug/providers/walkthrough/walkthrough.dart';
 
 import 'package:snug/screens/sync/sync.dart';
 import 'package:snug/services/cognito/CognitoService.dart';
@@ -70,10 +70,6 @@ class _ProfileState extends State<Profile> {
   String _day;
   String _year;
   String _dob = 'Date of Birth';
-  String _address;
-  String _state;
-  String _city;
-  String _street;
   String _zip;
 
   final log = getLogger('CreateProfile');
@@ -129,7 +125,8 @@ class _ProfileState extends State<Profile> {
                               }
                             },
                             onEditingComplete: () => node.nextFocus(),
-                            style: TextStyle(color: Colors.white),
+                            style:
+                                TextStyle(color: Theme.of(context).hintColor),
                             controller: _controller,
                             decoration: InputDecoration(
                                 errorStyle: TextStyle(
@@ -147,7 +144,7 @@ class _ProfileState extends State<Profile> {
                             },
                           ),
                           SizedBox(
-                            height: 20.0,
+                            height: 10.0,
                           ),
                           TextFormField(
                             validator: (String val) {
@@ -176,120 +173,7 @@ class _ProfileState extends State<Profile> {
                             },
                           ),
                           SizedBox(
-                            height: 20.0,
-                          ),
-                          TextFormField(
-                            validator: (String val) {
-                              if (val.length == 0) {
-                                return "What's your street address?";
-                              }
-                            },
-                            onEditingComplete: () => node.nextFocus(),
-                            style:
-                                TextStyle(color: Theme.of(context).hintColor),
-                            decoration: InputDecoration(
-                                errorStyle: TextStyle(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .secondaryVariant),
-                                enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Theme.of(context).primaryColor)),
-                                labelText: 'Street Address'),
-                            onChanged: (val) {
-                              log.i('setStreet | $val');
-                              tempUser.street = val;
-                              setState(() => _street = val);
-                            },
-                          ),
-                          SizedBox(
-                            height: 20.0,
-                          ),
-                          Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              mainAxisSize: MainAxisSize.max,
-                              children: <Widget>[
-                                Container(
-                                  width: MediaQuery.of(context).size.width *
-                                      (.9 / 2),
-                                  child: TextFormField(
-                                    validator: (String val) {
-                                      if (val.length == 0) {
-                                        return "What city do you live in?";
-                                      }
-                                    },
-                                    onEditingComplete: () => node.nextFocus(),
-                                    style: TextStyle(
-                                        color: Theme.of(context).hintColor),
-                                    decoration: InputDecoration(
-                                        errorStyle: TextStyle(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .secondaryVariant),
-                                        enabledBorder: UnderlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Theme.of(context)
-                                                    .primaryColor)),
-                                        labelText: 'City'),
-                                    onChanged: (val) {
-                                      log.i('setCity | $val');
-                                      tempUser.city = val;
-                                      setState(() => _city = val);
-                                    },
-                                  ),
-                                ),
-                                Container(
-                                  width: MediaQuery.of(context).size.width *
-                                      (.9 / 2),
-                                  child: TextFormField(
-                                    keyboardType: TextInputType.number,
-                                    validator: (String val) {
-                                      if (val.length != 5) {
-                                        return "Please enter a valid zip code";
-                                      } else if (val.length == 0) {
-                                        return "What's your zip code?";
-                                      }
-                                    },
-                                    inputFormatters: [
-                                      FilteringTextInputFormatter.allow(
-                                          RegExp('[0-9]+')),
-                                    ],
-                                    style: TextStyle(
-                                        color: Theme.of(context).hintColor),
-                                    decoration: InputDecoration(
-                                        errorStyle: TextStyle(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .secondaryVariant),
-                                        enabledBorder: UnderlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Theme.of(context)
-                                                    .primaryColor)),
-                                        labelText: 'Zip'),
-                                    onChanged: (val) {
-                                      log.i('setZip | $val');
-                                      tempUser.zip = val;
-                                      setState(() => _zip = val);
-                                    },
-                                  ),
-                                )
-                              ]),
-                          FiftyStates(
-                              validator: (val) {
-                                if (val == null) {
-                                  return "Please choose a state.";
-                                }
-                              },
-                              onChanged: (String val) {
-                                log.i('setState | $val');
-                                tempUser.state = val;
-                                setState(() {
-                                  _state = val;
-                                });
-                              },
-                              value: _state),
-                          SizedBox(
-                            height: 20.0,
+                            height: 30.0,
                           ),
                           GestureDetector(
                             behavior: HitTestBehavior.opaque,
@@ -325,14 +209,11 @@ class _ProfileState extends State<Profile> {
                             ),
                           ),
                           SizedBox(
-                            height: 15.0,
+                            height: 20.0,
                           ),
                           Divider(
                               thickness: 1,
                               color: Theme.of(context).primaryColor),
-                          SizedBox(
-                            height: 15.0,
-                          ),
                           Gender(
                             validator: (val) {
                               if (val == null) {
@@ -347,9 +228,6 @@ class _ProfileState extends State<Profile> {
                               });
                             },
                             value: _sex,
-                          ),
-                          SizedBox(
-                            height: 20.0,
                           ),
                           Race(
                             validator: (val) {
@@ -366,9 +244,6 @@ class _ProfileState extends State<Profile> {
                             },
                             value: _race,
                           ),
-                          SizedBox(
-                            height: 20.0,
-                          ),
                           Eye(
                             validator: (val) {
                               if (val == null) {
@@ -383,9 +258,6 @@ class _ProfileState extends State<Profile> {
                               });
                             },
                             value: _eye,
-                          ),
-                          SizedBox(
-                            height: 20.0,
                           ),
                           Hair(
                             validator: (val) {
@@ -403,11 +275,14 @@ class _ProfileState extends State<Profile> {
                             value: _hair,
                           ),
                           SizedBox(
-                            height: 20.0,
+                            height: 25.0,
                           ),
                           Text(
-                            'Height',
-                            style: TextStyle(fontSize: 16),
+                            'Height:',
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Theme.of(context).hintColor,
+                            ),
                           ),
                           Row(
                             mainAxisSize: MainAxisSize.max,
@@ -454,6 +329,49 @@ class _ProfileState extends State<Profile> {
                           SizedBox(
                             height: 20.0,
                           ),
+                          Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisSize: MainAxisSize.max,
+                              children: <Widget>[
+                                Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * (.9),
+                                  child: TextFormField(
+                                    keyboardType: TextInputType.number,
+                                    validator: (String val) {
+                                      if (val.length != 5) {
+                                        return "Please enter a valid zip code";
+                                      } else if (val.length == 0) {
+                                        return "What's your zip code?";
+                                      }
+                                    },
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.allow(
+                                          RegExp('[0-9]+')),
+                                    ],
+                                    style: TextStyle(
+                                        color: Theme.of(context).hintColor),
+                                    decoration: InputDecoration(
+                                        errorStyle: TextStyle(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .secondaryVariant),
+                                        enabledBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Theme.of(context)
+                                                    .primaryColor)),
+                                        labelText: 'Zip Code'),
+                                    onChanged: (val) {
+                                      log.i('setZip | $val');
+                                      tempUser.zip = val;
+                                      setState(() => _zip = val);
+                                    },
+                                  ),
+                                )
+                              ]),
+                          SizedBox(
+                            height: 25.0,
+                          ),
                           RaisedRoundedGradientButton(
                             width: MediaQuery.of(context).size.width * .25,
                             child: Text(
@@ -481,6 +399,7 @@ class _ProfileState extends State<Profile> {
                                 // tempUser.phone_number = '1111111111';
                                 tempUser.temp = 'false';
                                 tempUser.phone_number = widget.phonenumber;
+                                tempUser.legal = 'true';
                                 //UNCOMMENT THIS WHEN DONE TESTING ^^^^^
                                 try {
                                   dynamic result = await RemoteDatabaseHelper
@@ -504,7 +423,8 @@ class _ProfileState extends State<Profile> {
                                       Navigator.pushReplacement(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) => SyncScreen()),
+                                            builder: (context) =>
+                                                Walkthrough()),
                                       );
                                     } else {
                                       throw AddUserAttributeException(

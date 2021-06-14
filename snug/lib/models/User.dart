@@ -9,12 +9,10 @@ class User {
       hair,
       ft,
       inch,
-      street,
-      city,
-      state,
       zip,
       phone_number,
       temp,
+      legal,
       uid;
   User({
     this.uid,
@@ -28,12 +26,10 @@ class User {
     this.hair,
     this.ft,
     this.inch,
-    this.street,
-    this.city,
-    this.state,
     this.zip,
     this.phone_number,
     this.temp,
+    this.legal,
   });
 
   Map<String, dynamic> toMapWithId() {
@@ -47,13 +43,11 @@ class User {
     map['hair'] = hair;
     map['ft'] = ft;
     map['inch'] = inch;
-    map['street'] = street;
-    map['city'] = city;
-    map['state'] = state;
     map['zip'] = zip;
     map['user_id'] = uid;
     map['phone_number'] = phone_number;
     map['temporary'] = temp;
+    map['legal'] = legal;
     return map;
   }
 
@@ -68,12 +62,10 @@ class User {
     map['hair'] = hair;
     map['ft'] = ft;
     map['inch'] = inch;
-    map['street'] = street;
-    map['city'] = city;
-    map['state'] = state;
     map['zip'] = zip;
     map['phone_number'] = phone_number;
     map['temporary'] = temp;
+    map['legal'] = legal;
     return map;
   }
 
@@ -87,11 +79,9 @@ class User {
       hair: data['hair'],
       ft: data['ft'].toString(),
       inch: data['inch'].toString(),
-      street: data['street'],
-      city: data['city'],
-      state: data['state'],
       zip: data['zip'],
       uid: data['user_id'].toString(),
       phone_number: data['phone_number'].toString(),
-      temp: data['temporary'].toString());
+      temp: data['temporary'].toString(),
+      legal: data['legal'].toString());
 }

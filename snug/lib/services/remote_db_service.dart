@@ -7,6 +7,8 @@ import 'package:snug/core/errors/AddUserException.dart';
 import 'package:snug/core/errors/ContactException.dart';
 import 'package:snug/core/errors/DateNotFoundException.dart';
 import 'package:snug/core/errors/DatesNotFoundException.dart';
+import 'package:snug/core/errors/DeleteUserDatesException.dart';
+import 'package:snug/core/errors/DeleteUserException.dart';
 import 'package:snug/core/errors/GetUserException.dart';
 import 'package:snug/core/logger.dart';
 import 'package:snug/models/Contact.dart';
@@ -153,6 +155,48 @@ class RemoteDatabaseHelper {
     }
   }
 
+  Future deleteUserDates(String userId) async {
+    log.i('deleteUserDates | userId: $userId');
+    final urlDeleteUser = '$_hostUrl/users/$userId';
+    var _headers = await getHeaders();
+    try {
+      var responseDeleteUserDates =
+          await http.delete(Uri.encodeFull(urlDeleteUser), headers: _headers);
+      var extractData = json.decode(responseDeleteUserDates.body);
+      if (extractData['status'] == true) {
+        log.i('deleteUserDates succeeded!');
+
+        return {'status': true};
+      } else {
+        throw DeleteUserDatesException('Error deleting user dates.');
+      }
+    } catch (e) {
+      log.e('Failed to delete user dates. Caught exception $e');
+      return {'status': false};
+    }
+  }
+
+  Future deleteUser(String userId) async {
+    log.i('deleteUser | userId: $userId');
+    final urlDeleteUser = '$_hostUrl/users/$userId';
+    var _headers = await getHeaders();
+    try {
+      var responseDeleteUser =
+          await http.delete(Uri.encodeFull(urlDeleteUser), headers: _headers);
+      var extractData = json.decode(responseDeleteUser.body);
+      if (extractData['status'] == true) {
+        log.i('deleteUser succeeded!');
+
+        return {'status': true};
+      } else {
+        throw DeleteUserException('Error deleting user.');
+      }
+    } catch (e) {
+      log.e('Failed to delete user. Caught exception $e');
+      return {'status': false};
+    }
+  }
+
 /*
 Pull user's trusted contacts from remote and update their local trusted contacts
 This is only to be used when they first download the application
@@ -268,8 +312,8 @@ This is only to be used when they first download the application
     }
   }
 
-  Future deleteDate(String dateId) async {
-    log.i('deleteDate | dateId: $dateId');
+  Future cancelDate(String dateId) async {
+    log.i('cancelDate | dateId: $dateId');
     final urlCancelDate = '$_hostUrl/dates/cancel/$dateId';
     var _headers = await getHeaders();
     try {

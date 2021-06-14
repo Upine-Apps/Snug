@@ -1,19 +1,24 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:snug/custom_widgets/CustomToast.dart';
 import 'package:snug/custom_widgets/customshowcase.dart';
 import 'package:snug/custom_widgets/raise_gradient_circular_button.dart';
 import 'package:snug/custom_widgets/topheader.dart';
 import 'package:snug/models/User.dart';
 import 'package:snug/providers/UserProvider.dart';
+import 'package:snug/screens/authenticate/authenticate.dart';
 import 'package:snug/screens/profile/profile_edit.dart';
+import 'package:snug/services/cognito/CognitoService.dart';
 import 'package:snug/services/conversion.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:showcaseview/showcaseview.dart';
+import 'package:snug/core/logger.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -21,35 +26,57 @@ class ProfilePage extends StatefulWidget {
 }
 
 class MapScreenState extends State<ProfilePage>
-    with AutomaticKeepAliveClientMixin {
-  GlobalKey profileEdit = GlobalKey();
-  GlobalKey changePic = GlobalKey();
+    with AutomaticKeepAliveClientMixin, WidgetsBindingObserver {
   TextEditingController _controller;
   final Conversion _conversion = Conversion();
+
   @override
   void initState() {
+    WidgetsBinding.instance.addObserver(this);
     _controller = new TextEditingController();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _profileFirstLaunch().then((result) {
-        if (result) {
-          ShowCaseWidget.of(context).startShowCase([changePic, profileEdit]);
-        }
-      });
-    });
   }
 
-  _profileFirstLaunch() async {
-    SharedPreferences _profileTutorial = await SharedPreferences.getInstance();
-    if (_profileTutorial.getBool('profileTutorial') == null) {
-      _profileTutorial.setBool('profileTutorial', true);
-    }
-    return _profileTutorial.getBool('profileTutorial');
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   @override
   bool get wantKeepAlive => true;
   bool _status = true;
+  final log = getLogger('Profile');
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    // I think this will successfully refresh the user session
+    log.i("APP_STATE: $state");
+
+    if (state == AppLifecycleState.resumed) {
+      // user returned to our app
+      final prefs = await SharedPreferences.getInstance();
+      log.i('Current user auth token: ${prefs.getString('accessToken')}');
+      final _userProvider = Provider.of<UserProvider>(context, listen: false);
+      Map<String, dynamic> refreshResponse = await CognitoService.instance
+          .refreshAuth(
+              _userProvider.getCognitoUser, prefs.getString('refreshToken'));
+      if (refreshResponse['status'] == true) {
+        final prefs = await SharedPreferences.getInstance();
+        log.i('Successfully refreshed user session');
+        CognitoUserSession userSession = refreshResponse['data'];
+        _userProvider.setUserSession(userSession);
+        log.i('New user auth token: ${prefs.getString('accessToken')}');
+      } else {
+        log.e('Failed to refresh user session. Returning to home screen');
+        CustomToast.showDialog(
+            'Failed to refresh your session. Please sign in again', context);
+        await Future.delayed(Duration(seconds: 2), () {
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => Authenticate()));
+        });
+      }
+    }
+  }
 
   final FocusNode myFocusNode = FocusNode();
 
@@ -160,20 +187,16 @@ class MapScreenState extends State<ProfilePage>
                                     GestureDetector(
                                         //CHECK TO SEE IF THIS FUNCTIONS WORKS ON A REAL MOBILE
                                         onTap: getImage,
-                                        child: CustomShowCase(
-                                            globalKey: changePic,
-                                            description:
-                                                'Add your profile pic here!',
-                                            child: CircleAvatar(
-                                              backgroundColor: Theme.of(context)
-                                                  .colorScheme
-                                                  .primaryVariant,
-                                              radius: 25.0,
-                                              child: new Icon(
-                                                Icons.camera_alt,
-                                                color: Colors.white,
-                                              ),
-                                            )))
+                                        child: CircleAvatar(
+                                          backgroundColor: Theme.of(context)
+                                              .colorScheme
+                                              .primaryVariant,
+                                          radius: 25.0,
+                                          child: new Icon(
+                                            Icons.camera_alt,
+                                            color: Colors.white,
+                                          ),
+                                        ))
                                   ],
                                 )),
                           ]),
@@ -206,27 +229,22 @@ class MapScreenState extends State<ProfilePage>
                                 Container(
                                     width:
                                         MediaQuery.of(context).size.width / 8,
-                                    child: CustomShowCase(
-                                        globalKey: profileEdit,
-                                        description:
-                                            'Edit your profile if something changed',
-                                        child: RaisedCircularGradientButton(
-                                            child: Icon(
-                                              Icons.edit,
-                                              color: Colors.white,
-                                            ),
-                                            onPressed: () async {
-                                              SharedPreferences profile =
-                                                  await SharedPreferences
-                                                      .getInstance();
+                                    child: RaisedCircularGradientButton(
+                                        child: Icon(
+                                          Icons.edit,
+                                          color: Colors.white,
+                                        ),
+                                        onPressed: () async {
+                                          SharedPreferences profile =
+                                              await SharedPreferences
+                                                  .getInstance();
 
-                                              showDialog(
-                                                  context: context,
-                                                  builder:
-                                                      (BuildContext context) {
-                                                    return ProfileEdit();
-                                                  });
-                                            })))
+                                          showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return ProfileEdit();
+                                              });
+                                        }))
                               ],
                             )),
                         Padding(
@@ -402,6 +420,9 @@ class MapScreenState extends State<ProfilePage>
                                 ),
                               ],
                             )),
+                        SizedBox(
+                          height: 5,
+                        ),
                         Divider(
                           indent: 25,
                           endIndent: 25,
@@ -476,56 +497,17 @@ class MapScreenState extends State<ProfilePage>
                                         "${currentUser.ft}' ${currentUser.inch}\""))
                               ],
                             )),
-                        Divider(
-                          indent: 25,
-                          endIndent: 25,
-                          color: Theme.of(context).hintColor,
-                        ),
-                        Padding(
-                            padding: EdgeInsets.only(
-                                left: 25, right: 25.0, top: 15.0),
-                            child: new Row(
-                              mainAxisSize: MainAxisSize.max,
-                              children: <Widget>[
-                                new Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    new Text(
-                                      'Street',
-                                      style: TextStyle(
-                                          fontSize: 16.0,
-                                          fontWeight: FontWeight.bold,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .secondaryVariant),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            )),
+
                         SizedBox(
                           height: 5,
                         ),
                         Padding(
-                            padding: EdgeInsets.only(
-                              left: 25,
-                              right: 25.0,
-                              top: 5,
-                            ),
-                            child: new Row(
-                              mainAxisSize: MainAxisSize.max,
-                              children: <Widget>[
-                                Container(
-                                    child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    Text('${currentUser.street}')
-                                  ],
-                                ))
-                              ],
-                            )),
+                          padding: EdgeInsets.only(
+                            left: 25,
+                            right: 25.0,
+                            top: 5,
+                          ),
+                        ),
                         Divider(
                             indent: 25,
                             endIndent: 25,
@@ -537,30 +519,6 @@ class MapScreenState extends State<ProfilePage>
                               mainAxisSize: MainAxisSize.max,
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: <Widget>[
-                                new Container(
-                                  width: MediaQuery.of(context).size.width / 3,
-                                  child: Text(
-                                    'City',
-                                    style: TextStyle(
-                                        fontSize: 16.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .secondaryVariant),
-                                  ),
-                                ),
-                                Container(
-                                  width: MediaQuery.of(context).size.width / 3,
-                                  child: Text(
-                                    'State',
-                                    style: TextStyle(
-                                        fontSize: 16.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .secondaryVariant),
-                                  ),
-                                ),
                                 new Container(
                                   child: Text(
                                     'Zip',
@@ -581,18 +539,6 @@ class MapScreenState extends State<ProfilePage>
                               mainAxisSize: MainAxisSize.max,
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: <Widget>[
-                                Container(
-                                  width: MediaQuery.of(context).size.width / 3,
-                                  child: Text(
-                                    '${currentUser.city}',
-                                  ),
-                                ),
-                                Container(
-                                  width: MediaQuery.of(context).size.width / 3,
-                                  child: Text(
-                                    '${currentUser.state}',
-                                  ),
-                                ),
                                 new Container(child: Text("${currentUser.zip}"))
                               ],
                             )),

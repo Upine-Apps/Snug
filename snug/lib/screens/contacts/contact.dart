@@ -1,3 +1,4 @@
+import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_conditional_rendering/conditional.dart';
 import 'package:snug/custom_widgets/CustomToast.dart';
@@ -6,11 +7,14 @@ import 'package:snug/custom_widgets/topheader.dart';
 import 'package:snug/models/User.dart';
 import 'package:snug/providers/ContactProvider.dart';
 import 'package:snug/providers/UserProvider.dart';
+import 'package:snug/screens/authenticate/authenticate.dart';
 import 'package:snug/screens/contacts/create_contact.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:showcaseview/showcaseview.dart';
+import 'package:snug/services/cognito/CognitoService.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:snug/core/logger.dart';
 
 class Contact extends StatefulWidget {
   Contact({Key key}) : super(key: key);
@@ -19,10 +23,9 @@ class Contact extends StatefulWidget {
   _ContactState createState() => _ContactState();
 }
 
-class _ContactState extends State<Contact> with AutomaticKeepAliveClientMixin {
+class _ContactState extends State<Contact>
+    with AutomaticKeepAliveClientMixin, WidgetsBindingObserver {
   @override
-  GlobalKey addContact = GlobalKey();
-  GlobalKey deleteContact = GlobalKey();
   bool get wantKeepAlive => true; //somehow makes it work
   String _phone = '';
   String _name = '';
@@ -31,41 +34,49 @@ class _ContactState extends State<Contact> with AutomaticKeepAliveClientMixin {
   final TextEditingController nameCtrl = new TextEditingController();
   final TextEditingController phoneCtrl = new TextEditingController();
   void initState() {
+    WidgetsBinding.instance.addObserver(this);
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _contactFirstLaunch().then((result) {
-        if (result)
-          ShowCaseWidget.of(context).startShowCase(
-            [addContact],
-          );
-      });
-
-      _deleteContact().then((result) {
-        if (result) ShowCaseWidget.of(context).startShowCase([deleteContact]);
-      });
-
-      // MAKE SURE TO CHECK TO SEE IF THE SHOWCASE WIDGET POPS UP FOR THIS.
-    });
   }
 
-  Future<bool> _contactFirstLaunch() async {
-    SharedPreferences _contactTutorial = await SharedPreferences.getInstance();
-    if (_contactTutorial.getBool('contactTutorial') == null) {
-      _contactTutorial.setBool('contactTutorial', true);
-    }
-
-    return _contactTutorial.getBool('contactTutorial');
-  }
-
-  Future<bool> _deleteContact() async {
-    SharedPreferences _deleteContact = await SharedPreferences.getInstance();
-    if (_deleteContact.getBool('deleteContact') == null) {
-      _deleteContact.setBool('deleteContact', true);
-    }
-    return _deleteContact.getBool('deleteContact');
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   bool userHasContact = true;
+  final log = getLogger('Contact');
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    // I think this will successfully refresh the user session
+    log.i("APP_STATE: $state");
+
+    if (state == AppLifecycleState.resumed) {
+      // user returned to our app
+      final prefs = await SharedPreferences.getInstance();
+      log.i('Current user auth token: ${prefs.getString('accessToken')}');
+      final _userProvider = Provider.of<UserProvider>(context, listen: false);
+      Map<String, dynamic> refreshResponse = await CognitoService.instance
+          .refreshAuth(
+              _userProvider.getCognitoUser, prefs.getString('refreshToken'));
+      if (refreshResponse['status'] == true) {
+        final prefs = await SharedPreferences.getInstance();
+        log.i('Successfully refreshed user session');
+        CognitoUserSession userSession = refreshResponse['data'];
+        _userProvider.setUserSession(userSession);
+        log.i('New user auth token: ${prefs.getString('accessToken')}');
+      } else {
+        log.e('Failed to refresh user session. Returning to home screen');
+        CustomToast.showDialog(
+            'Failed to refresh your session. Please sign in again', context);
+        await Future.delayed(Duration(seconds: 2), () {
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => Authenticate()));
+        });
+      }
+    }
+  }
 
   Widget build(BuildContext context) {
     final contactList = Provider.of<ContactProvider>(context, listen: true);
@@ -394,25 +405,21 @@ class _ContactState extends State<Contact> with AutomaticKeepAliveClientMixin {
             );
           }),
       floatingActionButton: FloatingActionButton(
-          child: CustomShowCase(
-            globalKey: addContact,
-            description: 'Add your contacts here',
-            child: Container(
-              height: 60,
-              width: 60,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle, // circular shape
-                gradient: LinearGradient(
-                  colors: [
-                    Theme.of(context).colorScheme.primaryVariant,
-                    Theme.of(context).colorScheme.secondaryVariant,
-                  ],
-                ),
+          child: Container(
+            height: 60,
+            width: 60,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle, // circular shape
+              gradient: LinearGradient(
+                colors: [
+                  Theme.of(context).colorScheme.primaryVariant,
+                  Theme.of(context).colorScheme.secondaryVariant,
+                ],
               ),
-              child: Icon(
-                Icons.person_add,
-                color: Colors.white,
-              ),
+            ),
+            child: Icon(
+              Icons.person_add,
+              color: Colors.white,
             ),
           ),
           onPressed: () {

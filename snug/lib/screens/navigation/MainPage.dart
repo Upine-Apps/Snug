@@ -18,45 +18,10 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   GlobalKey home = GlobalKey();
   final List<Widget> _pages = [
-    ShowCaseWidget(
-        onFinish: () async {
-          SharedPreferences _homeTutorial =
-              await SharedPreferences.getInstance();
-          _homeTutorial.setBool('homeTutorial', false);
-        },
-        builder: Builder(
-          builder: (_) => Home(),
-        )),
-    ShowCaseWidget(
-        onFinish: () async {
-          SharedPreferences _contactTutorial =
-              await SharedPreferences.getInstance();
-          _contactTutorial.setBool('contactTutorial', false);
-
-          _contactTutorial.setBool('deletContact', false);
-        },
-        builder: Builder(
-          builder: (_) => Contact(),
-        )),
-    ShowCaseWidget(
-      onFinish: () async {
-        SharedPreferences _settingsTutorial =
-            await SharedPreferences.getInstance();
-        _settingsTutorial.setBool('settingsTutorial', false);
-      },
-      builder: Builder(
-        builder: (_) => SettingScreen(),
-      ),
-    ),
-    ShowCaseWidget(
-        onFinish: () async {
-          SharedPreferences _profileTutorial =
-              await SharedPreferences.getInstance();
-          _profileTutorial.setBool('profileTutorial', false);
-        },
-        builder: Builder(
-          builder: (_) => ProfilePage(),
-        )),
+    Home(),
+    Contact(),
+    SettingScreen(),
+    ProfilePage(),
   ];
 
   PageController pageController;

@@ -1,46 +1,45 @@
+import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 import 'package:flutter/material.dart';
+import 'package:snug/custom_widgets/CustomToast.dart';
 import 'package:snug/custom_widgets/customshowcase.dart';
 import 'package:snug/custom_widgets/topheader.dart';
 import 'package:snug/providers/ContactProvider.dart';
 import 'package:snug/providers/DateProvider.dart';
+import 'package:snug/providers/UserProvider.dart';
 import 'package:snug/screens/authenticate/authenticate.dart';
+import 'package:snug/screens/settings/verifydelete.dart';
+import 'package:snug/services/cognito/CognitoService.dart';
 import 'package:snug/themes/colors.dart';
 import 'package:snug/themes/constants.dart';
 import 'package:snug/themes/themeNotifier.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:showcaseview/showcaseview.dart';
+import 'package:snug/core/logger.dart';
 
 class SettingScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _SettingState();
 }
 
-class _SettingState extends State<SettingScreen> {
+class _SettingState extends State<SettingScreen> with WidgetsBindingObserver {
   GlobalKey logOut = GlobalKey();
   int _selectedPosition = 0;
   var isDarkTheme;
   List themes = Constants.themes;
   SharedPreferences prefs;
   ThemeNotifier themeNotifier;
+  final log = getLogger('Settings');
 
   @override
   void initState() {
+    WidgetsBinding.instance.addObserver(this);
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _getSavedTheme();
-      _settingsFirstLaunch().then((result) {
-        if (result) ShowCaseWidget.of(context).startShowCase([logOut]);
-      });
-    });
   }
 
-  Future<bool> _settingsFirstLaunch() async {
-    SharedPreferences _settingsTutorial = await SharedPreferences.getInstance();
-    if (_settingsTutorial.getBool('settingsTutorial') == null) {
-      _settingsTutorial.setBool('settingsTutorial', true);
-    }
-    return _settingsTutorial.getBool('settingsTutorial');
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   _getSavedTheme() async {
@@ -49,6 +48,37 @@ class _SettingState extends State<SettingScreen> {
       _selectedPosition = themes.indexOf(
           prefs.getString(Constants.APP_THEME) ?? Constants.SYSTEM_DEFAULT);
     });
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    // I think this will successfully refresh the user session
+    log.i("APP_STATE: $state");
+
+    if (state == AppLifecycleState.resumed) {
+      // user returned to our app
+      final prefs = await SharedPreferences.getInstance();
+      log.i('Current user auth token: ${prefs.getString('accessToken')}');
+      final _userProvider = Provider.of<UserProvider>(context, listen: false);
+      Map<String, dynamic> refreshResponse = await CognitoService.instance
+          .refreshAuth(
+              _userProvider.getCognitoUser, prefs.getString('refreshToken'));
+      if (refreshResponse['status'] == true) {
+        final prefs = await SharedPreferences.getInstance();
+        log.i('Successfully refreshed user session');
+        CognitoUserSession userSession = refreshResponse['data'];
+        _userProvider.setUserSession(userSession);
+        log.i('New user auth token: ${prefs.getString('accessToken')}');
+      } else {
+        log.e('Failed to refresh user session. Returning to home screen');
+        CustomToast.showDialog(
+            'Failed to refresh your session. Please sign in again', context);
+        await Future.delayed(Duration(seconds: 2), () {
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => Authenticate()));
+        });
+      }
+    }
   }
 
   @override
@@ -86,35 +116,89 @@ class _SettingState extends State<SettingScreen> {
                 )),
               ),
               Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Container(
-                  height: MediaQuery.of(context).size.height * .125,
-                  child: ListView.builder(
-                    itemBuilder: (context, position) {
-                      return _createList(context, themes[position], position);
-                    },
-                    itemCount: themes.length,
-                  ),
+                padding: EdgeInsets.only(right: 16.0, left: 16, top: 16),
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Themes',
+                          style: TextStyle(
+                              color: Theme.of(context).hintColor, fontSize: 16),
+                        )),
+                    Container(
+                      height: MediaQuery.of(context).size.height * .125,
+                      child: ListView.builder(
+                        itemBuilder: (context, position) {
+                          return _createList(
+                              context, themes[position], position);
+                        },
+                        itemCount: themes.length,
+                      ),
+                    ),
+                  ],
                 ),
               ),
+              Padding(
+                padding: EdgeInsets.only(right: 16.0, left: 16, top: 16),
+                child: Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.only(
+                          bottom: MediaQuery.of(context).size.height * .01),
+                      child: Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Account Management',
+                            style: TextStyle(
+                                color: Theme.of(context).hintColor,
+                                fontSize: 16),
+                          )),
+                    ),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: FlatButton(
+                          color: Theme.of(context).colorScheme.secondaryVariant,
+                          onPressed: () async => showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return VerifyDelete();
+                              }),
+                          child: Container(
+                              width: MediaQuery.of(context).size.width * .40,
+                              padding: EdgeInsets.all(0),
+                              height: MediaQuery.of(context).size.height * .065,
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                'Delete Account',
+                                style: TextStyle(
+                                    color: Theme.of(context).dividerColor,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold),
+                              ))),
+                    )
+                  ],
+                ),
+              )
             ],
           )),
       floatingActionButton: FloatingActionButton(
-          onPressed: () {
+          onPressed: () async {
             final contactProvider =
                 Provider.of<ContactProvider>(context, listen: false);
             final dateProvider =
                 Provider.of<DateProvider>(context, listen: false);
             if (dateProvider.getCurrentDates.length != null) {
-              for (var i = 0; i < dateProvider.getCurrentDates.length; i + 1) {
-                dateProvider.removeDate(i);
-              }
+              dateProvider.removeAllDates();
             }
             if (contactProvider.getContacts.length != null) {
-              for (var y = 0; y < contactProvider.getContacts.length; y + 1) {
-                contactProvider.removeContactFromProvider(y);
-              }
+              contactProvider.removeAllContacts();
             }
+            final userProvider =
+                Provider.of<UserProvider>(context, listen: false);
+            CognitoUser cognitoUser = userProvider.getCognitoUser;
+            await CognitoService.instance.logoutUser(cognitoUser);
+
             Navigator.pushReplacement(context,
                 MaterialPageRoute(builder: (context) => Authenticate()));
           },
@@ -130,13 +214,9 @@ class _SettingState extends State<SettingScreen> {
                 ],
               ),
             ),
-            child: CustomShowCase(
-              globalKey: logOut,
-              description: 'Log out',
-              child: Icon(
-                Icons.logout,
-                color: Colors.white,
-              ),
+            child: Icon(
+              Icons.logout,
+              color: Colors.white,
             ),
           )),
     );

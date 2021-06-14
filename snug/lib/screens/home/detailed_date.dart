@@ -863,7 +863,7 @@ class _DetailDateState extends State<DetailDate> {
                                     try {
                                       Map<String, dynamic> cancelResponse =
                                           await RemoteDatabaseHelper.instance
-                                              .deleteDate(_currentDate.dateId);
+                                              .cancelDate(_currentDate.dateId);
                                       if (cancelResponse['status'] == true) {
                                         Navigator.pushReplacement(
                                             context,

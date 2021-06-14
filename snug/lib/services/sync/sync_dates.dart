@@ -14,22 +14,18 @@ Future syncDates(String _userId, BuildContext context) async {
   try {
     var result = await RemoteDatabaseHelper.instance.getUserDates(_userId);
     if (result['status'] == true) {
-      for (var _date in result['data']) {
-        log.d(_date);
-        var userTwoResponse = await RemoteDatabaseHelper.instance
-            .getUser(_date['user_2'].toString());
-        if (userTwoResponse['status'] == true) {
-          _date['who'] = User.fromMap(userTwoResponse['data']);
-          Date _tempDate = Date.fromMap(_date);
-          await dateProvider.addDate(_tempDate);
-          // if (addDateSuccess) {
-          //   continue;
-          // } else {
-          //   throw DateNotSyncedException(
-          //       'One or more dates failed to add to the provider');
-          // }
-        } else {
-          throw DateNotSyncedException('Failed to fetch user 2 name');
+      if (result['data'] != null) {
+        for (var _date in result['data']) {
+          log.d(_date);
+          var userTwoResponse = await RemoteDatabaseHelper.instance
+              .getUser(_date['user_2'].toString());
+          if (userTwoResponse['status'] == true) {
+            _date['who'] = User.fromMap(userTwoResponse['data']);
+            Date _tempDate = Date.fromMap(_date);
+            await dateProvider.addDate(_tempDate);
+          } else {
+            throw DateNotSyncedException('Failed to fetch user 2 name');
+          }
         }
       }
       return {'status': true};

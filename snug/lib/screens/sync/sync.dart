@@ -1,6 +1,10 @@
+import 'package:emojis/emoji.dart';
+import 'package:emojis/emojis.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:snug/core/logger.dart';
+import 'package:snug/custom_widgets/CustomToast.dart';
+import 'package:snug/screens/authenticate/authenticate.dart';
 import 'package:snug/screens/navigation/MainPage.dart';
 import 'package:snug/services/sync/sync_contacts.dart';
 import 'package:snug/services/sync/sync_dates.dart';
@@ -15,6 +19,8 @@ class SyncScreen extends StatefulWidget {
 class _SyncScreenState extends State<SyncScreen> {
   String _loadingMessage = '';
   final log = getLogger('SyncScreen');
+  bool failedASync = false;
+  Emoji somethingWentWrong = Emoji.byChar(Emojis.flushedFace);
 
   @override
   void initState() {
@@ -36,18 +42,23 @@ class _SyncScreenState extends State<SyncScreen> {
     } else {
       //toast user that we couldn't sync their data
       log.w('Failed to sync user. Try again');
+      failedASync = true;
     }
     setState(() {
       _loadingMessage = 'Loading your trusted contacts';
     });
-    var contactResponse =
-        await syncContact(userResponse['trusted_contacts'], context);
-    if (contactResponse['status'] == true) {
-      log.i('Successfully synced trusted contacts');
-    } else {
-      //toast user that we couldn't sync their contacts
-      log.w('Failed to sync trusted contacts. Try again');
-      //SHOULD WE TELL THE USER THAT THEY CAN JUST REMAKE THEIR CONTACTS???
+    if (userResponse['trusted_contacts'] != null) {
+      var contactResponse =
+          await syncContact(userResponse['trusted_contacts'], context);
+      if (contactResponse['status'] == true) {
+        log.i('Successfully synced trusted contacts');
+      } else {
+        //toast user that we couldn't sync their contacts
+        log.w('Failed to sync trusted contacts. Try again');
+        failedASync = true;
+
+        //SHOULD WE TELL THE USER THAT THEY CAN JUST REMAKE THEIR CONTACTS???
+      }
     }
     setState(() {
       _loadingMessage = 'Loading your current dates';
@@ -59,11 +70,24 @@ class _SyncScreenState extends State<SyncScreen> {
       //toast user that we couldn't sync their dates
       //MAYBE MAKE A COOL LOADING ANIMATION WITH CHECKS AND Xes
       log.w('Failed to sync dates. Try again.');
+      failedASync = true;
     }
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => MainPage()),
-    );
+    if (failedASync == false) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => MainPage()),
+      );
+    } else {
+      CustomToast.showDialog(
+          'Failed to load your info $somethingWentWrong Returning you to the sign-in screen',
+          context);
+      await Future.delayed(Duration(seconds: 2), () {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => Authenticate()),
+        );
+      });
+    }
   }
 
   @override

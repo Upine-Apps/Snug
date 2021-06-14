@@ -3,6 +3,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:snug/core/errors/AddUserAttributeException.dart';
 import 'package:snug/core/logger.dart';
+import 'package:snug/providers/UserProvider.dart';
 
 class CognitoService {
   static String userPoolId =
@@ -14,10 +15,52 @@ class CognitoService {
   final log = getLogger('CognitoService');
   final userPool = CognitoUserPool(userPoolId, clientId);
   CognitoUserSession userSession;
+  // final _userProvider = Provider.of<UserProvider>(context, listen: true);
 
   CognitoService._privateConstructor();
   static final CognitoService instance =
       new CognitoService._privateConstructor();
+
+  Future<Map<String, Object>> refreshAuth(
+      CognitoUser cognitoUser, String refreshToken) async {
+    CognitoRefreshToken cognitoRefreshToken =
+        new CognitoRefreshToken(refreshToken);
+    try {
+      CognitoUserSession refreshResponse =
+          await cognitoUser.refreshSession(cognitoRefreshToken);
+      final prefs = await SharedPreferences.getInstance();
+      prefs.setString(
+          'accessToken', refreshResponse.getAccessToken().getJwtToken());
+      prefs.setString(
+          'refreshToken', refreshResponse.getRefreshToken().getToken());
+      return {'status': true, 'data': refreshResponse};
+    } catch (e) {
+      return {'status': false};
+    }
+  }
+
+  Future<void> logoutUser(CognitoUser cognitoUser) async {
+    await cognitoUser.signOut();
+  }
+
+  Future<Map<String, Object>> deleteUser(CognitoUser cognitoUser) async {
+    log.i('deleteUser | cognitoUser: $cognitoUser');
+    bool userDeleted = false;
+    try {
+      userDeleted = await cognitoUser.deleteUser();
+      //DELETE FROM DATABASE TOO
+      //DELETE SHARED PREFERENCES
+      //CLEAR PROVIDERS
+      if (userDeleted == true) {
+        return {'status': true, 'data': 'User successfully deleted'};
+      } else {
+        throw Error;
+      }
+    } catch (e) {
+      log.e(e);
+      return {'status': false, 'data': e};
+    }
+  }
 
   Future<Map<String, Object>> registerUser(
       String username, String password) async {
@@ -108,6 +151,7 @@ class CognitoService {
       String username, String password) async {
     log.i("userPoolId | $userPoolId");
     log.i('signInUser | phonenumber: $username password: *******');
+
     final authDetails =
         AuthenticationDetails(username: username, password: password);
     final cognitoUser = CognitoUser(username, userPool);
@@ -142,6 +186,12 @@ class CognitoService {
       return {'status': false, 'message': 'GENERAL', 'error': e};
     }
     prefs.setString('accessToken', userSession.getAccessToken().getJwtToken());
-    return {'status': true, 'message': 'Success', 'cognitoUser': cognitoUser};
+    prefs.setString('refreshToken', userSession.getRefreshToken().getToken());
+    return {
+      'status': true,
+      'message': 'Success',
+      'cognitoUser': cognitoUser,
+      'cognitoSession': userSession
+    };
   }
 }

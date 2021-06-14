@@ -133,45 +133,10 @@ class _ProfileEditState extends State<ProfileEdit> {
                       padding: EdgeInsets.only(
                           left: MediaQuery.of(context).size.width * .05,
                           right: MediaQuery.of(context).size.width * .05),
-                      child: TextFormField(
-                          decoration: InputDecoration(
-                            enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Theme.of(context).primaryColor)),
-                            labelText: 'Street',
-                          ),
-                          onChanged: (val) {
-                            tempUser.street = val;
-                          })),
-                  Container(
-                      padding: EdgeInsets.only(
-                          left: MediaQuery.of(context).size.width * .05,
-                          right: MediaQuery.of(context).size.width * .05),
                       child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           mainAxisSize: MainAxisSize.max,
                           children: <Widget>[
-                            Container(
-                              width: MediaQuery.of(context).size.width * .3,
-                              child: TextFormField(
-                                controller: _cityController,
-                                decoration: InputDecoration(
-                                  enabledBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color:
-                                              Theme.of(context).primaryColor)),
-                                  labelText: 'City',
-                                ),
-                                onChanged: (val) {
-                                  // tempUser.city = val;
-                                  print('$val');
-
-                                  setState(() {
-                                    tempUser.city = val;
-                                  });
-                                },
-                              ),
-                            ),
                             Container(
                               width: MediaQuery.of(context).size.width * .3,
                               child: TextFormField(
@@ -188,19 +153,6 @@ class _ProfileEditState extends State<ProfileEdit> {
                               ),
                             ),
                           ])),
-                  Container(
-                      alignment: Alignment.centerLeft,
-                      padding: EdgeInsets.only(
-                          left: MediaQuery.of(context).size.width * .05,
-                          right: MediaQuery.of(context).size.width * .05),
-                      child: FiftyStates(
-                          onChanged: (String val) {
-                            tempUser.state = val;
-                            setState(() {
-                              _state = val;
-                            });
-                          },
-                          value: _state)),
                   Padding(
                       padding: EdgeInsets.only(top: 10, bottom: 10),
                       child: RaisedRoundedGradientButton(

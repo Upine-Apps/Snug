@@ -31,13 +31,56 @@ class Race extends StatelessWidget {
         isExpanded: false,
         items: [
           DropdownMenuItem<String>(
-            child: Text('Black'),
+            child: Text(
+              'Black',
+              style: TextStyle(
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.black54
+                    : Colors.white,
+              ),
+            ),
             value: 'B',
           ),
-          DropdownMenuItem<String>(child: Text('White'), value: 'W'),
-          DropdownMenuItem<String>(child: Text('Hispanic'), value: 'H'),
-          DropdownMenuItem<String>(child: Text('Asian'), value: 'A'),
-          DropdownMenuItem<String>(child: Text('Native American'), value: 'I'),
+          DropdownMenuItem<String>(
+              child: Text(
+                'White',
+                style: TextStyle(
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.black54
+                      : Colors.white,
+                ),
+              ),
+              value: 'W'),
+          DropdownMenuItem<String>(
+              child: Text(
+                'Hispanic',
+                style: TextStyle(
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.black54
+                      : Colors.white,
+                ),
+              ),
+              value: 'H'),
+          DropdownMenuItem<String>(
+              child: Text(
+                'Asian',
+                style: TextStyle(
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.black54
+                      : Colors.white,
+                ),
+              ),
+              value: 'A'),
+          DropdownMenuItem<String>(
+              child: Text(
+                'Native American',
+                style: TextStyle(
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.black54
+                      : Colors.white,
+                ),
+              ),
+              value: 'I'),
         ],
         onChanged: onChanged,
         hint: Text(

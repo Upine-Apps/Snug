@@ -34,4 +34,9 @@ class DateProvider extends ChangeNotifier {
     _dates.removeAt(index);
     notifyListeners();
   }
+
+  void removeAllDates() {
+    _dates = <Date>[];
+    notifyListeners();
+  }
 }
