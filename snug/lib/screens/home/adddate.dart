@@ -576,13 +576,15 @@ class _AddDateState extends State<AddDate> {
                                                       curve: Curves.ease);
                                                   CustomToast.showDialog(
                                                       'Please enter a end time that\'s after the start time',
-                                                      context,Toast.BOTTOM);
+                                                      context,
+                                                      Toast.BOTTOM);
                                                 } else if (currentDate
                                                         .who.phone_number ==
                                                     null) {
                                                   CustomToast.showDialog(
                                                       'Please enter the phone number of your date',
-                                                      context,Toast.BOTTOM);
+                                                      context,
+                                                      Toast.BOTTOM);
                                                   scrollController.animateTo(0,
                                                       duration: Duration(
                                                           milliseconds: 500),
@@ -596,7 +598,8 @@ class _AddDateState extends State<AddDate> {
                                                       curve: Curves.ease);
                                                   CustomToast.showDialog(
                                                       "Please enter your date's first name",
-                                                      context,Toast.BOTTOM);
+                                                      context,
+                                                      Toast.BOTTOM);
                                                 } else if (currentDate
                                                         .who.sex ==
                                                     null) {
@@ -606,10 +609,17 @@ class _AddDateState extends State<AddDate> {
                                                       curve: Curves.ease);
                                                   CustomToast.showDialog(
                                                       "Please enter your date's sex",
-                                                      context,Toast.BOTTOM);
+                                                      context,
+                                                      Toast.BOTTOM);
                                                 } else if (currentDate
-                                                        .dateLocation ==
-                                                    null) {
+                                                            .dateLocation ==
+                                                        null ||
+                                                    currentDate.dateLocation[
+                                                            'x'] ==
+                                                        null ||
+                                                    currentDate.dateLocation[
+                                                            'y'] ==
+                                                        null) {
                                                   scrollController.animateTo(
                                                       MediaQuery.of(context)
                                                               .size
@@ -620,13 +630,15 @@ class _AddDateState extends State<AddDate> {
                                                       curve: Curves.ease);
                                                   CustomToast.showDialog(
                                                       'Please enter the location of the date',
-                                                      context,Toast.BOTTOM);
+                                                      context,
+                                                      Toast.BOTTOM);
                                                 } else if (currentDate
                                                         .trusted ==
                                                     null) {
                                                   CustomToast.showDialog(
-                                                      'Please atleast choose one contact for this date',
-                                                      context,Toast.BOTTOM);
+                                                      'Please choose at least one contact for this date',
+                                                      context,
+                                                      Toast.BOTTOM);
                                                 } else {
                                                   SharedPreferences profile =
                                                       await SharedPreferences
@@ -682,7 +694,8 @@ class _AddDateState extends State<AddDate> {
                                                             .removeLast();
                                                         CustomToast.showDialog(
                                                             'Looks like we ran into an error. Please try again later! $somethingWentWrong',
-                                                            context,Toast.BOTTOM);
+                                                            context,
+                                                            Toast.BOTTOM);
                                                         await Future.delayed(
                                                             Duration(
                                                                 seconds: 2),
@@ -707,7 +720,8 @@ class _AddDateState extends State<AddDate> {
                                                         'Failed to add user. Error: $e');
                                                     CustomToast.showDialog(
                                                         'Looks like we ran into an error. Please try again later! $somethingWentWrong',
-                                                        context,Toast.BOTTOM);
+                                                        context,
+                                                        Toast.BOTTOM);
 
                                                     await Future.delayed(
                                                         Duration(seconds: 2),
