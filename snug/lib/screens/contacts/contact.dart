@@ -131,13 +131,18 @@ class _ContactState extends State<Contact>
                         ),
                         Align(
                           alignment: Alignment.center,
-                          child: Container(
-                              child: Text(
-                            'All of your Contacts will appear here',
-                            style: TextStyle(
-                                color: Theme.of(context).hintColor,
-                                fontSize: 24),
-                          )),
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                                right: MediaQuery.of(context).size.width * .15,
+                                left: MediaQuery.of(context).size.width * .15),
+                            child: Container(
+                                child: Text(
+                              'All of your Contacts will appear here',
+                              style: TextStyle(
+                                  color: Theme.of(context).hintColor,
+                                  fontSize: 24),
+                            )),
+                          ),
                         ),
                       ],
                     )));

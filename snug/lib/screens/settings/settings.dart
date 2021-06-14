@@ -6,6 +6,7 @@ import 'package:snug/custom_widgets/topheader.dart';
 import 'package:snug/providers/ContactProvider.dart';
 import 'package:snug/providers/DateProvider.dart';
 import 'package:snug/providers/UserProvider.dart';
+import 'package:snug/providers/walkthrough/walkthrough.dart';
 import 'package:snug/screens/authenticate/authenticate.dart';
 import 'package:snug/screens/settings/verifydelete.dart';
 import 'package:snug/services/cognito/CognitoService.dart';
@@ -34,6 +35,9 @@ class _SettingState extends State<SettingScreen> with WidgetsBindingObserver {
   void initState() {
     WidgetsBinding.instance.addObserver(this);
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _getSavedTheme();
+    });
   }
 
   @override
@@ -116,7 +120,9 @@ class _SettingState extends State<SettingScreen> with WidgetsBindingObserver {
                 )),
               ),
               Padding(
-                padding: EdgeInsets.only(right: 16.0, left: 16, top: 16),
+                padding: EdgeInsets.only(
+                    left: MediaQuery.of(context).size.width * .05,
+                    top: MediaQuery.of(context).size.height * .01),
                 child: Column(
                   children: <Widget>[
                     Container(
@@ -140,7 +146,9 @@ class _SettingState extends State<SettingScreen> with WidgetsBindingObserver {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(right: 16.0, left: 16, top: 16),
+                padding: EdgeInsets.only(
+                    left: MediaQuery.of(context).size.width * .05,
+                    top: MediaQuery.of(context).size.height * .01),
                 child: Column(
                   children: <Widget>[
                     Padding(
@@ -167,7 +175,7 @@ class _SettingState extends State<SettingScreen> with WidgetsBindingObserver {
                           child: Container(
                               width: MediaQuery.of(context).size.width * .40,
                               padding: EdgeInsets.all(0),
-                              height: MediaQuery.of(context).size.height * .065,
+                              height: MediaQuery.of(context).size.height * .025,
                               alignment: Alignment.centerLeft,
                               child: Text(
                                 'Delete Account',
@@ -179,7 +187,50 @@ class _SettingState extends State<SettingScreen> with WidgetsBindingObserver {
                     )
                   ],
                 ),
-              )
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                    left: MediaQuery.of(context).size.width * .05,
+                    top: MediaQuery.of(context).size.height * .01),
+                child: Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.only(
+                          bottom: MediaQuery.of(context).size.height * .01),
+                      child: Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Knowledge Base',
+                            style: TextStyle(
+                                color: Theme.of(context).hintColor,
+                                fontSize: 16),
+                          )),
+                    ),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: FlatButton(
+                          color: Theme.of(context).colorScheme.secondaryVariant,
+                          onPressed: () async => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Walkthrough()),
+                              ),
+                          child: Container(
+                              width: MediaQuery.of(context).size.width * .40,
+                              padding: EdgeInsets.all(0),
+                              height: MediaQuery.of(context).size.height * .025,
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                'Snug Walkthrough',
+                                style: TextStyle(
+                                    color: Theme.of(context).dividerColor,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold),
+                              ))),
+                    )
+                  ],
+                ),
+              ),
             ],
           )),
       floatingActionButton: FloatingActionButton(

@@ -195,14 +195,19 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                     ),
                     Align(
                       alignment: Alignment.center,
-                      child: Container(
-                          child: Text(
-                        'All of your dates will appear here',
-                        style: TextStyle(
-                            fontFamily: 'Roboto',
-                            color: Theme.of(context).hintColor,
-                            fontSize: 24),
-                      )),
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            right: MediaQuery.of(context).size.width * .15,
+                            left: MediaQuery.of(context).size.width * .15),
+                        child: Container(
+                            child: Text(
+                          'All of your dates will appear here',
+                          style: TextStyle(
+                              fontFamily: 'Roboto',
+                              color: Theme.of(context).hintColor,
+                              fontSize: 24),
+                        )),
+                      ),
                     ),
                   ],
                 ),
