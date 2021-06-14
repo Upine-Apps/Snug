@@ -11,6 +11,7 @@ class Gender extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<String>(
+        style: TextStyle(color: Theme.of(context).hintColor, fontSize: 16),
         decoration: InputDecoration(
             errorStyle: TextStyle(
                 color: Theme.of(context).colorScheme.secondaryVariant),
@@ -18,11 +19,6 @@ class Gender extends StatelessWidget {
                 borderSide: BorderSide(
                     color: Theme.of(context).colorScheme.secondaryVariant))),
         validator: validator,
-        style: TextStyle(
-            color: Theme.of(context).brightness == Brightness.dark
-                ? Colors.white
-                : Colors.black54,
-            fontSize: 16),
         icon: Icon(
           Icons.arrow_drop_down,
           color: Theme.of(context).colorScheme.secondaryVariant,
@@ -33,28 +29,19 @@ class Gender extends StatelessWidget {
           DropdownMenuItem<String>(
             child: Text(
               'Female',
-              style: TextStyle(
-                color: Theme.of(context).brightness == Brightness.dark
-                    ? Colors.black54
-                    : Colors.white,
-              ),
             ),
             value: 'F',
           ),
           DropdownMenuItem<String>(
               child: Text(
                 'Male',
-                style: TextStyle(
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.black54
-                      : Colors.white,
-                ),
               ),
               value: 'M'),
         ],
         onChanged: onChanged,
         hint: Text(
           'Sex',
+          style: TextStyle(color: Theme.of(context).hintColor),
         ),
         value: value);
   }
