@@ -649,14 +649,14 @@ class _AddDateState extends State<AddDate> {
                                                         context,
                                                         Toast.BOTTOM);
                                                   } else if (currentDate
-                                                            .dateLocation ==
-                                                        null ||
-                                                    currentDate.dateLocation[
-                                                            'x'] ==
-                                                        null ||
-                                                    currentDate.dateLocation[
-                                                            'y'] ==
-                                                        null) {
+                                                              .dateLocation ==
+                                                          null ||
+                                                      currentDate.dateLocation[
+                                                              'x'] ==
+                                                          null ||
+                                                      currentDate.dateLocation[
+                                                              'y'] ==
+                                                          null) {
                                                     scrollController.animateTo(
                                                         MediaQuery.of(context)
                                                                 .size
