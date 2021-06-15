@@ -24,7 +24,7 @@ class AppTheme {
           labelStyle: TextStyle(color: AppColors.white),
         ),
         brightness: Brightness.dark,
-        canvasColor: Color(0xFFe8b5c0),
+
         accentColor: Color(0xFFe8b5c0),
         hintColor: Colors.white,
         accentIconTheme: IconThemeData(
@@ -52,7 +52,7 @@ class AppTheme {
           hintStyle: TextStyle(color: Colors.black54),
           labelStyle: TextStyle(color: Colors.black54),
         ),
-        canvasColor: Color(0xFF5b6686),
+
         brightness: Brightness.light,
         accentColor: Color(0xFF5b6686),
         accentIconTheme: IconThemeData(

@@ -13,6 +13,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:snug/services/cognito/CognitoService.dart';
+import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:snug/core/logger.dart';
 
@@ -69,7 +70,9 @@ class _ContactState extends State<Contact>
       } else {
         log.e('Failed to refresh user session. Returning to home screen');
         CustomToast.showDialog(
-            'Failed to refresh your session. Please sign in again', context);
+            'Failed to refresh your session. Please sign in again',
+            context,
+            Toast.CENTER);
         await Future.delayed(Duration(seconds: 2), () {
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => Authenticate()));
@@ -131,13 +134,18 @@ class _ContactState extends State<Contact>
                         ),
                         Align(
                           alignment: Alignment.center,
-                          child: Container(
-                              child: Text(
-                            'All of your Contacts will appear here',
-                            style: TextStyle(
-                                color: Theme.of(context).hintColor,
-                                fontSize: 24),
-                          )),
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                                right: MediaQuery.of(context).size.width * .15,
+                                left: MediaQuery.of(context).size.width * .15),
+                            child: Container(
+                                child: Text(
+                              'All of your Contacts will appear here',
+                              style: TextStyle(
+                                  color: Theme.of(context).hintColor,
+                                  fontSize: 24),
+                            )),
+                          ),
                         ),
                       ],
                     )));
@@ -189,8 +197,8 @@ class _ContactState extends State<Contact>
                                     key: UniqueKey(),
                                     onDismissed: (direction) {
                                       contactList.removeContact(index, _userId);
-                                      CustomToast.showDialog(
-                                          'Contact deleted', context);
+                                      CustomToast.showDialog('Contact deleted',
+                                          context, Toast.CENTER);
                                     },
                                     background:
                                         Container(color: Colors.transparent),
@@ -424,7 +432,8 @@ class _ContactState extends State<Contact>
           ),
           onPressed: () {
             if (contactList.getContacts.length == 5) {
-              CustomToast.showDialog('You can only have 5 contacts', context);
+              CustomToast.showDialog(
+                  'You can only have 5 contacts', context, Toast.CENTER);
             } else {
               //////////////////////////////////////////////////
               ////////////  Pop up to create a contact  ////////

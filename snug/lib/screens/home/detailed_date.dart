@@ -21,6 +21,7 @@ import 'package:snug/services/conversion.dart';
 import 'package:snug/services/remote_db_service.dart';
 import 'package:provider/provider.dart';
 import 'package:snug/custom_widgets/header_with_back_button.dart';
+import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class DetailDate extends StatefulWidget {
@@ -843,78 +844,88 @@ class _DetailDateState extends State<DetailDate> {
                                           );
                                         },
                                       )))),
-                          Container(
-                              alignment: Alignment.center,
-                              child: RaisedRoundedGradientButton(
-                                width: MediaQuery.of(context).size.width *
-                                    (.95 / 2),
-                                child: Text(
-                                  _converedTimeInDateTime(
-                                              _currentDate.dateStart)
-                                          .isAfter(DateTime.now())
-                                      ? _endStatus = 'Cancel Date'
-                                      : _endStatus = 'Safe',
-                                  style: TextStyle(
-                                      color: Theme.of(context).dividerColor,
-                                      fontSize: 18),
-                                ),
-                                onPressed: () async {
-                                  if (_endStatus == 'Cancel Date') {
-                                    try {
-                                      Map<String, dynamic> cancelResponse =
-                                          await RemoteDatabaseHelper.instance
-                                              .cancelDate(_currentDate.dateId);
-                                      if (cancelResponse['status'] == true) {
-                                        Navigator.pushReplacement(
+                          Padding(
+                            padding: EdgeInsets.only(
+                                top: MediaQuery.of(context).size.height * .005,
+                                bottom:
+                                    MediaQuery.of(context).size.height * .01),
+                            child: Container(
+                                alignment: Alignment.center,
+                                child: RaisedRoundedGradientButton(
+                                  width: MediaQuery.of(context).size.width *
+                                      (.95 / 2),
+                                  child: Text(
+                                    _converedTimeInDateTime(
+                                                _currentDate.dateStart)
+                                            .isAfter(DateTime.now())
+                                        ? _endStatus = 'Cancel Date'
+                                        : _endStatus = 'Safe',
+                                    style: TextStyle(
+                                        color: Theme.of(context).dividerColor,
+                                        fontSize: 18),
+                                  ),
+                                  onPressed: () async {
+                                    if (_endStatus == 'Cancel Date') {
+                                      try {
+                                        Map<String, dynamic> cancelResponse =
+                                            await RemoteDatabaseHelper.instance
+                                                .cancelDate(
+                                                    _currentDate.dateId);
+                                        if (cancelResponse['status'] == true) {
+                                          Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      LoadingScreen(
+                                                        someIndex: someIndex,
+                                                      )));
+                                        } else {
+                                          throw DateNotCanceledException(
+                                              'Failed to cancel date');
+                                        }
+                                      } catch (e) {
+                                        log.e(
+                                            'Failed to cancel date. Caught exception: $e');
+                                        CustomToast.showDialog(
+                                            'Failed to cancel date. Please try again later $somethingWentWrong',
                                             context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    LoadingScreen(
-                                                      someIndex: someIndex,
-                                                    )));
-                                      } else {
-                                        throw DateNotCanceledException(
-                                            'Failed to cancel date');
+                                            Toast.BOTTOM);
                                       }
-                                    } catch (e) {
-                                      log.e(
-                                          'Failed to cancel date. Caught exception: $e');
-                                      CustomToast.showDialog(
-                                          'Failed to cancel date. Please try again later $somethingWentWrong',
-                                          context);
-                                    }
-                                  } else {
-                                    try {
-                                      Map<String, dynamic> markSafeResponse =
-                                          await RemoteDatabaseHelper.instance
-                                              .markDateSafe(
-                                                  _currentDate.dateId);
-                                      if (markSafeResponse['status'] == true) {
-                                        Navigator.pushReplacement(
+                                    } else {
+                                      try {
+                                        Map<String, dynamic> markSafeResponse =
+                                            await RemoteDatabaseHelper.instance
+                                                .markDateSafe(
+                                                    _currentDate.dateId);
+                                        if (markSafeResponse['status'] ==
+                                            true) {
+                                          Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      LoadingScreen(
+                                                        someIndex: someIndex,
+                                                      )));
+                                        } else {
+                                          throw DateNotMarkedSafeException(
+                                              'Failed to mark safe');
+                                        }
+                                      } catch (e) {
+                                        log.e(
+                                            'Failed to mark date safe. Caught exception: $e');
+                                        CustomToast.showDialog(
+                                            'Failed to mark date safe. Please try again later $somethingWentWrong',
                                             context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    LoadingScreen(
-                                                      someIndex: someIndex,
-                                                    )));
-                                      } else {
-                                        throw DateNotMarkedSafeException(
-                                            'Failed to mark safe');
+                                            Toast.BOTTOM);
                                       }
-                                    } catch (e) {
-                                      log.e(
-                                          'Failed to mark date safe. Caught exception: $e');
-                                      CustomToast.showDialog(
-                                          'Failed to mark date safe. Please try again later $somethingWentWrong',
-                                          context);
                                     }
-                                  }
 
-                                  // if mark safe COPY ALL THAT AND CHANGE FUNCTION
+                                    // if mark safe COPY ALL THAT AND CHANGE FUNCTION
 
-                                  //ADDED DELETE DATE FUNCTION. TEST THE UI AND FUNCTIONALITY
-                                },
-                              ))
+                                    //ADDED DELETE DATE FUNCTION. TEST THE UI AND FUNCTIONALITY
+                                  },
+                                )),
+                          )
                         ],
                       ),
                     )))),

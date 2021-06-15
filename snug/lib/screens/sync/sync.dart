@@ -10,6 +10,7 @@ import 'package:snug/services/sync/sync_contacts.dart';
 import 'package:snug/services/sync/sync_dates.dart';
 import 'package:snug/services/sync/sync_user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:toast/toast.dart';
 
 class SyncScreen extends StatefulWidget {
   @override
@@ -80,7 +81,8 @@ class _SyncScreenState extends State<SyncScreen> {
     } else {
       CustomToast.showDialog(
           'Failed to load your info $somethingWentWrong Returning you to the sign-in screen',
-          context);
+          context,
+          Toast.BOTTOM);
       await Future.delayed(Duration(seconds: 2), () {
         Navigator.pushReplacement(
           context,

@@ -20,6 +20,7 @@ import 'package:showcaseview/showcaseview.dart';
 
 import 'package:provider/provider.dart';
 import 'package:snug/services/cognito/CognitoService.dart';
+import 'package:toast/toast.dart';
 
 import 'adddate.dart';
 
@@ -70,7 +71,9 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       } else {
         log.e('Failed to refresh user session. Returning to home screen');
         CustomToast.showDialog(
-            'Failed to refresh your session. Please sign in again', context);
+            'Failed to refresh your session. Please sign in again',
+            context,
+            Toast.CENTER);
         await Future.delayed(Duration(seconds: 2), () {
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => Authenticate()));
@@ -195,14 +198,19 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                     ),
                     Align(
                       alignment: Alignment.center,
-                      child: Container(
-                          child: Text(
-                        'All of your dates will appear here',
-                        style: TextStyle(
-                            fontFamily: 'Roboto',
-                            color: Theme.of(context).hintColor,
-                            fontSize: 24),
-                      )),
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            right: MediaQuery.of(context).size.width * .15,
+                            left: MediaQuery.of(context).size.width * .15),
+                        child: Container(
+                            child: Text(
+                          'All of your dates will appear here',
+                          style: TextStyle(
+                              fontFamily: 'Roboto',
+                              color: Theme.of(context).hintColor,
+                              fontSize: 24),
+                        )),
+                      ),
                     ),
                   ],
                 ),
@@ -259,6 +267,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                                   );
                                 },
                                 child: Container(
+                                  width: MediaQuery.of(context).size.width * .9,
                                   padding: EdgeInsets.only(
                                       left: MediaQuery.of(context).size.width *
                                           .05,
@@ -298,247 +307,438 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                                                         ))),
                                               ))),
                                       Container(
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              .25,
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              .575,
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: <Widget>[
-                                              Padding(
-                                                  padding: EdgeInsets.only(
-                                                      left: 0,
-                                                      top: MediaQuery.of(context)
-                                                              .size
-                                                              .height *
-                                                          .01),
-                                                  child: Align(
-                                                      alignment:
-                                                          Alignment.centerLeft,
-                                                      child: Container(
-                                                          width:
-                                                              MediaQuery.of(context)
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                .25,
+                                        alignment: Alignment.topLeft,
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                .55,
+                                        child: Column(
+                                          children: <Widget>[
+                                            Padding(
+                                              padding: EdgeInsets.only(
+                                                  bottom: 5, top: 15),
+                                              child: Align(
+                                                alignment: Alignment.centerLeft,
+                                                child: Text(
+                                                    '${dateProvider.getCurrentDates[index].who.first_name} ${dateProvider.getCurrentDates[index].who.last_name}',
+                                                    style: TextStyle(
+                                                      color: Theme.of(context)
+                                                          .dividerColor,
+                                                      fontSize: 24,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    )),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.only(
+                                                  bottom: MediaQuery.of(context)
+                                                          .size
+                                                          .height *
+                                                      .005),
+                                              child: Align(
+                                                  alignment:
+                                                      Alignment.centerLeft,
+                                                  child: Row(
+                                                    children: <Widget>[
+                                                      Padding(
+                                                          padding: EdgeInsets.only(
+                                                              right: MediaQuery.of(
+                                                                          context)
                                                                       .size
                                                                       .width *
-                                                                  .5,
-                                                          child: Flexible(
-                                                              child: Text(
-                                                                  '${dateProvider.getCurrentDates[index].who.first_name} ${dateProvider.getCurrentDates[index].who.last_name}',
-                                                                  style: TextStyle(
-                                                                      color: Theme.of(context).dividerColor,
-                                                                      fontSize: 24,
-                                                                      fontWeight: FontWeight.bold)))))),
-                                              Padding(
-                                                  padding: EdgeInsets.only(
-                                                      top:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .height *
-                                                              .01),
-                                                  child: Align(
-                                                      alignment:
-                                                          Alignment.centerLeft,
-                                                      child: Container(
-                                                          width: MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .width *
-                                                              .5,
-                                                          child: Row(
-                                                            children: <Widget>[
-                                                              Padding(
-                                                                  padding: EdgeInsets.only(
-                                                                      right: MediaQuery.of(context)
-                                                                              .size
-                                                                              .width *
-                                                                          .025),
-                                                                  child: Icon(
-                                                                    Icons.phone,
-                                                                    color: Theme.of(
-                                                                            context)
-                                                                        .colorScheme
-                                                                        .secondary,
-                                                                  )),
-                                                              Text(
-                                                                "(" +
-                                                                    dateProvider
-                                                                        .getCurrentDates[
-                                                                            index]
-                                                                        .who
-                                                                        .phone_number
-                                                                        .substring(
-                                                                            0,
-                                                                            3) +
-                                                                    ") - " +
-                                                                    dateProvider
-                                                                        .getCurrentDates[
-                                                                            index]
-                                                                        .who
-                                                                        .phone_number
-                                                                        .substring(
-                                                                            3,
-                                                                            6) +
-                                                                    " - " +
-                                                                    dateProvider
-                                                                        .getCurrentDates[
-                                                                            index]
-                                                                        .who
-                                                                        .phone_number
-                                                                        .substring(
-                                                                            6,
-                                                                            10),
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: Theme.of(
-                                                                          context)
-                                                                      .dividerColor,
-                                                                  fontSize: 16,
-                                                                ),
-                                                              )
-                                                            ],
-                                                          )))),
-                                              Padding(
-                                                padding: EdgeInsets.only(
-                                                    top: MediaQuery.of(context)
-                                                            .size
-                                                            .height *
-                                                        .005),
-                                                child: Align(
-                                                    alignment:
-                                                        Alignment.centerLeft,
-                                                    child: Container(
-                                                        width: MediaQuery.of(
+                                                                  .025),
+                                                          child: Icon(
+                                                            Icons.phone,
+                                                            color: Theme.of(
                                                                     context)
-                                                                .size
-                                                                .width *
-                                                            .5,
-                                                        child: Row(
-                                                          children: <Widget>[
-                                                            Padding(
-                                                                padding: EdgeInsets.only(
-                                                                    right: MediaQuery.of(context)
-                                                                            .size
-                                                                            .width *
-                                                                        .025),
-                                                                child: Icon(
-                                                                  Icons.place,
-                                                                  color: Theme.of(
-                                                                          context)
-                                                                      .colorScheme
-                                                                      .secondary,
-                                                                )),
-                                                            Flexible(
-                                                                child: Text(
-                                                              '${dateProvider.getCurrentDates[index].placeName}',
-                                                              style: TextStyle(
-                                                                  color: Theme.of(
-                                                                          context)
-                                                                      .dividerColor,
-                                                                  fontSize: 16),
-                                                            ))
-                                                          ],
-                                                        ))),
-                                              ),
-                                              Padding(
-                                                padding: EdgeInsets.only(
-                                                    top: MediaQuery.of(context)
-                                                            .size
-                                                            .height *
-                                                        .005),
-                                                child: Align(
+                                                                .colorScheme
+                                                                .secondary,
+                                                          )),
+                                                      Text(
+                                                        "(" +
+                                                            dateProvider
+                                                                .getCurrentDates[
+                                                                    index]
+                                                                .who
+                                                                .phone_number
+                                                                .substring(
+                                                                    0, 3) +
+                                                            ") - " +
+                                                            dateProvider
+                                                                .getCurrentDates[
+                                                                    index]
+                                                                .who
+                                                                .phone_number
+                                                                .substring(
+                                                                    3, 6) +
+                                                            " - " +
+                                                            dateProvider
+                                                                .getCurrentDates[
+                                                                    index]
+                                                                .who
+                                                                .phone_number
+                                                                .substring(
+                                                                    6, 10),
+                                                        style: TextStyle(
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .dividerColor,
+                                                          fontSize: 16,
+                                                        ),
+                                                      )
+                                                    ],
+                                                  )),
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.only(
+                                                  bottom: MediaQuery.of(context)
+                                                          .size
+                                                          .height *
+                                                      .005),
+                                              child: Align(
                                                   alignment:
                                                       Alignment.centerLeft,
-                                                  child: Container(
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width *
-                                                              .5,
-                                                      child: Row(
-                                                        children: <Widget>[
-                                                          Padding(
-                                                              padding: EdgeInsets.only(
-                                                                  right: MediaQuery.of(
-                                                                              context)
-                                                                          .size
-                                                                          .width *
-                                                                      .025),
-                                                              child: Icon(
-                                                                Icons
-                                                                    .flight_takeoff,
-                                                                color: Theme.of(
-                                                                        context)
-                                                                    .colorScheme
-                                                                    .secondary,
-                                                              )),
-                                                          Text(
-                                                              _convertDateTime(
-                                                                  dateProvider
-                                                                      .getCurrentDates[
-                                                                          index]
-                                                                      .dateStart),
-                                                              style: TextStyle(
-                                                                  color: Theme.of(
+                                                  child: Row(
+                                                    children: <Widget>[
+                                                      Padding(
+                                                          padding: EdgeInsets.only(
+                                                              right: MediaQuery.of(
                                                                           context)
-                                                                      .dividerColor,
-                                                                  fontSize: 16))
-                                                        ],
-                                                      )),
+                                                                      .size
+                                                                      .width *
+                                                                  .025),
+                                                          child: Icon(
+                                                            Icons.place,
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .colorScheme
+                                                                .secondary,
+                                                          )),
+                                                      Text(
+                                                        '${dateProvider.getCurrentDates[index].placeName}',
+                                                        style: TextStyle(
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .dividerColor,
+                                                            fontSize: 16),
+                                                      )
+                                                    ],
+                                                  )),
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.only(
+                                                  bottom: MediaQuery.of(context)
+                                                          .size
+                                                          .height *
+                                                      .005),
+                                              child: Align(
+                                                alignment: Alignment.centerLeft,
+                                                child: Row(
+                                                  children: <Widget>[
+                                                    Padding(
+                                                        padding: EdgeInsets.only(
+                                                            right: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width *
+                                                                .025),
+                                                        child: Icon(
+                                                          Icons.flight_takeoff,
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .colorScheme
+                                                                  .secondary,
+                                                        )),
+                                                    Text(
+                                                      _convertDateTime(
+                                                          dateProvider
+                                                              .getCurrentDates[
+                                                                  index]
+                                                              .dateStart),
+                                                      style: TextStyle(
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .dividerColor,
+                                                          fontSize: 16),
+                                                    )
+                                                  ],
                                                 ),
                                               ),
-                                              Padding(
-                                                padding: EdgeInsets.only(
-                                                    top: MediaQuery.of(context)
-                                                            .size
-                                                            .height *
-                                                        .005),
-                                                child: Align(
-                                                  alignment:
-                                                      Alignment.centerLeft,
-                                                  child: Container(
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width *
-                                                              .5,
-                                                      child: Row(
-                                                        children: <Widget>[
-                                                          Padding(
-                                                              padding: EdgeInsets.only(
-                                                                  right: MediaQuery.of(
-                                                                              context)
-                                                                          .size
-                                                                          .width *
-                                                                      .025),
-                                                              child: Icon(
-                                                                Icons
-                                                                    .flight_land,
-                                                                color: Theme.of(
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.only(
+                                                  bottom: MediaQuery.of(context)
+                                                          .size
+                                                          .height *
+                                                      .005),
+                                              child: Align(
+                                                alignment: Alignment.centerLeft,
+                                                child: Row(
+                                                  children: <Widget>[
+                                                    Padding(
+                                                        padding: EdgeInsets.only(
+                                                            right: MediaQuery.of(
                                                                         context)
-                                                                    .colorScheme
-                                                                    .secondary,
-                                                              )),
-                                                          Text(
-                                                              _convertDateTime(
-                                                                  dateProvider
-                                                                      .getCurrentDates[
-                                                                          index]
-                                                                      .dateEnd),
-                                                              style: TextStyle(
-                                                                  color: Theme.of(
-                                                                          context)
-                                                                      .dividerColor,
-                                                                  fontSize: 16))
-                                                        ],
-                                                      )),
+                                                                    .size
+                                                                    .width *
+                                                                .025),
+                                                        child: Icon(
+                                                          Icons.flight_land,
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .colorScheme
+                                                                  .secondary,
+                                                        )),
+                                                    Text(
+                                                        _convertDateTime(
+                                                            dateProvider
+                                                                .getCurrentDates[
+                                                                    index]
+                                                                .dateEnd),
+                                                        style: TextStyle(
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .dividerColor,
+                                                            fontSize: 16))
+                                                  ],
                                                 ),
                                               ),
-                                            ],
-                                          ))
+                                            ),
+                                          ],
+                                        ),
+                                        // child: Column(
+                                        //   children: <Widget>[
+                                        //     Align(
+                                        //         alignment:
+                                        //             Alignment.centerLeft,
+                                        //         child: Container(
+                                        //             width:
+                                        //                 MediaQuery.of(context)
+                                        //                         .size
+                                        //                         .width *
+                                        //                     .5,
+                                        //             child: Flexible(
+                                        //                 child: Text(
+                                        //                     '${dateProvider.getCurrentDates[index].who.first_name} ${dateProvider.getCurrentDates[index].who.last_name}',
+                                        //                     style: TextStyle(
+                                        //                         color: Theme.of(
+                                        //                                 context)
+                                        //                             .dividerColor,
+                                        //                         fontSize: 24,
+                                        //                         fontWeight:
+                                        //                             FontWeight
+                                        //                                 .bold))))),
+                                        //     Padding(
+                                        //         padding: EdgeInsets.only(
+                                        //             top:
+                                        //                 MediaQuery.of(context)
+                                        //                         .size
+                                        //                         .height *
+                                        //                     .01),
+                                        //         child: Align(
+                                        //             alignment:
+                                        //                 Alignment.centerLeft,
+                                        //             child: Container(
+                                        //                 width: MediaQuery.of(
+                                        //                             context)
+                                        //                         .size
+                                        //                         .width *
+                                        //                     .5,
+                                        //                 child: Row(
+                                        //                   children: <Widget>[
+                                        //                     Padding(
+                                        //                         padding: EdgeInsets.only(
+                                        //                             right: MediaQuery.of(context)
+                                        //                                     .size
+                                        //                                     .width *
+                                        //                                 .025),
+                                        //                         child: Icon(
+                                        //                           Icons.phone,
+                                        //                           color: Theme.of(
+                                        //                                   context)
+                                        //                               .colorScheme
+                                        //                               .secondary,
+                                        //                         )),
+                                        //                     Text(
+                                        //                       "(" +
+                                        //                           dateProvider
+                                        //                               .getCurrentDates[
+                                        //                                   index]
+                                        //                               .who
+                                        //                               .phone_number
+                                        //                               .substring(
+                                        //                                   0,
+                                        //                                   3) +
+                                        //                           ") - " +
+                                        //                           dateProvider
+                                        //                               .getCurrentDates[
+                                        //                                   index]
+                                        //                               .who
+                                        //                               .phone_number
+                                        //                               .substring(
+                                        //                                   3,
+                                        //                                   6) +
+                                        //                           " - " +
+                                        //                           dateProvider
+                                        //                               .getCurrentDates[
+                                        //                                   index]
+                                        //                               .who
+                                        //                               .phone_number
+                                        //                               .substring(
+                                        //                                   6,
+                                        //                                   10),
+                                        //                       style:
+                                        //                           TextStyle(
+                                        //                         color: Theme.of(
+                                        //                                 context)
+                                        //                             .dividerColor,
+                                        //                         fontSize: 16,
+                                        //                       ),
+                                        //                     )
+                                        //                   ],
+                                        //                 )))),
+                                        //     Padding(
+                                        //       padding: EdgeInsets.only(
+                                        //           top: MediaQuery.of(context)
+                                        //                   .size
+                                        //                   .height *
+                                        //               .005),
+                                        //       child: Align(
+                                        //           alignment:
+                                        //               Alignment.centerLeft,
+                                        //           child: Container(
+                                        //               width: MediaQuery.of(
+                                        //                           context)
+                                        //                       .size
+                                        //                       .width *
+                                        //                   .5,
+                                        //               child: Row(
+                                        //                 children: <Widget>[
+                                        //                   Padding(
+                                        //                       padding: EdgeInsets.only(
+                                        //                           right: MediaQuery.of(context)
+                                        //                                   .size
+                                        //                                   .width *
+                                        //                               .025),
+                                        //                       child: Icon(
+                                        //                         Icons.place,
+                                        //                         color: Theme.of(
+                                        //                                 context)
+                                        //                             .colorScheme
+                                        //                             .secondary,
+                                        //                       )),
+                                        //                   Flexible(
+                                        //                       child: Text(
+                                        //                     '${dateProvider.getCurrentDates[index].placeName}',
+                                        //                     style: TextStyle(
+                                        //                         color: Theme.of(
+                                        //                                 context)
+                                        //                             .dividerColor,
+                                        //                         fontSize: 16),
+                                        //                   ))
+                                        //                 ],
+                                        //               ))),
+                                        //     ),
+                                        //     Padding(
+                                        //       padding: EdgeInsets.only(
+                                        //           top: MediaQuery.of(context)
+                                        //                   .size
+                                        //                   .height *
+                                        //               .005),
+                                        //       child: Align(
+                                        //         alignment:
+                                        //             Alignment.centerLeft,
+                                        //         child: Container(
+                                        //             width:
+                                        //                 MediaQuery.of(context)
+                                        //                         .size
+                                        //                         .width *
+                                        //                     .5,
+                                        //             child: Row(
+                                        //               children: <Widget>[
+                                        //                 Padding(
+                                        //                     padding: EdgeInsets.only(
+                                        //                         right: MediaQuery.of(
+                                        //                                     context)
+                                        //                                 .size
+                                        //                                 .width *
+                                        //                             .025),
+                                        //                     child: Icon(
+                                        //                       Icons
+                                        //                           .flight_takeoff,
+                                        //                       color: Theme.of(
+                                        //                               context)
+                                        //                           .colorScheme
+                                        //                           .secondary,
+                                        //                     )),
+                                        //                 Text(
+                                        //                     _convertDateTime(
+                                        //                         dateProvider
+                                        //                             .getCurrentDates[
+                                        //                                 index]
+                                        //                             .dateStart),
+                                        //                     style: TextStyle(
+                                        //                         color: Theme.of(
+                                        //                                 context)
+                                        //                             .dividerColor,
+                                        //                         fontSize: 16))
+                                        //               ],
+                                        //             )),
+                                        //       ),
+                                        //     ),
+                                        //     Padding(
+                                        //       padding: EdgeInsets.only(
+                                        //           top: MediaQuery.of(context)
+                                        //                   .size
+                                        //                   .height *
+                                        //               .005),
+                                        //       child: Align(
+                                        //         alignment:
+                                        //             Alignment.centerLeft,
+                                        //         child: Container(
+                                        //             width:
+                                        //                 MediaQuery.of(context)
+                                        //                         .size
+                                        //                         .width *
+                                        //                     .5,
+                                        //             child: Row(
+                                        //               children: <Widget>[
+                                        //                 Padding(
+                                        //                     padding: EdgeInsets.only(
+                                        //                         right: MediaQuery.of(
+                                        //                                     context)
+                                        //                                 .size
+                                        //                                 .width *
+                                        //                             .025),
+                                        //                     child: Icon(
+                                        //                       Icons
+                                        //                           .flight_land,
+                                        //                       color: Theme.of(
+                                        //                               context)
+                                        //                           .colorScheme
+                                        //                           .secondary,
+                                        //                     )),
+                                        //                 Text(
+                                        //                     _convertDateTime(
+                                        //                         dateProvider
+                                        //                             .getCurrentDates[
+                                        //                                 index]
+                                        //                             .dateEnd),
+                                        //                     style: TextStyle(
+                                        //                         color: Theme.of(
+                                        //                                 context)
+                                        //                             .dividerColor,
+                                        //                         fontSize: 16))
+                                        //               ],
+                                        //             )),
+                                        //       ),
+                                        //     ),
+                                        //   ],
+                                        // ),
+                                      )
                                     ]),
                                   ),
                                 ));
@@ -576,7 +776,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
               CustomToast.showDialog(
                   'Please add at least one contact before creating a date',
-                  context);
+                  context,
+                  Toast.CENTER);
             } else {
               Navigator.push(
                   context, MaterialPageRoute(builder: (context) => AddDate()));

@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:snug/screens/navigation/MainPage.dart';
 import 'package:snug/screens/sync/sync.dart';
 
 class Walkthrough extends StatefulWidget {
+  final bool isFirst;
+
+  Walkthrough({this.isFirst});
+
   @override
   _WalkthroughState createState() => _WalkthroughState();
 }
@@ -47,19 +52,25 @@ class _WalkthroughState extends State<Walkthrough> {
                   Theme.of(context).colorScheme.secondary,
                 ])),
             child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 40),
+                padding: EdgeInsets.only(
+                    top: MediaQuery.of(context).size.height * .05),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
                     Container(
+                      padding: EdgeInsets.all(0),
                       alignment: Alignment.centerRight,
                       child: FlatButton(
                         onPressed: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => SyncScreen()),
-                          );
+                          if (widget.isFirst == true) {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => MainPage()),
+                            );
+                          } else {
+                            Navigator.of(context).pop();
+                          }
                         },
                         child: Text(
                           'Skip',
@@ -71,7 +82,7 @@ class _WalkthroughState extends State<Walkthrough> {
                       ),
                     ),
                     Container(
-                      height: 600,
+                      height: MediaQuery.of(context).size.height * .7,
                       child: PageView(
                         physics: ClampingScrollPhysics(),
                         controller: _pageController,
@@ -81,143 +92,56 @@ class _WalkthroughState extends State<Walkthrough> {
                           });
                         },
                         children: <Widget>[
-                          Padding(
-                              padding: EdgeInsets.all(40),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Center(
-                                      child: Image(
-                                    image: AssetImage('assets/image/logo1.png'),
-                                    height: 300,
-                                    width: 300,
-                                  )),
-                                  SizedBox(
-                                    height: 30,
-                                  ),
-                                  Text(
-                                    'Thanks For Choosing Snug!',
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 26.0,
-                                        height: 1.5),
-                                  ),
-                                  SizedBox(
-                                    height: 15,
-                                  ),
-                                  Text(
-                                    'Before starting let us show you some of our unique features! Our goal is to make sure that you can date freely!',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18,
-                                      height: 1.2,
-                                    ),
-                                  )
-                                ],
-                              )),
-                          Padding(
-                              padding: EdgeInsets.all(40),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Center(
-                                    child: ClipOval(
-                                        child: Material(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .secondaryVariant,
-                                            child: InkWell(
-                                              splashColor: Theme.of(context)
-                                                  .colorScheme
-                                                  .primaryVariant,
-                                              child: SizedBox(
-                                                width: 300,
-                                                height: 300,
-                                                child: Icon(
-                                                  Icons.favorite,
-                                                  size: 150,
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                              onTap: () {},
-                                            ))),
-                                  ),
-                                  SizedBox(
-                                    height: 30,
-                                  ),
-                                  Text(
-                                    'Create A Date!',
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 26.0,
-                                        height: 1.5),
-                                  ),
-                                  SizedBox(
-                                    height: 15,
-                                  ),
-                                  Text(
-                                    'The above button is displayed on the home screen. Use it to create a date! Once the date is created we will make sure that you are safe throughout. If something happens, we\'ll let your contact know. ',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18,
-                                      height: 1.2,
-                                    ),
-                                  )
-                                ],
-                              )),
-                          Padding(
-                            padding: EdgeInsets.all(40),
+                          Center(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Center(
-                                  child: ClipOval(
-                                      child: Material(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .secondaryVariant,
-                                          child: InkWell(
-                                            splashColor: Theme.of(context)
-                                                .colorScheme
-                                                .primaryVariant,
-                                            child: SizedBox(
-                                              width: 300,
-                                              height: 300,
-                                              child: Icon(
-                                                Icons.person_add,
-                                                size: 150,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                            onTap: () {},
-                                          ))),
+                                    child: Image(
+                                  image: AssetImage('assets/image/logo1.png'),
+                                  height:
+                                      MediaQuery.of(context).size.height * .4,
+                                  width:
+                                      MediaQuery.of(context).size.height * .4,
+                                )),
+                                SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height * .025,
+                                ),
+                                Center(
+                                  child: Container(
+                                    width:
+                                        MediaQuery.of(context).size.width * .9,
+                                    child: Text(
+                                      'Thanks For Choosing Snug!',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 26.0,
+                                      ),
+                                    ),
+                                  ),
                                 ),
                                 SizedBox(
-                                  height: 30,
+                                  height:
+                                      MediaQuery.of(context).size.height * .025,
                                 ),
-                                Text(
-                                  'Create A Contact!',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 26.0,
-                                      height: 1.5),
-                                ),
-                                SizedBox(
-                                  height: 15,
-                                ),
-                                Text(
-                                  'The above button is displayed on the contact screen. Use it to create your contacts! These are the people that got your back if anything happens.',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18,
-                                    height: 1.2,
+                                Center(
+                                  child: Container(
+                                    width:
+                                        MediaQuery.of(context).size.width * .9,
+                                    child: Text(
+                                      'Before starting let us show you some of our unique features! Our goal is to make sure that you can date freely!',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18,
+                                      ),
+                                    ),
                                   ),
                                 )
                               ],
                             ),
                           ),
-                          Padding(
-                            padding: EdgeInsets.all(40),
+                          Center(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
@@ -232,11 +156,20 @@ class _WalkthroughState extends State<Walkthrough> {
                                                 .colorScheme
                                                 .primaryVariant,
                                             child: SizedBox(
-                                              width: 300,
-                                              height: 300,
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  .4,
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  .4,
                                               child: Icon(
-                                                Icons.edit,
-                                                size: 150,
+                                                Icons.favorite,
+                                                size: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    .2,
                                                 color: Colors.white,
                                               ),
                                             ),
@@ -244,24 +177,182 @@ class _WalkthroughState extends State<Walkthrough> {
                                           ))),
                                 ),
                                 SizedBox(
-                                  height: 30,
+                                  height:
+                                      MediaQuery.of(context).size.height * .025,
                                 ),
-                                Text(
-                                  'Edit Your Profile!',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 26.0,
-                                      height: 1.5),
+                                Center(
+                                  child: Container(
+                                    width:
+                                        MediaQuery.of(context).size.width * .9,
+                                    child: Text(
+                                      'Create A Date!',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 26.0,
+                                      ),
+                                    ),
+                                  ),
                                 ),
                                 SizedBox(
-                                  height: 15,
+                                  height:
+                                      MediaQuery.of(context).size.height * .025,
                                 ),
-                                Text(
-                                  'The above button is displayed on the profile screen. Use it to edit your profile!',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18,
-                                    height: 1.2,
+                                Center(
+                                  child: Container(
+                                    width:
+                                        MediaQuery.of(context).size.width * .9,
+                                    child: Text(
+                                      'The above button is displayed on the home screen. Use it to create a date! Once the date is created we will make sure that you are safe throughout. If something happens, we\'ll let your contact know. ',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18,
+                                        height: 1.2,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                          Center(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Center(
+                                  child: ClipOval(
+                                      child: Material(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .secondaryVariant,
+                                          child: InkWell(
+                                            splashColor: Theme.of(context)
+                                                .colorScheme
+                                                .primaryVariant,
+                                            child: SizedBox(
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  .4,
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  .4,
+                                              child: Icon(
+                                                Icons.person_add,
+                                                size: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    .2,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                            onTap: () {},
+                                          ))),
+                                ),
+                                SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height * .025,
+                                ),
+                                Center(
+                                  child: Container(
+                                    width:
+                                        MediaQuery.of(context).size.width * .9,
+                                    child: Text(
+                                      'Create A Contact!',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 26.0,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height * .025,
+                                ),
+                                Center(
+                                  child: Container(
+                                    width:
+                                        MediaQuery.of(context).size.width * .9,
+                                    child: Text(
+                                      'The above button is displayed on the contact screen. Use it to create your contacts! These are the people that got your back if anything happens.',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                          Center(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Center(
+                                  child: ClipOval(
+                                      child: Material(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .secondaryVariant,
+                                          child: InkWell(
+                                            splashColor: Theme.of(context)
+                                                .colorScheme
+                                                .primaryVariant,
+                                            child: SizedBox(
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  .4,
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  .4,
+                                              child: Icon(
+                                                Icons.edit,
+                                                size: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    .2,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                            onTap: () {},
+                                          ))),
+                                ),
+                                SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height * .025,
+                                ),
+                                Center(
+                                  child: Container(
+                                    width:
+                                        MediaQuery.of(context).size.width * .9,
+                                    child: Text(
+                                      'Edit Your Profile!',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 26.0,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height * .025,
+                                ),
+                                Center(
+                                  child: Container(
+                                    width:
+                                        MediaQuery.of(context).size.width * .9,
+                                    child: Text(
+                                      'The above button is displayed on the profile screen. Use it to edit your profile!',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18,
+                                      ),
+                                    ),
                                   ),
                                 )
                               ],
@@ -270,9 +361,11 @@ class _WalkthroughState extends State<Walkthrough> {
                         ],
                       ),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: _buildPageIndicator(),
+                    Container(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: _buildPageIndicator(),
+                      ),
                     ),
                     _currentPage != _numPages - 1
                         ? Expanded(
@@ -294,12 +387,14 @@ class _WalkthroughState extends State<Walkthrough> {
                                           fontSize: 22.0,
                                         )),
                                     SizedBox(
-                                      width: 10.0,
+                                      width: MediaQuery.of(context).size.width *
+                                          .05,
                                     ),
                                     Icon(
                                       Icons.arrow_forward,
                                       color: Colors.white,
-                                      size: 30,
+                                      size: MediaQuery.of(context).size.width *
+                                          .075,
                                     )
                                   ],
                                 ),
@@ -313,26 +408,27 @@ class _WalkthroughState extends State<Walkthrough> {
         ),
         bottomSheet: _currentPage == _numPages - 1
             ? Container(
-                height: 100,
+                height: MediaQuery.of(context).size.height * .125,
                 width: double.infinity,
                 color: Colors.white,
                 child: GestureDetector(
                   onTap: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => SyncScreen()),
-                    );
+                    if (widget.isFirst == true) {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => SyncScreen()),
+                      );
+                    } else {
+                      Navigator.of(context).pop();
+                    }
                   },
                   child: Center(
-                    child: Padding(
-                      padding: EdgeInsets.only(bottom: 30),
-                      child: Text(
-                        'Get Started!',
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.primary,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold),
-                      ),
+                    child: Text(
+                      'Get Started!',
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.primary,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),
