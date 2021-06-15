@@ -19,6 +19,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:snug/core/logger.dart';
+import 'package:toast/toast.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -69,7 +70,9 @@ class MapScreenState extends State<ProfilePage>
       } else {
         log.e('Failed to refresh user session. Returning to home screen');
         CustomToast.showDialog(
-            'Failed to refresh your session. Please sign in again', context);
+            'Failed to refresh your session. Please sign in again',
+            context,
+            Toast.BOTTOM);
         await Future.delayed(Duration(seconds: 2), () {
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => Authenticate()));

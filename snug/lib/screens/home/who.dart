@@ -101,16 +101,17 @@ class _WhoState extends State<Who> {
           userFound = true;
         });
 
-        CustomToast.showDialog('Does the user info look right?', context);
+        CustomToast.showDialog('Does the user info look right?', context,Toast.BOTTOM);
       } else {
         //user not found in database
 
-        CustomToast.showDialog('Couldn\'t find user', context);
+        CustomToast.showDialog('Couldn\'t find user', context,Toast.BOTTOM);
         _phoneController.text = phone_number;
       }
     } catch (e) {
       CustomToast.showDialog(
-          'Error finding user. Please try later!', context); //add emoji :'(
+          'Error finding user. Please try later!', context,
+          Toast.BOTTOM); //add emoji :'(
     }
   }
 
@@ -442,10 +443,10 @@ class _WhoState extends State<Who> {
                                 dateProvider.setRecentDate(currentDate);
                                 if (userFound = true) {
                                   CustomToast.showDialog(
-                                      'Updated user', context);
+                                      'Updated user', context,Toast.BOTTOM);
                                 } else {
                                   CustomToast.showDialog(
-                                      'Created user', context);
+                                      'Created user', context,Toast.BOTTOM);
                                 }
                               }))
                     ]),

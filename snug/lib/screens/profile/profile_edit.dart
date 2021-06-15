@@ -19,6 +19,7 @@ import 'package:snug/providers/UserProvider.dart';
 import 'package:snug/services/remote_db_service.dart';
 
 import 'package:provider/provider.dart';
+import 'package:toast/toast.dart';
 
 class ProfileEdit extends StatefulWidget {
   @override
@@ -176,7 +177,8 @@ class _ProfileEditState extends State<ProfileEdit> {
                               log.e('Failed to update user. Error: $e');
                               CustomToast.showDialog(
                                   'Looks like we ran into an error. Please try again later! $somethingWentWrong',
-                                  context);
+                                  context,
+                                  Toast.BOTTOM);
                             }
                           })),
                 ]))));
