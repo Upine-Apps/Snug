@@ -310,6 +310,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                                         height:
                                             MediaQuery.of(context).size.height *
                                                 .25,
+
                                         alignment: Alignment.topLeft,
                                         width:
                                             MediaQuery.of(context).size.width *
@@ -417,13 +418,18 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                                                                 .colorScheme
                                                                 .secondary,
                                                           )),
-                                                      Text(
-                                                        '${dateProvider.getCurrentDates[index].placeName}',
-                                                        style: TextStyle(
-                                                            color: Theme.of(
-                                                                    context)
-                                                                .dividerColor,
-                                                            fontSize: 16),
+                                                      Expanded(
+                                                        child: Text(
+                                                          '${dateProvider.getCurrentDates[index].placeName}',
+                                                          maxLines: 2,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          style: TextStyle(
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .dividerColor,
+                                                              fontSize: 16),
+                                                        ),
                                                       )
                                                     ],
                                                   )),
