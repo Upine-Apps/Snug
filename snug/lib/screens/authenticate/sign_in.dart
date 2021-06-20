@@ -72,7 +72,7 @@ class _SignInState extends State<SignIn> {
   displayName() {
     log.i('displayName | $fname');
     if (fname != null) {
-      return Text('Welcome Back $fname!');
+      return Text('Welcome Back, $fname!');
     } else {
       return Text('Welcome!');
     }
