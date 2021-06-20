@@ -25,7 +25,7 @@ class SettingScreen extends StatefulWidget {
 
 class _SettingState extends State<SettingScreen> with WidgetsBindingObserver {
   GlobalKey logOut = GlobalKey();
-  int _selectedPosition = 0;
+  int _selectedPosition;
   var isDarkTheme;
   List themes = Constants.themes;
   SharedPreferences prefs;
@@ -36,9 +36,8 @@ class _SettingState extends State<SettingScreen> with WidgetsBindingObserver {
   void initState() {
     WidgetsBinding.instance.addObserver(this);
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _getSavedTheme();
-    });
+
+    _getSavedTheme();
   }
 
   @override
@@ -113,14 +112,17 @@ class _SettingState extends State<SettingScreen> with WidgetsBindingObserver {
               Padding(
                 padding: EdgeInsets.only(
                     top: MediaQuery.of(context).size.height * .02),
-                child: Header(
-                    child: Text(
-                  'Settings',
-                  style: TextStyle(
-                      color: Theme.of(context).colorScheme.secondaryVariant,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 22),
-                )),
+                child: Container(
+                  height: MediaQuery.of(context).size.height * .05,
+                  child: Header(
+                      child: Text(
+                    'Settings',
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondaryVariant,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 22),
+                  )),
+                ),
               ),
               Padding(
                 padding: EdgeInsets.only(

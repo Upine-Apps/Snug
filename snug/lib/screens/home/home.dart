@@ -186,12 +186,15 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                     Padding(
                       padding: EdgeInsets.only(
                           top: MediaQuery.of(context).size.height * .02),
-                      child: Header(
-                          child: Image.asset(
-                        'assets/image/logo1.png',
-                        fit: BoxFit.contain,
-                        height: 50,
-                      )),
+                      child: Container(
+                        height: MediaQuery.of(context).size.height * .05,
+                        child: Header(
+                            child: Image.asset(
+                          'assets/image/logo1.png',
+                          fit: BoxFit.contain,
+                          height: 50,
+                        )),
+                      ),
                     ),
                     SizedBox(
                       height: MediaQuery.of(context).size.height * .2,
@@ -233,12 +236,15 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                     Padding(
                       padding: EdgeInsets.only(
                           top: MediaQuery.of(context).size.height * .02),
-                      child: Header(
-                          child: Image.asset(
-                        'assets/image/logo1.png',
-                        fit: BoxFit.contain,
-                        height: 50,
-                      )),
+                      child: Container(
+                        height: MediaQuery.of(context).size.height * .05,
+                        child: Header(
+                            child: Image.asset(
+                          'assets/image/logo1.png',
+                          fit: BoxFit.contain,
+                          height: 50,
+                        )),
+                      ),
                     ),
                     SingleChildScrollView(
                       child: Container(
