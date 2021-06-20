@@ -124,6 +124,8 @@ class _WhereState extends State<Where> {
                                 style: TextStyle(color: Colors.white),
                               ),
                               onTap: () {
+                                FocusScope.of(context)
+                                    .requestFocus(new FocusNode());
                                 placeName = mapProvider
                                     .searchResults[index].description;
                                 _controller.text = placeName;

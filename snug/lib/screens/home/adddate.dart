@@ -679,10 +679,12 @@ class _AddDateState extends State<AddDate> {
                                                         Toast.BOTTOM);
                                                   } else {
                                                     if (didSubmitDate ==
-                                                        false) { //fix double tap issue
+                                                        false) {
+                                                      //fix double tap issue
                                                       setState(() {
                                                         didSubmitDate = true;
                                                       });
+
                                                       SharedPreferences
                                                           profile =
                                                           await SharedPreferences

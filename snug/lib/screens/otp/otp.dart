@@ -16,6 +16,7 @@ class Otp extends StatefulWidget {
   final Function toggleView;
   final String password;
   final bool fromSignIn;
+
   Otp(
       {this.toggleView,
       @required this.phonenumber,

@@ -16,6 +16,8 @@ import 'package:snug/screens/sync/sync.dart';
 import 'package:snug/services/cognito/CognitoService.dart';
 import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 
+import 'forgot_password.dart';
+
 class SignIn extends StatefulWidget {
   final Function toggleView;
   SignIn({this.toggleView});
@@ -187,6 +189,7 @@ class _SignInState extends State<SignIn> {
                                                         '+1$phonenumber',
                                                         password);
                                             if (result['status'] == true) {
+                                              //dont need OTP
                                               CognitoUser confirmedUser =
                                                   result['cognitoUser'];
                                               CognitoUserSession userSession =
@@ -227,26 +230,14 @@ class _SignInState extends State<SignIn> {
                                                 } else if (getAttributesResult[
                                                         'status'] ==
                                                     false) {
-                                                  Toast.show(
-                                                      "Failed to login. Error getting userID",
-                                                      context,
-                                                      duration:
-                                                          Toast.LENGTH_LONG,
-                                                      gravity: Toast.BOTTOM,
-                                                      textColor:
-                                                          Theme.of(context)
-                                                              .dividerColor,
-                                                      backgroundColor: Theme.of(
-                                                              context)
-                                                          .colorScheme
-                                                          .secondaryVariant);
-                                                  //toast to let them know there was an error getting their user_id
-                                                  //wait one second
+                                                  //SEND TO PROFILE CREATION
                                                   log.e(
                                                       'ERROR: ${getAttributesResult['message']} | ${getAttributesResult['error']}');
                                                 }
                                               } catch (e) {
-                                                //DO WE NEED THIS???
+                                                log.i(e);
+                                                log.i(
+                                                    'inside catch'); //DO WE NEED THIS???
                                                 // vvvvv
                                                 // Map<String, Object>
                                                 //     getAttributesResult =
@@ -295,47 +286,79 @@ class _SignInState extends State<SignIn> {
                                                     Toast.BOTTOM);
                                               }
                                             }
-                                          } on CognitoUserNewPasswordRequiredException catch (e) {
-                                            log.e('New password required');
-                                            log.e(e);
+                                          } on CognitoClientException catch (e) {
+                                            log.e('Incorrect password');
+                                            CustomToast.showDialog(
+                                                'Incorrect password',
+                                                context,
+                                                Toast.BOTTOM);
+                                          } on CognitoUserMfaRequiredException catch (e) {
+                                            log.e('MFA Needed');
                                           } catch (e) {
-                                            log.i('caught error');
                                             log.e(e);
-                                            //toast to say there was an error and try again
+                                            log.e('in outside catch');
                                           }
                                         }
                                       }),
                                   Padding(
-                                      padding: EdgeInsets.only(top: 25),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: <Widget>[
-                                          Text(
-                                            'Dont Have An Account?',
-                                            style: TextStyle(fontSize: 16),
+                                    padding: EdgeInsets.only(top: 25),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        TextButton(
+                                          child: Text(
+                                            'Forgot Password?',
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .secondaryVariant),
                                           ),
-                                          TextButton(
-                                            child: Text(
-                                              'Sign Up!',
-                                              style: TextStyle(
-                                                  fontSize: 16,
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .secondaryVariant),
-                                            ),
-                                            onPressed: () {
-                                              log.i('pushToRegister');
-                                              Navigator.pushReplacement(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        Register()),
-                                              );
-                                            },
-                                          )
-                                        ],
-                                      ))
+                                          onPressed: () {
+                                            Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      ForgotPassword()),
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(top: 15),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Text(
+                                          'Dont Have An Account?',
+                                          style: TextStyle(fontSize: 16),
+                                        ),
+                                        TextButton(
+                                          child: Text(
+                                            'Sign Up!',
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .secondaryVariant),
+                                          ),
+                                          onPressed: () {
+                                            log.i('pushToRegister');
+                                            Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      Register()),
+                                            );
+                                          },
+                                        )
+                                      ],
+                                    ),
+                                  )
                                 ],
                               )),
                         ],

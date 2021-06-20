@@ -20,6 +20,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:snug/core/logger.dart';
 import 'package:toast/toast.dart';
+import 'dart:math';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -28,6 +29,14 @@ class ProfilePage extends StatefulWidget {
 
 class MapScreenState extends State<ProfilePage>
     with AutomaticKeepAliveClientMixin, WidgetsBindingObserver {
+  String picture;
+  List<String> profilePics = [
+    'assets/image/pug.jpg',
+    'assets/image/dog.jpg',
+    'assets/image/dog2.jpg',
+    'assets/image/dog3.jpg',
+    'assets/image/dog4.jpg'
+  ];
   TextEditingController _controller;
   final Conversion _conversion = Conversion();
 
@@ -91,30 +100,14 @@ class MapScreenState extends State<ProfilePage>
     return dateOfBirth;
   }
 
+  getImage() {}
+
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context, listen: true);
     User currentUser = userProvider.getUser;
 
     File _image;
     final picker = ImagePicker();
-
-    Future getImage() async {
-      SharedPreferences _profileTutorial =
-          await SharedPreferences.getInstance();
-      print('PRINTING FIRST LAUNCH STATUS OF PROFILE');
-
-      print(_profileTutorial.getBool('profileTutorial'));
-
-      // final pickedFile = await picker.getImage(source: ImageSource.camera);
-
-      // setState(() {
-      //   if (pickedFile != null) {
-      //     _image = File(pickedFile.path);
-      //   } else {
-      //     print('No image selected.');
-      //   }
-      // });
-    }
 
     final _formKey = GlobalKey<FormState>();
     super.build(context);
@@ -172,10 +165,7 @@ class MapScreenState extends State<ProfilePage>
                                     decoration: new BoxDecoration(
                                       shape: BoxShape.circle,
                                       image: new DecorationImage(
-                                        image: new ExactAssetImage(
-                                            _image == null
-                                                ? 'assets/image/pug.jpg'
-                                                : Image.file(_image)),
+                                        image: new ExactAssetImage(picture),
                                         fit: BoxFit.cover,
                                       ),
                                     )),

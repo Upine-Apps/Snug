@@ -79,6 +79,37 @@ class CognitoService {
     }
   }
 
+  Future<Map<String, Object>> forgotPassword(String username) async {
+    log.i('forgotPassword | username: $username');
+    final cognitoUser = CognitoUser(username, userPool);
+    var data;
+    try {
+      data = await cognitoUser.forgotPassword();
+      log.d(data);
+      return {'status': true, 'cognitoUser': cognitoUser};
+    } catch (e) {
+      log.i('here');
+      log.e(e);
+      return {'status': false, 'error': e};
+    }
+  }
+
+  Future<Map<String, Object>> confirmPassword(
+      CognitoUser cognitoUser, String otp, String password) async {
+    bool passwordConfirmed = false;
+    try {
+      passwordConfirmed = await cognitoUser.confirmPassword(otp, password);
+      if (passwordConfirmed == true) {
+        return {'status': true};
+      } else {
+        throw Error();
+      }
+    } catch (e) {
+      log.e(e);
+      return {'status': false, 'error': e};
+    }
+  }
+
   Future<Map<String, Object>> confirmUser(
       String username, String confirmationCode) async {
     final cognitoUser = CognitoUser(username, userPool);
@@ -108,7 +139,7 @@ class CognitoService {
       attributes = await cognitoUser.getUserAttributes();
     } catch (e) {
       log.e(e);
-      return {'status': false, 'message': 'ATTRIBUTES', 'error': e};
+      rethrow;
     }
     attributes.forEach((attribute) {
       if (attribute.getName() == 'custom:realUserId') {
@@ -175,11 +206,7 @@ class CognitoService {
       // handle User Confirmation Necessary
     } on CognitoClientException catch (e) {
       log.e(e);
-      log.d(e.name.runtimeType);
-      if (e.name == 'UserNotConfirmedException') {
-        return {'status': false, 'message': 'MFA_NEEDED', 'error': e};
-      }
-      // handle Wrong Username and Password and Cognito Client
+      rethrow;
     } catch (e) {
       log.i('here');
       log.e(e);

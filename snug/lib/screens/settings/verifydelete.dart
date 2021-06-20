@@ -70,7 +70,7 @@ class _VerifyDeleteState extends State<VerifyDelete> {
                         );
                       });
                     } else {
-                      throw Error;
+                      throw Error();
                     }
                   } else {
                     throw Error;
