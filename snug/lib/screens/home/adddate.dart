@@ -36,6 +36,7 @@ class _AddDateState extends State<AddDate> {
   final _formKey = GlobalKey<FormState>();
   final scrollController = ScrollController();
   final dataKey = new GlobalKey();
+  bool didSubmitDate = false;
   Emoji somethingWentWrong = Emoji.byChar(Emojis.flushedFace);
 
   @override
@@ -673,105 +674,127 @@ class _AddDateState extends State<AddDate> {
                                                           .trusted ==
                                                       null) {
                                                     CustomToast.showDialog(
-                                                        'Please atleast choose one contact for this date',
+                                                        'Please choose at least one contact for this date',
                                                         context,
                                                         Toast.BOTTOM);
                                                   } else {
-                                                    SharedPreferences profile =
-                                                        await SharedPreferences
-                                                            .getInstance();
-                                                    String user_one_id = profile
-                                                        .getString('uid');
-                                                    try {
-                                                      dynamic userResult =
-                                                          await RemoteDatabaseHelper
-                                                              .instance
-                                                              .addUser(currentDate
-                                                                  .who); //create the user in the database and get the user id
-                                                      if (userResult[
-                                                              'status'] ==
-                                                          true) {
-                                                        currentDate.who
-                                                            .uid = userResult[
-                                                                'user_id']
-                                                            .toString(); //add the user id to currentDate.who
-                                                        try {
-                                                          dynamic dateResult =
-                                                              await RemoteDatabaseHelper
-                                                                  .instance
-                                                                  .addDate(
-                                                                      currentDate,
-                                                                      user_one_id); //add the date to the database
-
-                                                          if (dateResult[
-                                                                  'status'] ==
-                                                              true) {
-                                                            log.i(
-                                                                'Successfully added date');
-                                                            currentDate.dateId =
-                                                                dateResult[
-                                                                    'data'];
-                                                            dateProvider
-                                                                .setRecentDate(
-                                                                    currentDate);
-                                                            Navigator.pushReplacement(
-                                                                context,
-                                                                MaterialPageRoute(
-                                                                    builder:
-                                                                        (context) =>
-                                                                            DateLoadingScreen()));
-                                                          } else {
-                                                            throw AddDateException(
-                                                                'Failed to add date');
-                                                          }
-                                                        } catch (e) {
-                                                          log.e(
-                                                              'Failed to add user. Error: $e');
-                                                          dateProvider
-                                                              .getCurrentDates
-                                                              .removeLast();
-                                                          CustomToast.showDialog(
-                                                              'Looks like we ran into an error. Please try again later! $somethingWentWrong',
-                                                              context,
-                                                              Toast.BOTTOM);
-                                                          await Future.delayed(
-                                                              Duration(
-                                                                  seconds: 2),
-                                                              () {
-                                                            Navigator.pushReplacement(
-                                                                context,
-                                                                MaterialPageRoute(
-                                                                    builder:
-                                                                        (context) =>
-                                                                            MainPage()));
-                                                          });
-                                                        }
-                                                        ;
-                                                      } else {
-                                                        throw AddUserException(
-                                                            'Failed to add the user');
-                                                      }
-                                                    } catch (e) {
-                                                      dateProvider
-                                                          .getCurrentDates
-                                                          .removeLast();
-                                                      log.e(
-                                                          'Failed to add user. Error: $e');
-                                                      CustomToast.showDialog(
-                                                          'Looks like we ran into an error. Please try again later! $somethingWentWrong',
-                                                          context,
-                                                          Toast.BOTTOM);
-
-                                                      await Future.delayed(
-                                                          Duration(seconds: 2),
-                                                          () {
-                                                        Navigator.pushReplacement(
-                                                            context,
-                                                            MaterialPageRoute(
-                                                                builder:
-                                                                    (context) =>
-                                                                        MainPage()));
+                                                    if (didSubmitDate ==
+                                                        false) { //fix double tap issue
+                                                      setState(() {
+                                                        didSubmitDate = true;
                                                       });
+                                                      SharedPreferences
+                                                          profile =
+                                                          await SharedPreferences
+                                                              .getInstance();
+                                                      String user_one_id =
+                                                          profile
+                                                              .getString('uid');
+                                                      try {
+                                                        dynamic userResult =
+                                                            await RemoteDatabaseHelper
+                                                                .instance
+                                                                .addUser(currentDate
+                                                                    .who); //create the user in the database and get the user id
+                                                        if (userResult[
+                                                                'status'] ==
+                                                            true) {
+                                                          currentDate.who
+                                                              .uid = userResult[
+                                                                  'user_id']
+                                                              .toString(); //add the user id to currentDate.who
+                                                          try {
+                                                            dynamic dateResult =
+                                                                await RemoteDatabaseHelper
+                                                                    .instance
+                                                                    .addDate(
+                                                                        currentDate,
+                                                                        user_one_id); //add the date to the database
+
+                                                            if (dateResult[
+                                                                    'status'] ==
+                                                                true) {
+                                                              log.i(
+                                                                  'Successfully added date');
+                                                              currentDate
+                                                                      .dateId =
+                                                                  dateResult[
+                                                                      'data'];
+                                                              dateProvider
+                                                                  .setRecentDate(
+                                                                      currentDate);
+                                                              Navigator.pushReplacement(
+                                                                  context,
+                                                                  MaterialPageRoute(
+                                                                      builder:
+                                                                          (context) =>
+                                                                              DateLoadingScreen()));
+                                                            } else {
+                                                              throw AddDateException(
+                                                                  'Failed to add date');
+                                                            }
+                                                          } on AddDateException catch (e) {
+                                                            log.e(
+                                                                'Failed to add date. Error: $e');
+                                                            dateProvider
+                                                                .getCurrentDates
+                                                                .removeLast();
+                                                            CustomToast.showDialog(
+                                                                'We ran into an error adding your date. Please try again later! $somethingWentWrong',
+                                                                context,
+                                                                Toast.BOTTOM);
+                                                            await Future
+                                                                .delayed(
+                                                                    Duration(
+                                                                        seconds:
+                                                                            2),
+                                                                    () {
+                                                              Navigator.pushReplacement(
+                                                                  context,
+                                                                  MaterialPageRoute(
+                                                                      builder:
+                                                                          (context) =>
+                                                                              MainPage()));
+                                                            });
+                                                          } catch (e) {
+                                                            log.e(
+                                                                'Failed to add user. Error: $e');
+                                                            dateProvider
+                                                                .getCurrentDates
+                                                                .removeLast();
+                                                            CustomToast.showDialog(
+                                                                'Looks like we ran into an error. Please try again later! $somethingWentWrong',
+                                                                context,
+                                                                Toast.BOTTOM);
+                                                          }
+                                                          ;
+                                                        } else {
+                                                          throw AddUserException(
+                                                              'Failed to add the user');
+                                                        }
+                                                      } catch (e) {
+                                                        dateProvider
+                                                            .getCurrentDates
+                                                            .removeLast();
+                                                        log.e(
+                                                            'Failed to add user. Error: $e');
+                                                        CustomToast.showDialog(
+                                                            'Looks like we ran into an error. Please try again later! $somethingWentWrong',
+                                                            context,
+                                                            Toast.BOTTOM);
+
+                                                        await Future.delayed(
+                                                            Duration(
+                                                                seconds: 2),
+                                                            () {
+                                                          Navigator.pushReplacement(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                  builder:
+                                                                      (context) =>
+                                                                          MainPage()));
+                                                        });
+                                                      }
                                                     }
                                                   }
                                                 }),
