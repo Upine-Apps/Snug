@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:emojis/emojis.dart';
 import 'package:emojis/emoji.dart';
 import 'package:snug/providers/UserProvider.dart';
+import 'package:snug/screens/authenticate/profile.dart';
 import 'package:toast/toast.dart';
 import 'package:snug/screens/authenticate/register.dart';
 import 'package:snug/screens/otp/otp.dart';
@@ -179,6 +180,9 @@ class _SignInState extends State<SignIn> {
                                         style: TextStyle(color: Colors.white),
                                       ),
                                       onPressed: () async {
+                                        FocusScope.of(context)
+                                            .requestFocus(new FocusNode());
+
                                         if (_formKey.currentState.validate()) {
                                           try {
                                             log.i(phonenumber);
@@ -227,73 +231,62 @@ class _SignInState extends State<SignIn> {
                                                         builder: (context) =>
                                                             SyncScreen()),
                                                   );
-                                                } else if (getAttributesResult[
-                                                        'status'] ==
-                                                    false) {
-                                                  //SEND TO PROFILE CREATION
-                                                  log.e(
-                                                      'ERROR: ${getAttributesResult['message']} | ${getAttributesResult['error']}');
                                                 }
                                               } catch (e) {
-                                                log.i(e);
-                                                log.i(
-                                                    'inside catch'); //DO WE NEED THIS???
-                                                // vvvvv
-                                                // Map<String, Object>
-                                                //     getAttributesResult =
-                                                //     await CognitoService.instance
-                                                //         .getUserAttributes(
-                                                //             confirmedUser);
-                                                Toast.show(
-                                                    "Something went wrong, please try again. $somethingWentWrong",
-                                                    context,
-                                                    duration: Toast.LENGTH_LONG,
-                                                    gravity: Toast.BOTTOM,
-                                                    textColor: Theme.of(context)
-                                                        .dividerColor,
-                                                    backgroundColor:
-                                                        Theme.of(context)
-                                                            .colorScheme
-                                                            .secondaryVariant);
-                                                //toast to let them know there was an error getting their user_id
-                                                //wait one second
-                                                CustomToast.showDialog(
-                                                    'No userId found',
-                                                    context,
-                                                    Toast.BOTTOM);
-                                                log.e("Code | $e");
-                                              }
-                                            } else if (result['status'] ==
-                                                false) {
-                                              log.e(
-                                                  'ERROR: ${result['message']} | ${result['error']}');
-                                              if (result['message'] ==
-                                                  'MFA_NEEDED') {
                                                 Navigator.pushReplacement(
                                                   context,
                                                   MaterialPageRoute(
-                                                      builder: (context) => Otp(
+                                                    builder: (context) =>
+                                                        Profile(
                                                             phonenumber:
                                                                 phonenumber,
-                                                            password: password,
-                                                            fromSignIn: true,
-                                                          )),
+                                                            cognitoUser:
+                                                                confirmedUser),
+                                                  ),
                                                 );
-                                              } else {
-                                                CustomToast.showDialog(
-                                                    'Something went wrong',
-                                                    context,
-                                                    Toast.BOTTOM);
                                               }
+                                            } else {
+                                              log.e(
+                                                  'shouldnt have gotten here...');
+                                              throw Error;
                                             }
                                           } on CognitoClientException catch (e) {
-                                            log.e('Incorrect password');
-                                            CustomToast.showDialog(
-                                                'Incorrect password',
+                                            log.w(e);
+                                            if (e.code ==
+                                                'UserNotConfirmedException') {
+                                              log.e('OTP needed');
+                                              CognitoService.instance
+                                                  .resendCode(
+                                                      phonenumber, password);
+                                              Navigator.pushReplacement(
                                                 context,
-                                                Toast.BOTTOM);
+                                                MaterialPageRoute(
+                                                  builder: (context) => Otp(
+                                                    phonenumber: phonenumber,
+                                                    password: password,
+                                                  ),
+                                                ),
+                                              );
+                                            } else {
+                                              log.e('Incorrect password');
+                                              CustomToast.showDialog(
+                                                  'Incorrect password',
+                                                  context,
+                                                  Toast.BOTTOM);
+                                            }
                                           } on CognitoUserMfaRequiredException catch (e) {
                                             log.e('MFA Needed');
+                                            CognitoService.instance.resendCode(
+                                                phonenumber, password);
+                                            Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => Otp(
+                                                  phonenumber: phonenumber,
+                                                  password: password,
+                                                ),
+                                              ),
+                                            );
                                           } catch (e) {
                                             log.e(e);
                                             log.e('in outside catch');

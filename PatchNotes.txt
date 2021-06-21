@@ -1,0 +1,21 @@
+Patch Notes For Snug 0.1.5
+
+1) Users can now set different profile pictures!
+    -- Tap on the "paw" button underneath your profile picture and a random profile pic will be set
+    -- Tap through to find your favorite picture, feel free to send pictures of your furry friends to be featured in the app (must be wearing a hat :p )!
+
+2.) Addressed comments about navigation bar animations and color
+    -- Navigation bar no longer has pulse animation
+
+3.) Users that quit the app after verifying phonenumber can now resume their process of making their profile.
+    -- Users can sign in with their credentials and automatically go to the profile set up page and resume their process.
+
+4.) Users that quit on verification page can now try to sign in and go to the verfication page to resume process
+
+5.) Users can now resend verification code
+
+6.) More verbose error handling with sign in and OTP.
+    -- Error messages should explain what exactly went wrong
+    -- Vague messages mean we don't know what happened. Let us know if you run into one of these and we'll check it out! Please send the steps you took to reach the error and what the message said.
+
+
