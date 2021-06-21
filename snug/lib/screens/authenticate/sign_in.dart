@@ -270,7 +270,8 @@ class _SignInState extends State<SignIn> {
                                                   ),
                                                 );
                                               } else {
-                                                log.e('Incorrect password');
+                                                log.e(
+                                                    'Incorrect phone number or password');
                                                 CustomToast.showDialog(
                                                     'Incorrect password',
                                                     context,

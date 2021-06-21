@@ -25,3 +25,7 @@ Patch Notes For Snug 0.1.5
     
 9.) User can no longer double tap the check mark button at the end of creating a date
     -- This fixed the issue of adding the date twice.
+
+10.) If you don't have an account and try to sign in, it tells you "Incorrect phone number or password"
+    -- This is to protect the identity of our app users in case they don't want people knowing they have an account
+
