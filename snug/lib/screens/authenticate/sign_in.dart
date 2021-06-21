@@ -6,8 +6,6 @@ import 'package:snug/custom_widgets/CustomToast.dart';
 import 'package:snug/custom_widgets/raised_rounded_gradient_button.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:emojis/emojis.dart';
-import 'package:emojis/emoji.dart';
 import 'package:snug/providers/UserProvider.dart';
 import 'package:snug/screens/authenticate/profile.dart';
 import 'package:toast/toast.dart';
@@ -27,14 +25,10 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
-  Emoji somethingWentWrong = Emoji.byChar(Emojis.flushedFace);
-  Emoji wrongPass = Emoji.byChar(Emojis.personGesturingNo);
   FocusNode myFocusNode = new FocusNode();
   var _formKey = GlobalKey<FormState>();
 
-  // TextEditingController numberController = TextEditingController();
-
-  bool isLoggedIn = false;
+  bool didPressLogin = false;
   String phonenumber = '';
   String password = '';
   String fname = '';
@@ -180,81 +174,116 @@ class _SignInState extends State<SignIn> {
                                         style: TextStyle(color: Colors.white),
                                       ),
                                       onPressed: () async {
-                                        FocusScope.of(context)
-                                            .requestFocus(new FocusNode());
+                                        print(didPressLogin);
+                                        if (didPressLogin == false) {
+                                          log.i('PRESSED');
+                                          //fix double tap issue
+                                          setState(() {
+                                            didPressLogin = true;
+                                          });
+                                          FocusScope.of(context)
+                                              .requestFocus(new FocusNode());
 
-                                        if (_formKey.currentState.validate()) {
-                                          try {
-                                            log.i(phonenumber);
-                                            log.i(password);
-                                            Map<String, Object> result =
-                                                await CognitoService.instance
-                                                    .signInUser(
-                                                        '+1$phonenumber',
-                                                        password);
-                                            if (result['status'] == true) {
-                                              //dont need OTP
-                                              CognitoUser confirmedUser =
-                                                  result['cognitoUser'];
-                                              CognitoUserSession userSession =
-                                                  result['cognitoSession'];
-                                              _userProvider.setCognitoUser(
-                                                  confirmedUser);
-                                              _userProvider
-                                                  .setUserSession(userSession);
-                                              try {
-                                                Map<String, Object>
-                                                    getAttributesResult =
-                                                    await CognitoService
-                                                        .instance
-                                                        .getUserAttributes(
-                                                            confirmedUser);
-                                                if (getAttributesResult[
-                                                        'status'] ==
-                                                    true) {
-                                                  String user_id =
-                                                      getAttributesResult[
-                                                          'data'];
-                                                  SharedPreferences _profile =
-                                                      await SharedPreferences
-                                                          .getInstance();
-                                                  log.i('User id: $user_id');
-                                                  _profile.setString(
-                                                      'uid', user_id);
-                                                  _profile.setString(
-                                                      'phonenumber',
-                                                      phonenumber);
-                                                  log.i('pushToMainPage');
+                                          if (_formKey.currentState
+                                              .validate()) {
+                                            try {
+                                              log.i(phonenumber);
+                                              log.i(password);
+                                              Map<String, Object> result =
+                                                  await CognitoService.instance
+                                                      .signInUser(
+                                                          '+1$phonenumber',
+                                                          password);
+                                              if (result['status'] == true) {
+                                                //dont need OTP
+                                                CognitoUser confirmedUser =
+                                                    result['cognitoUser'];
+                                                CognitoUserSession userSession =
+                                                    result['cognitoSession'];
+                                                _userProvider.setCognitoUser(
+                                                    confirmedUser);
+                                                _userProvider.setUserSession(
+                                                    userSession);
+                                                try {
+                                                  Map<String, Object>
+                                                      getAttributesResult =
+                                                      await CognitoService
+                                                          .instance
+                                                          .getUserAttributes(
+                                                              confirmedUser);
+                                                  if (getAttributesResult[
+                                                          'status'] ==
+                                                      true) {
+                                                    String user_id =
+                                                        getAttributesResult[
+                                                            'data'];
+                                                    SharedPreferences _profile =
+                                                        await SharedPreferences
+                                                            .getInstance();
+                                                    log.i('User id: $user_id');
+                                                    _profile.setString(
+                                                        'uid', user_id);
+                                                    _profile.setString(
+                                                        'phonenumber',
+                                                        phonenumber);
+                                                    log.i('pushToMainPage');
+                                                    Navigator.pushReplacement(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              SyncScreen()),
+                                                    );
+                                                  }
+                                                } catch (e) {
                                                   Navigator.pushReplacement(
                                                     context,
                                                     MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            SyncScreen()),
+                                                      builder: (context) =>
+                                                          Profile(
+                                                              phonenumber:
+                                                                  phonenumber,
+                                                              cognitoUser:
+                                                                  confirmedUser),
+                                                    ),
                                                   );
                                                 }
-                                              } catch (e) {
+                                              } else {
+                                                log.e(
+                                                    'shouldnt have gotten here...');
+                                                throw Error;
+                                              }
+                                            } on CognitoClientException catch (e) {
+                                              log.w(e);
+                                              if (e.code ==
+                                                  'UserNotConfirmedException') {
+                                                log.e('OTP needed');
+                                                CognitoService.instance
+                                                    .resendCode(
+                                                        phonenumber, password);
                                                 Navigator.pushReplacement(
                                                   context,
                                                   MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        Profile(
-                                                            phonenumber:
-                                                                phonenumber,
-                                                            cognitoUser:
-                                                                confirmedUser),
+                                                    builder: (context) => Otp(
+                                                      phonenumber: phonenumber,
+                                                      password: password,
+                                                    ),
                                                   ),
                                                 );
+                                              } else {
+                                                log.e('Incorrect password');
+                                                CustomToast.showDialog(
+                                                    'Incorrect password',
+                                                    context,
+                                                    Toast.BOTTOM);
+                                                await Future.delayed(
+                                                    Duration(seconds: 2), () {
+                                                  setState(() {
+                                                    didPressLogin = false;
+                                                  });
+                                                });
                                               }
-                                            } else {
-                                              log.e(
-                                                  'shouldnt have gotten here...');
-                                              throw Error;
-                                            }
-                                          } on CognitoClientException catch (e) {
-                                            log.w(e);
-                                            if (e.code ==
-                                                'UserNotConfirmedException') {
-                                              log.e('OTP needed');
+                                            } on CognitoUserMfaRequiredException catch (e) {
+                                              log.e('MFA Needed');
                                               CognitoService.instance
                                                   .resendCode(
                                                       phonenumber, password);
@@ -267,29 +296,9 @@ class _SignInState extends State<SignIn> {
                                                   ),
                                                 ),
                                               );
-                                            } else {
-                                              log.e('Incorrect password');
-                                              CustomToast.showDialog(
-                                                  'Incorrect password',
-                                                  context,
-                                                  Toast.BOTTOM);
+                                            } catch (e) {
+                                              log.e(e);
                                             }
-                                          } on CognitoUserMfaRequiredException catch (e) {
-                                            log.e('MFA Needed');
-                                            CognitoService.instance.resendCode(
-                                                phonenumber, password);
-                                            Navigator.pushReplacement(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) => Otp(
-                                                  phonenumber: phonenumber,
-                                                  password: password,
-                                                ),
-                                              ),
-                                            );
-                                          } catch (e) {
-                                            log.e(e);
-                                            log.e('in outside catch');
                                           }
                                         }
                                       }),
