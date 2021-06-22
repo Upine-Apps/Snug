@@ -90,9 +90,7 @@ class CognitoService {
       log.d(data);
       return {'status': true, 'cognitoUser': cognitoUser};
     } catch (e) {
-      log.i('here');
-      log.e(e);
-      return {'status': false, 'error': e};
+      rethrow;
     }
   }
 
@@ -107,8 +105,7 @@ class CognitoService {
         throw Error();
       }
     } catch (e) {
-      log.e(e);
-      return {'status': false, 'error': e};
+      rethrow;
     }
   }
 

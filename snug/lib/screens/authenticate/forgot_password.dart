@@ -1,11 +1,16 @@
 import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:logger/logger.dart';
 import 'package:sms_autofill/sms_autofill.dart';
+import 'package:snug/core/logger.dart';
+import 'package:snug/custom_widgets/CustomToast.dart';
 import 'package:snug/custom_widgets/raised_rounded_gradient_button.dart';
+import 'package:snug/screens/authenticate/authenticate.dart';
 import 'package:snug/screens/authenticate/sign_in.dart';
 import 'package:flutter_conditional_rendering/flutter_conditional_rendering.dart';
 import 'package:snug/services/cognito/CognitoService.dart';
+import 'package:toast/toast.dart';
 
 class ForgotPassword extends StatefulWidget {
   @override
@@ -25,10 +30,12 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
   String _otpCode = '';
   String phoneNumber;
+  bool didPressSubmit = false;
   bool gotPhoneNumber = false;
+  CognitoUser cognitoUser;
   var _formKey = GlobalKey<FormState>();
   final _phoneFormKey = GlobalKey<FormState>();
-
+  final log = getLogger('forgotPassword');
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -131,19 +138,25 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                                               gotPhoneNumber =
                                                                   true;
                                                             });
-                                                            Map<String, Object>
-                                                                forgotPasswordResponse =
-                                                                await CognitoService
-                                                                    .instance
-                                                                    .forgotPassword(
-                                                                        "+1$phoneNumber");
-                                                            if (forgotPasswordResponse[
-                                                                    'status'] ==
-                                                                true) {
-                                                              CognitoUser
+                                                            try {
+                                                              Map<String,
+                                                                      Object>
+                                                                  forgotPasswordResponse =
+                                                                  await CognitoService
+                                                                      .instance
+                                                                      .forgotPassword(
+                                                                          "+1$phoneNumber");
+                                                              if (forgotPasswordResponse[
+                                                                      'status'] ==
+                                                                  true) {
+                                                                setState(() {
                                                                   cognitoUser =
-                                                                  forgotPasswordResponse[
-                                                                      'cognitoUser'];
+                                                                      forgotPasswordResponse[
+                                                                          'cognitoUser'];
+                                                                });
+                                                              }
+                                                            } catch (e) {
+                                                              log.e(e);
                                                             }
                                                           }
                                                         }))),
@@ -165,11 +178,54 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                               .secondaryVariant),
                                     ),
                                     currentCode: _otpCode,
-                                    onCodeChanged: (code) {
-                                      if (code.length == 6) {
-                                        print(code);
+                                    onCodeChanged: (code) async {
+                                      if (code.length == 6 &&
+                                          didPressSubmit == false) {
+                                        setState(() {
+                                          didPressSubmit = true;
+                                        });
+                                        log.d(code);
                                         FocusScope.of(context)
                                             .requestFocus(FocusNode());
+                                        try {
+                                          Map<String, Object>
+                                              confirmPasswordResponse =
+                                              await CognitoService.instance
+                                                  .confirmPassword(cognitoUser,
+                                                      code, 'apples');
+                                          if (confirmPasswordResponse[
+                                                  'status'] ==
+                                              true) {
+                                            CustomToast.showDialog(
+                                                'Successfully reset password!',
+                                                context,
+                                                Toast.BOTTOM);
+                                            await Future.delayed(
+                                                Duration(seconds: 2), () {
+                                              Navigator.pushReplacement(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        Authenticate()),
+                                              );
+                                            });
+                                          }
+                                        } on CognitoClientException catch (e) {
+                                          if (e.code ==
+                                              'CodeMismatchException') {
+                                            CustomToast.showDialog(
+                                                'Incorrect OTP code. Please try again!',
+                                                context,
+                                                Toast.BOTTOM);
+                                            setState(() {
+                                              didPressSubmit = false;
+                                            });
+                                          }
+                                          log.e(e);
+                                        }
+                                        // try{
+                                        //   cognitoService.
+                                        // }
                                       }
                                     },
                                   );
