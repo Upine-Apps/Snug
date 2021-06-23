@@ -157,11 +157,11 @@ class RemoteDatabaseHelper {
 
   Future deleteUserDates(String userId) async {
     log.i('deleteUserDates | userId: $userId');
-    final urlDeleteUser = '$_hostUrl/users/$userId';
+    final urlDeleteDates = '$_hostUrl/dates/$userId';
     var _headers = await getHeaders();
     try {
       var responseDeleteUserDates =
-          await http.delete(Uri.encodeFull(urlDeleteUser), headers: _headers);
+          await http.delete(Uri.encodeFull(urlDeleteDates), headers: _headers);
       var extractData = json.decode(responseDeleteUserDates.body);
       if (extractData['status'] == true) {
         log.i('deleteUserDates succeeded!');
@@ -172,7 +172,7 @@ class RemoteDatabaseHelper {
       }
     } catch (e) {
       log.e('Failed to delete user dates. Caught exception $e');
-      return {'status': false};
+      rethrow;
     }
   }
 
@@ -186,14 +186,13 @@ class RemoteDatabaseHelper {
       var extractData = json.decode(responseDeleteUser.body);
       if (extractData['status'] == true) {
         log.i('deleteUser succeeded!');
-
         return {'status': true};
       } else {
         throw DeleteUserException('Error deleting user.');
       }
     } catch (e) {
       log.e('Failed to delete user. Caught exception $e');
-      return {'status': false};
+      rethrow;
     }
   }
 

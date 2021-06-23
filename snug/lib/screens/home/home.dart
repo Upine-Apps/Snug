@@ -186,12 +186,15 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                     Padding(
                       padding: EdgeInsets.only(
                           top: MediaQuery.of(context).size.height * .02),
-                      child: Header(
-                          child: Image.asset(
-                        'assets/image/logo1.png',
-                        fit: BoxFit.contain,
-                        height: 50,
-                      )),
+                      child: Container(
+                        height: MediaQuery.of(context).size.height * .05,
+                        child: Header(
+                            child: Image.asset(
+                          'assets/image/logo1.png',
+                          fit: BoxFit.contain,
+                          height: 50,
+                        )),
+                      ),
                     ),
                     SizedBox(
                       height: MediaQuery.of(context).size.height * .2,
@@ -233,12 +236,15 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                     Padding(
                       padding: EdgeInsets.only(
                           top: MediaQuery.of(context).size.height * .02),
-                      child: Header(
-                          child: Image.asset(
-                        'assets/image/logo1.png',
-                        fit: BoxFit.contain,
-                        height: 50,
-                      )),
+                      child: Container(
+                        height: MediaQuery.of(context).size.height * .05,
+                        child: Header(
+                            child: Image.asset(
+                          'assets/image/logo1.png',
+                          fit: BoxFit.contain,
+                          height: 50,
+                        )),
+                      ),
                     ),
                     SingleChildScrollView(
                       child: Container(
@@ -310,6 +316,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                                         height:
                                             MediaQuery.of(context).size.height *
                                                 .25,
+
                                         alignment: Alignment.topLeft,
                                         width:
                                             MediaQuery.of(context).size.width *
@@ -417,13 +424,18 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                                                                 .colorScheme
                                                                 .secondary,
                                                           )),
-                                                      Text(
-                                                        '${dateProvider.getCurrentDates[index].placeName}',
-                                                        style: TextStyle(
-                                                            color: Theme.of(
-                                                                    context)
-                                                                .dividerColor,
-                                                            fontSize: 16),
+                                                      Expanded(
+                                                        child: Text(
+                                                          '${dateProvider.getCurrentDates[index].placeName}',
+                                                          maxLines: 2,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          style: TextStyle(
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .dividerColor,
+                                                              fontSize: 16),
+                                                        ),
                                                       )
                                                     ],
                                                   )),

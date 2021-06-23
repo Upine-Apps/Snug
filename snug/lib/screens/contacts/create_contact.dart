@@ -117,9 +117,6 @@ class _CreateContactState extends State<CreateContact> {
                                       width: MediaQuery.of(context).size.width *
                                           .25,
                                       child: RaisedRoundedGradientButton(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                .05,
                                         child: Text('Save',
                                             style: TextStyle(
                                                 color: Theme.of(context)

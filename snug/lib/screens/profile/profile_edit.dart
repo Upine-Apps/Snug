@@ -157,7 +157,6 @@ class _ProfileEditState extends State<ProfileEdit> {
                   Padding(
                       padding: EdgeInsets.only(top: 10, bottom: 10),
                       child: RaisedRoundedGradientButton(
-                          width: MediaQuery.of(context).size.width * .5,
                           child: Text("Save",
                               style: TextStyle(
                                   color: Theme.of(context).dividerColor)),

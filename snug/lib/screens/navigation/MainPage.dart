@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gradient_bottom_navigation_bar/gradient_bottom_navigation_bar.dart';
+import 'package:provider/provider.dart';
 import 'package:snug/core/logger.dart';
+import 'package:snug/providers/UserProvider.dart';
 import 'package:snug/screens/contacts/contact.dart';
 import 'package:snug/screens/home/home.dart';
 import 'package:snug/screens/profile/profile.dart';
@@ -23,6 +25,7 @@ class _MainPageState extends State<MainPage> {
     SettingScreen(),
     ProfilePage(),
   ];
+  String picture;
 
   PageController pageController;
 
@@ -35,11 +38,26 @@ class _MainPageState extends State<MainPage> {
     log.i('OnMainPage');
     pageController = PageController();
 
+    setProfilePic();
+
     if (widget.firstContact == true) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (pageController.hasClients) {
           pageController.jumpToPage(1);
         }
+      });
+    }
+  }
+
+  setProfilePic() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.getString('profilePicture') != null) {
+      setState(() {
+        picture = prefs.getString('profilePicture');
+      });
+    } else {
+      setState(() {
+        picture = 'assets/image/pug.jpg';
       });
     }
   }
@@ -64,6 +82,7 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context, listen: true);
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
@@ -72,20 +91,23 @@ class _MainPageState extends State<MainPage> {
           controller: pageController,
           onPageChanged: onPageChanged,
         ),
-        bottomNavigationBar: GradientBottomNavigationBar(
-          backgroundColorEnd: Theme.of(context).colorScheme.secondaryVariant,
-          backgroundColorStart: Theme.of(context).colorScheme.primaryVariant,
+        bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          backgroundColor: Theme.of(context).colorScheme.secondaryVariant,
           currentIndex: _selectedIndex,
           onTap: _onTapped,
+          showSelectedLabels: true,
+          showUnselectedLabels: false,
           items: [
             BottomNavigationBarItem(
+              // activeIcon:
               title: Text(
                 'Home',
                 style:
                     TextStyle(color: Theme.of(context).colorScheme.secondary),
               ),
               // label: "Home",
-              backgroundColor: Theme.of(context).colorScheme.secondary,
+              backgroundColor: Theme.of(context).colorScheme.secondaryVariant,
               icon: Icon(
                 Icons.home,
                 color: Theme.of(context).colorScheme.secondary,
@@ -98,7 +120,7 @@ class _MainPageState extends State<MainPage> {
                     TextStyle(color: Theme.of(context).colorScheme.secondary),
               ),
               // label: "Contacts",
-              backgroundColor: Theme.of(context).colorScheme.secondary,
+              backgroundColor: Theme.of(context).colorScheme.secondaryVariant,
               icon: Icon(
                 Icons.contacts_rounded,
                 color: Theme.of(context).colorScheme.secondary,
@@ -111,7 +133,7 @@ class _MainPageState extends State<MainPage> {
                     TextStyle(color: Theme.of(context).colorScheme.secondary),
               ),
               // label: "Settings",
-              backgroundColor: Theme.of(context).colorScheme.secondary,
+              backgroundColor: Theme.of(context).colorScheme.secondaryVariant,
               icon: Icon(
                 Icons.settings,
                 color: Theme.of(context).colorScheme.secondary,
@@ -124,9 +146,12 @@ class _MainPageState extends State<MainPage> {
                     TextStyle(color: Theme.of(context).colorScheme.secondary),
               ),
               // label: "Profile",
-              backgroundColor: Theme.of(context).colorScheme.secondary,
+              backgroundColor: Theme.of(context).colorScheme.secondaryVariant,
               icon: CircleAvatar(
-                  backgroundImage: new AssetImage('assets/image/pug.jpg')),
+                  backgroundImage: new AssetImage(
+                      userProvider.getProfilePic == null
+                          ? picture
+                          : userProvider.getProfilePic)),
             ),
           ],
         ),

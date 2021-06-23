@@ -2,6 +2,8 @@ import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:snug/core/errors/AddUserAttributeException.dart';
+import 'package:snug/core/errors/GetUserAttributeException.dart';
+import 'package:snug/core/errors/OTPException.dart';
 import 'package:snug/core/logger.dart';
 import 'package:snug/providers/UserProvider.dart';
 
@@ -79,6 +81,34 @@ class CognitoService {
     }
   }
 
+  Future<Map<String, Object>> forgotPassword(String username) async {
+    log.i('forgotPassword | username: $username');
+    final cognitoUser = CognitoUser(username, userPool);
+    var data;
+    try {
+      data = await cognitoUser.forgotPassword();
+      log.d(data);
+      return {'status': true, 'cognitoUser': cognitoUser};
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<Map<String, Object>> confirmPassword(
+      CognitoUser cognitoUser, String otp, String password) async {
+    bool passwordConfirmed = false;
+    try {
+      passwordConfirmed = await cognitoUser.confirmPassword(otp, password);
+      if (passwordConfirmed == true) {
+        return {'status': true};
+      } else {
+        throw Error();
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<Map<String, Object>> confirmUser(
       String username, String confirmationCode) async {
     final cognitoUser = CognitoUser(username, userPool);
@@ -86,18 +116,14 @@ class CognitoService {
     try {
       registrationConfirmed =
           await cognitoUser.confirmRegistration(confirmationCode);
+      if (registrationConfirmed == false) {
+        throw OTPException('Failed to verify OTP');
+      } else {
+        return {'status': true, 'cognitoUser': cognitoUser};
+      }
     } catch (e) {
       log.e(e);
-      return {'status': false, 'message': 'AUTH_ERROR', 'error': e};
-    }
-    if (registrationConfirmed == false) {
-      return {
-        'status': false,
-        'message': 'AUTH_ERROR',
-        'error': 'Confirmation error'
-      };
-    } else {
-      return {'status': true, 'cognitoUser': cognitoUser};
+      throw OTPException('Failed to verify OTP');
     }
   }
 
@@ -106,25 +132,21 @@ class CognitoService {
     Map<String, Object> returnMap = {'status': null};
     try {
       attributes = await cognitoUser.getUserAttributes();
+      attributes.forEach((attribute) {
+        if (attribute.getName() == 'custom:realUserId') {
+          log.i(attribute.getName());
+          log.i(attribute.getValue());
+          returnMap = {'status': true, 'data': attribute.getValue()};
+        }
+      });
+      if (returnMap['status'] != null) {
+        return returnMap;
+      } else {
+        throw GetUserAttributeException('No attributes found');
+      }
     } catch (e) {
       log.e(e);
-      return {'status': false, 'message': 'ATTRIBUTES', 'error': e};
-    }
-    attributes.forEach((attribute) {
-      if (attribute.getName() == 'custom:realUserId') {
-        log.i(attribute.getName());
-        log.i(attribute.getValue());
-        returnMap = {'status': true, 'data': attribute.getValue()};
-      }
-    });
-    if (returnMap['status'] != null) {
-      return returnMap;
-    } else {
-      return {
-        'status': false,
-        'message': 'NO_ATTRIBUTE',
-        'error': 'No attribute found'
-      };
+      rethrow;
     }
   }
 
@@ -144,6 +166,15 @@ class CognitoService {
     } catch (e) {
       log.e('ERROR: $e');
       return {'status': false, 'message': 'ATTRIBUTES', 'error': e};
+    }
+  }
+
+  resendCode(String username, String password) async {
+    final cognitoUser = CognitoUser('+1$username', userPool);
+    try {
+      final status = await cognitoUser.resendConfirmationCode();
+    } catch (e) {
+      rethrow;
     }
   }
 
@@ -175,15 +206,10 @@ class CognitoService {
       // handle User Confirmation Necessary
     } on CognitoClientException catch (e) {
       log.e(e);
-      log.d(e.name.runtimeType);
-      if (e.name == 'UserNotConfirmedException') {
-        return {'status': false, 'message': 'MFA_NEEDED', 'error': e};
-      }
-      // handle Wrong Username and Password and Cognito Client
+      rethrow;
     } catch (e) {
-      log.i('here');
       log.e(e);
-      return {'status': false, 'message': 'GENERAL', 'error': e};
+      rethrow;
     }
     prefs.setString('accessToken', userSession.getAccessToken().getJwtToken());
     prefs.setString('refreshToken', userSession.getRefreshToken().getToken());
