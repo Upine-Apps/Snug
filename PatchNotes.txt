@@ -29,3 +29,16 @@ Patch Notes For Snug 0.1.5
 10.) If you don't have an account and try to sign in, it tells you "Incorrect phone number or password"
     -- This is to protect the identity of our app users in case they don't want people knowing they have an account
 
+11.) Added forgot password
+    -- Users can now change their passwords! 
+    -- In the "Sign In" screen there is a forgot password that users can tap on to go through the process of changing their password.
+    -- iOS users please check to see if the OTP is auto fillable.
+    -- Give this option a try and see if you can find any bugs in there!
+    
+
+12.) Added account deletion functionality
+    -- Users can now delete their accounts if they don't want to use the Snug app anymore.
+    -- Removes all their dates and their user information from our database.
+    -- Removes login information from our user management service.
+    -- Does NOT remove any information that other people have entered about them (this is the same as if you didn't have an account and someone went on a date with you).
+    -- We do NOT keep any records of our user after deletion. Your privacy matters to us!

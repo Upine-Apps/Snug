@@ -281,78 +281,81 @@ class _RegisterState extends State<Register> {
                                       SizedBox(
                                         height: 20,
                                       ),
-                                      RaisedRoundedGradientButton(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                .5,
-                                        child: Text(
-                                          'Register',
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                        onPressed: () async {
-                                          if (_formKey.currentState
-                                              .validate()) {
-                                            if (this.checkEULA == true &&
-                                                this.checkPrivacyPolicy ==
-                                                    true) {
-                                              try {
-                                                Map<String, Object> result =
-                                                    await CognitoService
-                                                        .instance
-                                                        .registerUser(
-                                                            phonenumber,
-                                                            password2);
-                                                if (result['status'] == false) {
-                                                  if (result['message'] ==
-                                                      'ERROR') {
-                                                    CustomToast.showDialog(
-                                                        'Something went wrong, please try again. $somethingWentWrong',
-                                                        context,
-                                                        Toast.BOTTOM);
-                                                  } else if (result[
-                                                          'message'] ==
-                                                      'REGISTRATION_FAILED') {
-                                                    CustomToast.showDialog(
-                                                        'Registration failed, please try again later. $somethingWentWrong',
-                                                        context,
-                                                        Toast.BOTTOM);
-                                                    //toast to say registration failed and give reason
-                                                    //LOOK INTO THE POSSIBLE REASONS AND RETURN FROM THE COGNITO SERVICE CLASS
-                                                  }
-                                                } else if (result['status'] ==
-                                                    true) {
-                                                  SharedPreferences _profile =
-                                                      await SharedPreferences
-                                                          .getInstance();
-                                                  _profile.setString(
-                                                      'phonenumber',
-                                                      phonenumber);
+                                      Container(
+                                        child: RaisedRoundedGradientButton(
+                                          child: Text(
+                                            'Register',
+                                            style: TextStyle(
+                                                color: Theme.of(context)
+                                                    .dividerColor),
+                                          ),
+                                          onPressed: () async {
+                                            if (_formKey.currentState
+                                                .validate()) {
+                                              if (this.checkEULA == true &&
+                                                  this.checkPrivacyPolicy ==
+                                                      true) {
+                                                try {
+                                                  Map<String, Object> result =
+                                                      await CognitoService
+                                                          .instance
+                                                          .registerUser(
+                                                              phonenumber,
+                                                              password2);
+                                                  if (result['status'] ==
+                                                      false) {
+                                                    if (result['message'] ==
+                                                        'ERROR') {
+                                                      CustomToast.showDialog(
+                                                          'Something went wrong, please try again. $somethingWentWrong',
+                                                          context,
+                                                          Toast.BOTTOM);
+                                                    } else if (result[
+                                                            'message'] ==
+                                                        'REGISTRATION_FAILED') {
+                                                      CustomToast.showDialog(
+                                                          'Registration failed, please try again later. $somethingWentWrong',
+                                                          context,
+                                                          Toast.BOTTOM);
+                                                      //toast to say registration failed and give reason
+                                                      //LOOK INTO THE POSSIBLE REASONS AND RETURN FROM THE COGNITO SERVICE CLASS
+                                                    }
+                                                  } else if (result['status'] ==
+                                                      true) {
+                                                    SharedPreferences _profile =
+                                                        await SharedPreferences
+                                                            .getInstance();
+                                                    _profile.setString(
+                                                        'phonenumber',
+                                                        phonenumber);
 
-                                                  Navigator.pushReplacement(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            Otp(
-                                                              phonenumber:
-                                                                  phonenumber,
-                                                              password:
-                                                                  password2,
-                                                              fromSignIn: false,
-                                                            )),
-                                                  );
+                                                    Navigator.pushReplacement(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              Otp(
+                                                                phonenumber:
+                                                                    phonenumber,
+                                                                password:
+                                                                    password2,
+                                                                fromSignIn:
+                                                                    false,
+                                                              )),
+                                                    );
+                                                  }
+                                                } catch (e) {
+                                                  log.d('registration error');
+                                                  log.e(e);
                                                 }
-                                              } catch (e) {
-                                                log.d('registration error');
-                                                log.e(e);
+                                              } else {
+                                                CustomToast.showDialog(
+                                                    'You must accept the privacy policy and the EULA to use the Snug app',
+                                                    context,
+                                                    Toast.BOTTOM);
                                               }
-                                            } else {
-                                              CustomToast.showDialog(
-                                                  'You must accept the privacy policy and the EULA to use the Snug app',
-                                                  context,
-                                                  Toast.BOTTOM);
                                             }
-                                          }
-                                        },
+                                          },
+                                        ),
                                       )
                                     ],
                                   ))

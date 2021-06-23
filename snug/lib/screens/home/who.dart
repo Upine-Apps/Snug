@@ -101,16 +101,16 @@ class _WhoState extends State<Who> {
           userFound = true;
         });
 
-        CustomToast.showDialog('Does the user info look right?', context,Toast.BOTTOM);
+        CustomToast.showDialog(
+            'Does the user info look right?', context, Toast.BOTTOM);
       } else {
         //user not found in database
 
-        CustomToast.showDialog('Couldn\'t find user', context,Toast.BOTTOM);
+        CustomToast.showDialog('Couldn\'t find user', context, Toast.BOTTOM);
         _phoneController.text = phone_number;
       }
     } catch (e) {
-      CustomToast.showDialog(
-          'Error finding user. Please try later!', context,
+      CustomToast.showDialog('Error finding user. Please try later!', context,
           Toast.BOTTOM); //add emoji :'(
     }
   }
@@ -163,7 +163,6 @@ class _WhoState extends State<Who> {
                             top: MediaQuery.of(context).size.height * .05),
                         child: Container(
                             child: RaisedRoundedGradientButton(
-                                width: MediaQuery.of(context).size.width * .5,
                                 child: Text('Check for user',
                                     style: TextStyle(
                                         color: Theme.of(context).dividerColor)),
@@ -443,10 +442,10 @@ class _WhoState extends State<Who> {
                                 dateProvider.setRecentDate(currentDate);
                                 if (userFound = true) {
                                   CustomToast.showDialog(
-                                      'Updated user', context,Toast.BOTTOM);
+                                      'Updated user', context, Toast.BOTTOM);
                                 } else {
                                   CustomToast.showDialog(
-                                      'Created user', context,Toast.BOTTOM);
+                                      'Created user', context, Toast.BOTTOM);
                                 }
                               }))
                     ]),

@@ -2,6 +2,9 @@ import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:snug/core/errors/DeleteUserDatesException.dart';
+import 'package:snug/core/errors/DeleteUserException.dart';
+import 'package:snug/core/logger.dart';
 import 'package:snug/custom_widgets/CustomToast.dart';
 import 'package:snug/models/Contact.dart';
 import 'package:snug/providers/ContactProvider.dart';
@@ -18,6 +21,7 @@ class VerifyDelete extends StatefulWidget {
 }
 
 class _VerifyDeleteState extends State<VerifyDelete> {
+  final log = getLogger('verifyDelete');
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -41,17 +45,20 @@ class _VerifyDeleteState extends State<VerifyDelete> {
               CognitoUser cognitoUser = userProvider.getCognitoUser;
               try {
                 String _userId = userProvider.getUser.uid;
-
+                log.d('deleting dates');
                 Map<String, Object> deleteDatesResult =
                     await RemoteDatabaseHelper.instance
                         .deleteUserDates(_userId);
-                if (deleteDatesResult['status' == true]) {
+                if (deleteDatesResult['status'] == true) {
+                  log.d('deleting user');
                   Map<String, Object> deleteUserResult =
                       await RemoteDatabaseHelper.instance.deleteUser(_userId);
                   if (deleteUserResult['status'] == true) {
+                    log.d('deleting cognito user');
                     Map<String, Object> deleteCognitoResult =
                         await CognitoService.instance.deleteUser(cognitoUser);
                     if (deleteCognitoResult['status'] == true) {
+                      log.d('deleting providers');
                       //clear all data from app
                       userProvider.removeUser();
                       contactProvider.removeAllContacts();
@@ -69,16 +76,11 @@ class _VerifyDeleteState extends State<VerifyDelete> {
                               builder: (context) => Authenticate()),
                         );
                       });
-                    } else {
-                      throw Error();
                     }
-                  } else {
-                    throw Error;
                   }
-                } else {
-                  throw Error;
                 }
               } catch (e) {
+                log.e(e);
                 CustomToast.showDialog(
                     'Failed to delete account, please try again.',
                     context,

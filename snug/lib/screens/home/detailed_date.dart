@@ -852,8 +852,6 @@ class _DetailDateState extends State<DetailDate> {
                             child: Container(
                                 alignment: Alignment.center,
                                 child: RaisedRoundedGradientButton(
-                                  width: MediaQuery.of(context).size.width *
-                                      (.95 / 2),
                                   child: Text(
                                     _converedTimeInDateTime(
                                                 _currentDate.dateStart)

@@ -400,7 +400,7 @@ class _ProfileState extends State<Profile> {
                               height: 25.0,
                             ),
                             RaisedRoundedGradientButton(
-                              width: MediaQuery.of(context).size.width * .25,
+                              //check size of button
                               child: Text(
                                 'Register',
                                 style: TextStyle(

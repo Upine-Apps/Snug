@@ -172,7 +172,7 @@ class RemoteDatabaseHelper {
       }
     } catch (e) {
       log.e('Failed to delete user dates. Caught exception $e');
-      return {'status': false};
+      rethrow;
     }
   }
 
@@ -186,14 +186,13 @@ class RemoteDatabaseHelper {
       var extractData = json.decode(responseDeleteUser.body);
       if (extractData['status'] == true) {
         log.i('deleteUser succeeded!');
-
         return {'status': true};
       } else {
         throw DeleteUserException('Error deleting user.');
       }
     } catch (e) {
       log.e('Failed to delete user. Caught exception $e');
-      return {'status': false};
+      rethrow;
     }
   }
 

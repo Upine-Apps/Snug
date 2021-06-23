@@ -131,8 +131,7 @@ class _SignInState extends State<SignIn> {
                                       icon: Icon(Icons.phone),
                                       labelText: 'Phone Number',
                                       labelStyle: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
+                                          color: Theme.of(context).hintColor,
                                           fontSize: 16.0),
                                     ),
                                     validator: (String val) {
@@ -149,12 +148,11 @@ class _SignInState extends State<SignIn> {
                                     height: 20.0,
                                   ),
                                   TextFormField(
-                                    decoration: const InputDecoration(
+                                    decoration: InputDecoration(
                                       icon: Icon(Icons.security),
                                       labelText: 'Password',
                                       labelStyle: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
+                                          color: Theme.of(context).hintColor,
                                           fontSize: 16.0),
                                     ),
                                     obscureText: true,
@@ -167,8 +165,8 @@ class _SignInState extends State<SignIn> {
                                     height: 20,
                                   ),
                                   RaisedRoundedGradientButton(
-                                      width: MediaQuery.of(context).size.width *
-                                          .5,
+                                      //check button size
+
                                       child: Text(
                                         'Login',
                                         style: TextStyle(color: Colors.white),
@@ -273,7 +271,7 @@ class _SignInState extends State<SignIn> {
                                                 log.e(
                                                     'Incorrect phone number or password');
                                                 CustomToast.showDialog(
-                                                    'Incorrect password',
+                                                    'Incorrect phone number or password',
                                                     context,
                                                     Toast.BOTTOM);
                                                 await Future.delayed(
