@@ -20,6 +20,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:snug/core/logger.dart';
 import 'package:toast/toast.dart';
+import 'dart:math';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -28,6 +29,16 @@ class ProfilePage extends StatefulWidget {
 
 class MapScreenState extends State<ProfilePage>
     with AutomaticKeepAliveClientMixin, WidgetsBindingObserver {
+  String picture;
+  List<String> profilePics = [
+    'assets/image/pug.jpg',
+    'assets/image/dog.jpg',
+    'assets/image/dog1.jpg',
+    'assets/image/dog2.jpg',
+    'assets/image/dog3.jpg',
+    'assets/image/dog4.jpg'
+  ];
+  var random = new Random();
   TextEditingController _controller;
   final Conversion _conversion = Conversion();
 
@@ -35,6 +46,24 @@ class MapScreenState extends State<ProfilePage>
   void initState() {
     WidgetsBinding.instance.addObserver(this);
     _controller = new TextEditingController();
+
+    setProfilePic();
+  }
+
+  setProfilePic() async {
+    final _userProvider = Provider.of<UserProvider>(context, listen: false);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.getString('profilePicture') != null) {
+      setState(() {
+        picture = prefs.getString('profilePicture');
+      });
+      _userProvider.setProfilePic(picture);
+    } else {
+      setState(() {
+        picture = 'assets/image/pug.jpg';
+      });
+      _userProvider.setProfilePic(picture);
+    }
   }
 
   @override
@@ -91,30 +120,30 @@ class MapScreenState extends State<ProfilePage>
     return dateOfBirth;
   }
 
+  getImage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final currentProfilePic = prefs.getString("profilePicture");
+    final _userProvider = Provider.of<UserProvider>(context, listen: false);
+
+    int randomInt = random.nextInt(6);
+    String randomPic = profilePics[randomInt];
+    while (randomPic == currentProfilePic) {
+      randomInt = random.nextInt(6);
+      randomPic = profilePics[randomInt];
+    }
+    setState(() {
+      picture = randomPic;
+      prefs.setString("profilePicture", randomPic);
+    });
+    _userProvider.setProfilePic(randomPic);
+  }
+
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context, listen: true);
     User currentUser = userProvider.getUser;
 
     File _image;
     final picker = ImagePicker();
-
-    Future getImage() async {
-      SharedPreferences _profileTutorial =
-          await SharedPreferences.getInstance();
-      print('PRINTING FIRST LAUNCH STATUS OF PROFILE');
-
-      print(_profileTutorial.getBool('profileTutorial'));
-
-      // final pickedFile = await picker.getImage(source: ImageSource.camera);
-
-      // setState(() {
-      //   if (pickedFile != null) {
-      //     _image = File(pickedFile.path);
-      //   } else {
-      //     print('No image selected.');
-      //   }
-      // });
-    }
 
     final _formKey = GlobalKey<FormState>();
     super.build(context);
@@ -136,14 +165,17 @@ class MapScreenState extends State<ProfilePage>
               Padding(
                 padding: EdgeInsets.only(
                     top: MediaQuery.of(context).size.height * .02),
-                child: Header(
-                    child: Text(
-                  'Profile',
-                  style: TextStyle(
-                      color: Theme.of(context).colorScheme.secondaryVariant,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 22),
-                )),
+                child: Container(
+                  height: MediaQuery.of(context).size.height * .05,
+                  child: Header(
+                      child: Text(
+                    'Profile',
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondaryVariant,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 22),
+                  )),
+                ),
               ),
               Column(
                 children: <Widget>[
@@ -166,19 +198,18 @@ class MapScreenState extends State<ProfilePage>
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                                Container(
-                                    width: 140.0,
-                                    height: 140.0,
-                                    decoration: new BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      image: new DecorationImage(
-                                        image: new ExactAssetImage(
-                                            _image == null
-                                                ? 'assets/image/pug.jpg'
-                                                : Image.file(_image)),
-                                        fit: BoxFit.cover,
-                                      ),
-                                    )),
+                                picture == null
+                                    ? CircularProgressIndicator()
+                                    : Container(
+                                        width: 140.0,
+                                        height: 140.0,
+                                        decoration: new BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          image: new DecorationImage(
+                                            image: new ExactAssetImage(picture),
+                                            fit: BoxFit.cover,
+                                          ),
+                                        )),
                               ],
                             ),
                             Padding(
@@ -196,7 +227,7 @@ class MapScreenState extends State<ProfilePage>
                                               .primaryVariant,
                                           radius: 25.0,
                                           child: new Icon(
-                                            Icons.camera_alt,
+                                            Icons.pets,
                                             color: Colors.white,
                                           ),
                                         ))

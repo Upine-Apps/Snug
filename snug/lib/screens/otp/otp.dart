@@ -1,21 +1,25 @@
 import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 import 'package:flutter/material.dart';
+import 'package:snug/core/errors/OTPException.dart';
 import 'package:snug/core/logger.dart';
+import 'package:snug/custom_widgets/CustomToast.dart';
 import 'package:snug/screens/authenticate/authenticate.dart';
 import 'package:snug/screens/authenticate/profile.dart';
 import 'package:snug/screens/sync/sync.dart';
 import 'package:snug/services/cognito/CognitoService.dart';
 import 'package:snug/themes/apptheme.dart';
 import 'package:snug/themes/themeNotifier.dart';
-import 'package:otp_screen/otp_screen.dart';
+import 'package:snug/custom_widgets/OtpScreen.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:toast/toast.dart';
 
 class Otp extends StatefulWidget {
   final String phonenumber;
   final Function toggleView;
   final String password;
   final bool fromSignIn;
+
   Otp(
       {this.toggleView,
       @required this.phonenumber,
@@ -28,107 +32,52 @@ class Otp extends StatefulWidget {
 class _OtpState extends State<Otp> {
   final log = getLogger('Otp');
   CognitoUser cognitoUser;
-  pushToAuthentication(BuildContext context) {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => Authenticate()),
-    );
-  }
+  bool returnToSignIn = false;
 
   Future<String> validateOtp(String confirmationCode) async {
     print('Pressed button to validate');
-    Map<String, Object> confirmationResult = await CognitoService.instance
-        .confirmUser('+1${widget.phonenumber}', confirmationCode);
-    if (confirmationResult['status'] == true) {
-      Map<String, Object> signInResult = await CognitoService.instance
-          .signInUser('+1${widget.phonenumber}', widget.password);
-      if (signInResult['status'] == true) {
-        if (widget.fromSignIn) {
-          CognitoUser confirmedUser = signInResult['cognitoUser'];
-          Map<String, Object> getAttributesResult =
-              await CognitoService.instance.getUserAttributes(confirmedUser);
-          if (getAttributesResult['status'] == true) {
-            String user_id = getAttributesResult['data'];
-            SharedPreferences _profile = await SharedPreferences.getInstance();
-            log.i('User id: $user_id');
-            _profile.setString('uid', user_id);
-            _profile.setString('phonenumber', widget.phonenumber);
-            log.i('pushToMainPage');
-
-            return null;
-          } else if (getAttributesResult['status'] == false) {
-            //toast to let them know there was an error getting their user_id, returning to sign in screen
-            //wait one second
-            log.e(
-                'ERROR: ${getAttributesResult['message']} | ${getAttributesResult['error']}');
-            log.i('pushToAuthenticate');
-
-            return 'The OTP was incorrect';
-          } else {
-            //toast them to let them know there was an error signing in and to try again
-            //wait one second
-            //return to authentication screen
-            log.i('pushToAuthenticate');
-            return 'Attribute error';
-          }
-        } else {
+    try {
+      Map<String, Object> confirmationResult = await CognitoService.instance
+          .confirmUser('+1${widget.phonenumber}', confirmationCode);
+      if (confirmationResult['status'] == true) {
+        Map<String, Object> signInResult = await CognitoService.instance
+            .signInUser('+1${widget.phonenumber}', widget.password);
+        if (signInResult['status'] == true) {
           setState(() {
             cognitoUser = signInResult['cognitoUser'];
           });
-          //toast to let them know they successfully confirmed their account
-          //wait one second
-          //push to profile creation screen
           log.i('pushToProfileCreation');
           return null;
+        } else {
+          log.e('ERROR: ${signInResult['message']} | ${signInResult['error']}');
+          log.i('pushToAuthenticate');
+          throw Error;
         }
-      } else if (signInResult['status'] == false) {
-        //THIS MIGHT BE OVERKILL BUT I JUST WANT TO MAKE SURE ALL THE CASES ARE COVERED
-        //toast them to let them know there was an error signing in and to try again
-        //wait one second
-        //return to authentication screen
-        log.e('ERROR: ${signInResult['message']} | ${signInResult['error']}');
-        log.i('pushToAuthenticate');
-        return 'Sign In error';
-      } else {
-        //toast them to let them know there was an error signing in and to try again
-        //wait one second
-        //return to authentication screen
-        log.i('pushToAuthenticate');
-        return 'Sign In error';
       }
-    } else if (confirmationResult['status'] == false) {
-      log.e('${confirmationResult['message']}: ${confirmationResult['error']}');
-      //toast to notify of the error
-      if (confirmationResult['message'] == 'INCORRECT_OTP') {
-        log.i('Incorrect OTP code');
-        return "Incorrect OTP code";
-        //add resend functionality here
-      } else {
-        log.e(
-            'ERROR: ${confirmationResult['message']} | ${confirmationResult['error']}');
-        log.i('pushToAuthenticate');
-        //toast them to let them know there was an error
-        //wait one second
-        //return to authentication screen
-        return 'OTP error';
-      }
-    } else {
-      //toast them to let them know there was an error
-      //wait one second
-      //return to authentication screen
-      log.i('pushToAuthenticate');
-      return "OTP error";
+    } on OTPException catch (e) {
+      log.e(e);
+      return ('Incorrect OTP code');
+    } catch (e) {
+      await Future.delayed(Duration(seconds: 2), () {
+        CustomToast.showDialog(
+            'Error signing in. Returning you to the sign in screen',
+            context,
+            Toast.BOTTOM);
+      });
+      setState(() {
+        returnToSignIn = true;
+      });
+      return null;
     }
   }
 
-  //do we need this?
   void moveToNextScreen(context) {
-    if (widget.fromSignIn == true) {
+    if (returnToSignIn == true) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => SyncScreen()),
+        MaterialPageRoute(builder: (context) => Authenticate()),
       );
-    } else if (widget.fromSignIn == false) {
+    } else {
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -174,8 +123,16 @@ class _OtpState extends State<Otp> {
                       },
                     ),
                     FlatButton(
-                        onPressed: () {
-                          //INSERT CODE TO RESEND VERFICATION CODE
+                        onPressed: () async {
+                          try {
+                            await CognitoService.instance.resendCode(
+                                widget.phonenumber, widget.password);
+                          } catch (e) {
+                            CustomToast.showDialog(
+                                'Failed to resend OTP code. Please check your texts for the original code',
+                                context,
+                                Toast.BOTTOM);
+                          }
                         },
                         child: Text('Resend Code'))
                   ],

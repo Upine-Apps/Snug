@@ -185,6 +185,8 @@ class _ProfileState extends State<Profile> {
                             GestureDetector(
                               behavior: HitTestBehavior.opaque,
                               onTap: () async {
+                                FocusScope.of(context)
+                                    .requestFocus(new FocusNode());
                                 DateTime date = await showDatePicker(
                                     context: context,
                                     firstDate:
@@ -194,8 +196,9 @@ class _ProfileState extends State<Profile> {
                                         DateTime.now().month,
                                         DateTime.now().day),
                                     initialDate: DateTime.now());
-                                _dob = '${date.month}/${date.day}/${date.year}';
-
+                                _dob = date == null
+                                    ? 'Date of Birth'
+                                    : '${date.month}/${date.day}/${date.year}';
                                 tempUser.dob = _dob;
                               },
                               child: Row(
@@ -232,6 +235,8 @@ class _ProfileState extends State<Profile> {
                                 }
                               },
                               onChanged: (val) {
+                                FocusScope.of(context)
+                                    .requestFocus(new FocusNode());
                                 log.i('setSex | $val');
                                 tempUser.sex = val;
                                 setState(() {
@@ -247,6 +252,8 @@ class _ProfileState extends State<Profile> {
                                 }
                               },
                               onChanged: (val) {
+                                FocusScope.of(context)
+                                    .requestFocus(new FocusNode());
                                 log.i('setRace | $val');
                                 tempUser.race = val;
                                 setState(() {
@@ -262,6 +269,8 @@ class _ProfileState extends State<Profile> {
                                 }
                               },
                               onChanged: (val) {
+                                FocusScope.of(context)
+                                    .requestFocus(new FocusNode());
                                 log.i('setEye | $val');
                                 tempUser.eye = val;
                                 setState(() {
@@ -277,6 +286,8 @@ class _ProfileState extends State<Profile> {
                                 }
                               },
                               onChanged: (val) {
+                                FocusScope.of(context)
+                                    .requestFocus(new FocusNode());
                                 log.i('setHair | $val');
                                 tempUser.hair = val;
                                 setState(() {
@@ -309,6 +320,8 @@ class _ProfileState extends State<Profile> {
                                         }
                                       },
                                       onChanged: (val) {
+                                        FocusScope.of(context)
+                                            .requestFocus(new FocusNode());
                                         log.i('setFt | $val');
                                         tempUser.ft = val;
                                         setState(() {
@@ -327,6 +340,8 @@ class _ProfileState extends State<Profile> {
                                         }
                                       },
                                       onChanged: (val) {
+                                        FocusScope.of(context)
+                                            .requestFocus(new FocusNode());
                                         log.i('setInches | $val');
                                         tempUser.inch = val;
                                         setState(() {
@@ -385,12 +400,15 @@ class _ProfileState extends State<Profile> {
                               height: 25.0,
                             ),
                             RaisedRoundedGradientButton(
-                              width: MediaQuery.of(context).size.width * .25,
+                              //check size of button
                               child: Text(
                                 'Register',
-                                style: TextStyle(color: Colors.white),
+                                style: TextStyle(
+                                    color: Theme.of(context).dividerColor),
                               ),
                               onPressed: () async {
+                                FocusScope.of(context)
+                                    .requestFocus(new FocusNode());
                                 // print(height);
 //DO ERROR HANDLING HERE
 //NEED TO CHECK IF ALL THE THINGS HAVE BEEN FILLED OUT

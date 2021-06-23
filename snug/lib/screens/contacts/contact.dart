@@ -118,16 +118,19 @@ class _ContactState extends State<Contact>
                         Padding(
                           padding: EdgeInsets.only(
                               top: MediaQuery.of(context).size.height * .02),
-                          child: Header(
-                              child: Text(
-                            'Contacts',
-                            style: TextStyle(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .secondaryVariant,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 22),
-                          )),
+                          child: Container(
+                            height: MediaQuery.of(context).size.height * .05,
+                            child: Header(
+                                child: Text(
+                              'Contacts',
+                              style: TextStyle(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .secondaryVariant,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 22),
+                            )),
+                          ),
                         ),
                         SizedBox(
                           height: MediaQuery.of(context).size.height * .2,
@@ -140,7 +143,7 @@ class _ContactState extends State<Contact>
                                 left: MediaQuery.of(context).size.width * .15),
                             child: Container(
                                 child: Text(
-                              'All of your Contacts will appear here',
+                              'All of your contacts will appear here',
                               style: TextStyle(
                                   color: Theme.of(context).hintColor,
                                   fontSize: 24),
@@ -169,16 +172,19 @@ class _ContactState extends State<Contact>
                             top: MediaQuery.of(context).size.height * .02,
                             bottom: MediaQuery.of(context).size.height * .02,
                           ),
-                          child: Header(
-                              child: Text(
-                            'Contacts',
-                            style: TextStyle(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .secondaryVariant,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 22),
-                          )),
+                          child: Container(
+                            height: MediaQuery.of(context).size.height * .05,
+                            child: Header(
+                                child: Text(
+                              'Contacts',
+                              style: TextStyle(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .secondaryVariant,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 22),
+                            )),
+                          ),
                         ),
                         Container(
                           height: MediaQuery.of(context).size.height * .875,

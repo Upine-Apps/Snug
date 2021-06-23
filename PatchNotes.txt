@@ -1,0 +1,44 @@
+Patch Notes For Snug 0.1.5
+
+1) Users can now set different profile pictures!
+    -- Tap on the "paw" button underneath your profile picture and a random profile pic will be set
+    -- Tap through to find your favorite picture, feel free to send pictures of your furry friends to be featured in the app (must be wearing a hat :p )!
+
+2.) Addressed comments about navigation bar animations and color
+    -- Navigation bar no longer has pulse animation
+
+3.) Users that quit the app after verifying phonenumber can now resume their process of making their profile
+    -- Users can sign in with their credentials and automatically go to the profile set up page and resume their process.
+
+4.) Users that quit on verification page can now try to sign in and go to the verfication page to resume process
+
+5.) Users can now resend verification code
+
+6.) More verbose error handling with sign in and OTP
+    -- Error messages should explain what exactly went wrong
+    -- Vague messages mean we don't know what happened. Let us know if you run into one of these and we'll check it out! Please send the steps you took to reach the error and what the message said.
+
+7.) Fixed visual issues with text and headers on Home screen and Contact screen
+
+8.) Users can no longer spam "Login" button
+    -- This fixed the issue of the popup disappearing instantly.
+    
+9.) User can no longer double tap the check mark button at the end of creating a date
+    -- This fixed the issue of adding the date twice.
+
+10.) If you don't have an account and try to sign in, it tells you "Incorrect phone number or password"
+    -- This is to protect the identity of our app users in case they don't want people knowing they have an account
+
+11.) Added forgot password
+    -- Users can now change their passwords! 
+    -- In the "Sign In" screen there is a forgot password that users can tap on to go through the process of changing their password.
+    -- iOS users please check to see if the OTP is auto fillable.
+    -- Give this option a try and see if you can find any bugs in there!
+    
+
+12.) Added account deletion functionality
+    -- Users can now delete their accounts if they don't want to use the Snug app anymore.
+    -- Removes all their dates and their user information from our database.
+    -- Removes login information from our user management service.
+    -- Does NOT remove any information that other people have entered about them (this is the same as if you didn't have an account and someone went on a date with you).
+    -- We do NOT keep any records of our user after deletion. Your privacy matters to us!

@@ -6,15 +6,16 @@ import 'package:snug/custom_widgets/CustomToast.dart';
 import 'package:snug/custom_widgets/raised_rounded_gradient_button.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:emojis/emojis.dart';
-import 'package:emojis/emoji.dart';
 import 'package:snug/providers/UserProvider.dart';
+import 'package:snug/screens/authenticate/profile.dart';
 import 'package:toast/toast.dart';
 import 'package:snug/screens/authenticate/register.dart';
 import 'package:snug/screens/otp/otp.dart';
 import 'package:snug/screens/sync/sync.dart';
 import 'package:snug/services/cognito/CognitoService.dart';
 import 'package:amazon_cognito_identity_dart_2/cognito.dart';
+
+import 'forgot_password.dart';
 
 class SignIn extends StatefulWidget {
   final Function toggleView;
@@ -24,14 +25,10 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
-  Emoji somethingWentWrong = Emoji.byChar(Emojis.flushedFace);
-  Emoji wrongPass = Emoji.byChar(Emojis.personGesturingNo);
   FocusNode myFocusNode = new FocusNode();
   var _formKey = GlobalKey<FormState>();
 
-  // TextEditingController numberController = TextEditingController();
-
-  bool isLoggedIn = false;
+  bool didPressLogin = false;
   String phonenumber = '';
   String password = '';
   String fname = '';
@@ -72,7 +69,7 @@ class _SignInState extends State<SignIn> {
   displayName() {
     log.i('displayName | $fname');
     if (fname != null) {
-      return Text('Welcome Back $fname!');
+      return Text('Welcome Back, $fname!');
     } else {
       return Text('Welcome!');
     }
@@ -134,8 +131,7 @@ class _SignInState extends State<SignIn> {
                                       icon: Icon(Icons.phone),
                                       labelText: 'Phone Number',
                                       labelStyle: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
+                                          color: Theme.of(context).hintColor,
                                           fontSize: 16.0),
                                     ),
                                     validator: (String val) {
@@ -152,12 +148,11 @@ class _SignInState extends State<SignIn> {
                                     height: 20.0,
                                   ),
                                   TextFormField(
-                                    decoration: const InputDecoration(
+                                    decoration: InputDecoration(
                                       icon: Icon(Icons.security),
                                       labelText: 'Password',
                                       labelStyle: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
+                                          color: Theme.of(context).hintColor,
                                           fontSize: 16.0),
                                     ),
                                     obscureText: true,
@@ -170,172 +165,201 @@ class _SignInState extends State<SignIn> {
                                     height: 20,
                                   ),
                                   RaisedRoundedGradientButton(
-                                      width: MediaQuery.of(context).size.width *
-                                          .5,
+                                      //check button size
+
                                       child: Text(
                                         'Login',
                                         style: TextStyle(color: Colors.white),
                                       ),
                                       onPressed: () async {
-                                        if (_formKey.currentState.validate()) {
-                                          try {
-                                            log.i(phonenumber);
-                                            log.i(password);
-                                            Map<String, Object> result =
-                                                await CognitoService.instance
-                                                    .signInUser(
-                                                        '+1$phonenumber',
-                                                        password);
-                                            if (result['status'] == true) {
-                                              CognitoUser confirmedUser =
-                                                  result['cognitoUser'];
-                                              CognitoUserSession userSession =
-                                                  result['cognitoSession'];
-                                              _userProvider.setCognitoUser(
-                                                  confirmedUser);
-                                              _userProvider
-                                                  .setUserSession(userSession);
-                                              try {
-                                                Map<String, Object>
-                                                    getAttributesResult =
-                                                    await CognitoService
-                                                        .instance
-                                                        .getUserAttributes(
-                                                            confirmedUser);
-                                                if (getAttributesResult[
-                                                        'status'] ==
-                                                    true) {
-                                                  String user_id =
-                                                      getAttributesResult[
-                                                          'data'];
-                                                  SharedPreferences _profile =
-                                                      await SharedPreferences
-                                                          .getInstance();
-                                                  log.i('User id: $user_id');
-                                                  _profile.setString(
-                                                      'uid', user_id);
-                                                  _profile.setString(
-                                                      'phonenumber',
-                                                      phonenumber);
-                                                  log.i('pushToMainPage');
+                                        print(didPressLogin);
+                                        if (didPressLogin == false) {
+                                          log.i('PRESSED');
+                                          //fix double tap issue
+                                          setState(() {
+                                            didPressLogin = true;
+                                          });
+                                          FocusScope.of(context)
+                                              .requestFocus(new FocusNode());
+
+                                          if (_formKey.currentState
+                                              .validate()) {
+                                            try {
+                                              log.i(phonenumber);
+                                              log.i(password);
+                                              Map<String, Object> result =
+                                                  await CognitoService.instance
+                                                      .signInUser(
+                                                          '+1$phonenumber',
+                                                          password);
+                                              if (result['status'] == true) {
+                                                //dont need OTP
+                                                CognitoUser confirmedUser =
+                                                    result['cognitoUser'];
+                                                CognitoUserSession userSession =
+                                                    result['cognitoSession'];
+                                                _userProvider.setCognitoUser(
+                                                    confirmedUser);
+                                                _userProvider.setUserSession(
+                                                    userSession);
+                                                try {
+                                                  Map<String, Object>
+                                                      getAttributesResult =
+                                                      await CognitoService
+                                                          .instance
+                                                          .getUserAttributes(
+                                                              confirmedUser);
+                                                  if (getAttributesResult[
+                                                          'status'] ==
+                                                      true) {
+                                                    String user_id =
+                                                        getAttributesResult[
+                                                            'data'];
+                                                    SharedPreferences _profile =
+                                                        await SharedPreferences
+                                                            .getInstance();
+                                                    log.i('User id: $user_id');
+                                                    _profile.setString(
+                                                        'uid', user_id);
+                                                    _profile.setString(
+                                                        'phonenumber',
+                                                        phonenumber);
+                                                    log.i('pushToMainPage');
+                                                    Navigator.pushReplacement(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              SyncScreen()),
+                                                    );
+                                                  }
+                                                } catch (e) {
                                                   Navigator.pushReplacement(
                                                     context,
                                                     MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            SyncScreen()),
+                                                      builder: (context) =>
+                                                          Profile(
+                                                              phonenumber:
+                                                                  phonenumber,
+                                                              cognitoUser:
+                                                                  confirmedUser),
+                                                    ),
                                                   );
-                                                } else if (getAttributesResult[
-                                                        'status'] ==
-                                                    false) {
-                                                  Toast.show(
-                                                      "Failed to login. Error getting userID",
-                                                      context,
-                                                      duration:
-                                                          Toast.LENGTH_LONG,
-                                                      gravity: Toast.BOTTOM,
-                                                      textColor:
-                                                          Theme.of(context)
-                                                              .dividerColor,
-                                                      backgroundColor: Theme.of(
-                                                              context)
-                                                          .colorScheme
-                                                          .secondaryVariant);
-                                                  //toast to let them know there was an error getting their user_id
-                                                  //wait one second
-                                                  log.e(
-                                                      'ERROR: ${getAttributesResult['message']} | ${getAttributesResult['error']}');
                                                 }
-                                              } catch (e) {
-                                                //DO WE NEED THIS???
-                                                // vvvvv
-                                                // Map<String, Object>
-                                                //     getAttributesResult =
-                                                //     await CognitoService.instance
-                                                //         .getUserAttributes(
-                                                //             confirmedUser);
-                                                Toast.show(
-                                                    "Something went wrong, please try again. $somethingWentWrong",
-                                                    context,
-                                                    duration: Toast.LENGTH_LONG,
-                                                    gravity: Toast.BOTTOM,
-                                                    textColor: Theme.of(context)
-                                                        .dividerColor,
-                                                    backgroundColor:
-                                                        Theme.of(context)
-                                                            .colorScheme
-                                                            .secondaryVariant);
-                                                //toast to let them know there was an error getting their user_id
-                                                //wait one second
-                                                CustomToast.showDialog(
-                                                    'No userId found',
-                                                    context,
-                                                    Toast.BOTTOM);
-                                                log.e("Code | $e");
+                                              } else {
+                                                log.e(
+                                                    'shouldnt have gotten here...');
+                                                throw Error;
                                               }
-                                            } else if (result['status'] ==
-                                                false) {
-                                              log.e(
-                                                  'ERROR: ${result['message']} | ${result['error']}');
-                                              if (result['message'] ==
-                                                  'MFA_NEEDED') {
+                                            } on CognitoClientException catch (e) {
+                                              log.w(e);
+                                              if (e.code ==
+                                                  'UserNotConfirmedException') {
+                                                log.e('OTP needed');
+                                                CognitoService.instance
+                                                    .resendCode(
+                                                        phonenumber, password);
                                                 Navigator.pushReplacement(
                                                   context,
                                                   MaterialPageRoute(
-                                                      builder: (context) => Otp(
-                                                            phonenumber:
-                                                                phonenumber,
-                                                            password: password,
-                                                            fromSignIn: true,
-                                                          )),
+                                                    builder: (context) => Otp(
+                                                      phonenumber: phonenumber,
+                                                      password: password,
+                                                    ),
+                                                  ),
                                                 );
                                               } else {
+                                                log.e(
+                                                    'Incorrect phone number or password');
                                                 CustomToast.showDialog(
-                                                    'Something went wrong',
+                                                    'Incorrect phone number or password',
                                                     context,
                                                     Toast.BOTTOM);
+                                                await Future.delayed(
+                                                    Duration(seconds: 2), () {
+                                                  setState(() {
+                                                    didPressLogin = false;
+                                                  });
+                                                });
                                               }
+                                            } on CognitoUserMfaRequiredException catch (e) {
+                                              log.e('MFA Needed');
+                                              CognitoService.instance
+                                                  .resendCode(
+                                                      phonenumber, password);
+                                              Navigator.pushReplacement(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) => Otp(
+                                                    phonenumber: phonenumber,
+                                                    password: password,
+                                                  ),
+                                                ),
+                                              );
+                                            } catch (e) {
+                                              log.e(e);
                                             }
-                                          } on CognitoUserNewPasswordRequiredException catch (e) {
-                                            log.e('New password required');
-                                            log.e(e);
-                                          } catch (e) {
-                                            log.i('caught error');
-                                            log.e(e);
-                                            //toast to say there was an error and try again
                                           }
                                         }
                                       }),
                                   Padding(
-                                      padding: EdgeInsets.only(top: 25),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: <Widget>[
-                                          Text(
-                                            'Dont Have An Account?',
-                                            style: TextStyle(fontSize: 16),
+                                    padding: EdgeInsets.only(top: 25),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        TextButton(
+                                          child: Text(
+                                            'Forgot Password?',
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .secondaryVariant),
                                           ),
-                                          TextButton(
-                                            child: Text(
-                                              'Sign Up!',
-                                              style: TextStyle(
-                                                  fontSize: 16,
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .secondaryVariant),
-                                            ),
-                                            onPressed: () {
-                                              log.i('pushToRegister');
-                                              Navigator.pushReplacement(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        Register()),
-                                              );
-                                            },
-                                          )
-                                        ],
-                                      ))
+                                          onPressed: () {
+                                            Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      ForgotPassword()),
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(top: 15),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Text(
+                                          'Dont Have An Account?',
+                                          style: TextStyle(fontSize: 16),
+                                        ),
+                                        TextButton(
+                                          child: Text(
+                                            'Sign Up!',
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .secondaryVariant),
+                                          ),
+                                          onPressed: () {
+                                            log.i('pushToRegister');
+                                            Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      Register()),
+                                            );
+                                          },
+                                        )
+                                      ],
+                                    ),
+                                  )
                                 ],
                               )),
                         ],
