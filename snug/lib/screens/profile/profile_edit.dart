@@ -3,6 +3,7 @@ import 'dart:ui' as ui;
 import 'package:emojis/emoji.dart';
 import 'package:emojis/emojis.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:snug/core/errors/UpdateUserException.dart';
 import 'package:snug/core/logger.dart';
 import 'package:snug/custom_widgets/CustomToast.dart';
@@ -36,6 +37,7 @@ class _ProfileEditState extends State<ProfileEdit> {
   String _state;
   Emoji somethingWentWrong = Emoji.byChar(Emojis.flushedFace);
   final log = getLogger('EditProfile');
+  var _profileEditKey = GlobalKey<FormState>();
 
   User tempUser = new User();
 
@@ -66,120 +68,139 @@ class _ProfileEditState extends State<ProfileEdit> {
                     fit: BoxFit.fill)),
             child: SingleChildScrollView(
                 physics: NeverScrollableScrollPhysics(),
-                child: Column(children: <Widget>[
-                  SizedBox(height: MediaQuery.of(context).size.height * .175),
-                  Container(
-                    padding: EdgeInsets.only(
-                        left: MediaQuery.of(context).size.width * .05,
-                        right: MediaQuery.of(context).size.width * .05),
-                    alignment: Alignment.centerLeft,
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        mainAxisSize: MainAxisSize.max,
-                        children: <Widget>[
-                          Container(
-                              width: MediaQuery.of(context).size.width * .3,
-                              child: Eye(
-                                onChanged: (String val) {
-                                  tempUser.eye = val;
-                                  setState(() {
-                                    _eye = val;
-                                  });
-                                },
-                                value: _eye,
-                              )),
-                          Container(
-                              width: MediaQuery.of(context).size.width * .3,
-                              child: Hair(
-                                  onChanged: (String val) {
-                                    tempUser.hair = val;
-                                    setState(() {
-                                      _hair = val;
-                                    });
-                                  },
-                                  value: _hair)),
-                        ]),
-                  ),
-                  Container(
+                child: Form(
+                  key: _profileEditKey,
+                  child: Column(children: <Widget>[
+                    SizedBox(height: MediaQuery.of(context).size.height * .1),
+                    Container(
                       padding: EdgeInsets.only(
                           left: MediaQuery.of(context).size.width * .05,
                           right: MediaQuery.of(context).size.width * .05),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        mainAxisSize: MainAxisSize.max,
-                        children: <Widget>[
-                          Container(
-                              width: MediaQuery.of(context).size.width * .3,
-                              child: Feet(
-                                  onChanged: (String val) {
-                                    tempUser.ft = val;
-                                    setState(() {
-                                      _ft = val;
-                                    });
-                                  },
-                                  value: _ft)),
-                          Container(
-                              width: MediaQuery.of(context).size.width * .3,
-                              child: Inch(
-                                  onChanged: (String val) {
-                                    tempUser.inch = val;
-                                    setState(() {
-                                      _in = val;
-                                    });
-                                  },
-                                  value: _in))
-                        ],
-                      )),
-                  Container(
-                      padding: EdgeInsets.only(
-                          left: MediaQuery.of(context).size.width * .05,
-                          right: MediaQuery.of(context).size.width * .05),
+                      alignment: Alignment.centerLeft,
                       child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           mainAxisSize: MainAxisSize.max,
                           children: <Widget>[
                             Container(
-                              width: MediaQuery.of(context).size.width * .3,
-                              child: TextFormField(
-                                decoration: InputDecoration(
-                                  enabledBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color:
-                                              Theme.of(context).primaryColor)),
-                                  labelText: 'Zip',
+                                width: MediaQuery.of(context).size.width * .3,
+                                child: Eye(
+                                  onChanged: (String val) {
+                                    tempUser.eye = val;
+                                    setState(() {
+                                      _eye = val;
+                                    });
+                                  },
+                                  value: _eye,
+                                )),
+                            Container(
+                                width: MediaQuery.of(context).size.width * .3,
+                                child: Hair(
+                                    onChanged: (String val) {
+                                      tempUser.hair = val;
+                                      setState(() {
+                                        _hair = val;
+                                      });
+                                    },
+                                    value: _hair)),
+                          ]),
+                    ),
+                    Container(
+                        padding: EdgeInsets.only(
+                            left: MediaQuery.of(context).size.width * .05,
+                            right: MediaQuery.of(context).size.width * .05),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisSize: MainAxisSize.max,
+                          children: <Widget>[
+                            Container(
+                                width: MediaQuery.of(context).size.width * .3,
+                                child: Feet(
+                                    onChanged: (String val) {
+                                      tempUser.ft = val;
+                                      setState(() {
+                                        _ft = val;
+                                      });
+                                    },
+                                    value: _ft)),
+                            Container(
+                                width: MediaQuery.of(context).size.width * .3,
+                                child: Inch(
+                                    onChanged: (String val) {
+                                      tempUser.inch = val;
+                                      setState(() {
+                                        _in = val;
+                                      });
+                                    },
+                                    value: _in))
+                          ],
+                        )),
+                    Container(
+                        padding: EdgeInsets.only(
+                            left: MediaQuery.of(context).size.width * .05,
+                            right: MediaQuery.of(context).size.width * .05),
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisSize: MainAxisSize.max,
+                            children: <Widget>[
+                              Container(
+                                width: MediaQuery.of(context).size.width * .3,
+                                child: TextFormField(
+                                  keyboardType: TextInputType.number,
+                                  validator: (String val) {
+                                    if (val.length > 0 && val.length != 5) {
+                                      return "Enter a valid zip code";
+                                    }
+                                  },
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.allow(
+                                        RegExp('[0-9]+')),
+                                  ],
+                                  decoration: InputDecoration(
+                                    errorStyle: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondaryVariant),
+                                    enabledBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Theme.of(context)
+                                                .primaryColor)),
+                                    labelText: 'Zip',
+                                  ),
+                                  onChanged: (val) {
+                                    tempUser.zip = val;
+                                  },
                                 ),
-                                onChanged: (val) {
-                                  tempUser.zip = val;
-                                },
                               ),
-                            ),
-                          ])),
-                  Padding(
-                      padding: EdgeInsets.only(top: 10, bottom: 10),
-                      child: RaisedRoundedGradientButton(
-                          child: Text("Save",
-                              style: TextStyle(
-                                  color: Theme.of(context).dividerColor)),
-                          onPressed: () async {
-                            _user.editUser(tempUser);
-                            try {
-                              dynamic result = await RemoteDatabaseHelper
-                                  .instance
-                                  .updateUser(_user.getUser, tempUser.uid);
-                              if (result['status'] == true) {
-                                Navigator.pop(context);
-                              } else {
-                                throw UpdateUserException(
-                                    'Failed to update the user');
+                            ])),
+                    Padding(
+                        padding: EdgeInsets.only(top: 10, bottom: 10),
+                        child: RaisedRoundedGradientButton(
+                            child: Text("Save",
+                                style: TextStyle(
+                                    color: Theme.of(context).dividerColor)),
+                            onPressed: () async {
+                              if (_profileEditKey.currentState.validate()) {
+                                _user.editUser(tempUser);
+                                try {
+                                  dynamic result = await RemoteDatabaseHelper
+                                      .instance
+                                      .updateUser(_user.getUser, tempUser.uid);
+                                  if (result['status'] == true) {
+                                    Navigator.pop(context);
+                                  } else {
+                                    throw UpdateUserException(
+                                        'Failed to update the user');
+                                  }
+                                } catch (e) {
+                                  log.e('Failed to update user. Error: $e');
+                                  CustomToast.showDialog(
+                                      'Looks like we ran into an error. Please try again later! $somethingWentWrong',
+                                      context,
+                                      Toast.BOTTOM);
+                                }
                               }
-                            } catch (e) {
-                              log.e('Failed to update user. Error: $e');
-                              CustomToast.showDialog(
-                                  'Looks like we ran into an error. Please try again later! $somethingWentWrong',
-                                  context,
-                                  Toast.BOTTOM);
-                            }
-                          })),
-                ]))));
+                            })),
+                  ]),
+                ))));
   }
 }

@@ -55,7 +55,7 @@ class _WhereState extends State<Where> {
   @override
   Widget build(BuildContext context) {
     final mapProvider = Provider.of<MapProvider>(context, listen: true);
-    // checkPermissions(mapProvider);
+    checkPermissions(mapProvider);
     return (mapProvider.currentLocation == null)
         ? Center(
             child: CircularProgressIndicator(),

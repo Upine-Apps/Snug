@@ -70,6 +70,7 @@ class CognitoService {
     CognitoUserPoolData data;
     try {
       data = await userPool.signUp('+1$username', password);
+      log.i(data);
     } catch (e) {
       log.e(e);
       return {'status': false, 'message': 'ERROR', 'error': e};

@@ -216,6 +216,8 @@ class _WhoState extends State<Who> {
                                     width:
                                         MediaQuery.of(context).size.width * .4,
                                     child: TextFormField(
+                                      textCapitalization:
+                                          TextCapitalization.sentences,
                                       validator: (String val) {
                                         if (val.length > 30) {
                                           return "They got a shorter first name?";
@@ -249,6 +251,8 @@ class _WhoState extends State<Who> {
                               Container(
                                   width: MediaQuery.of(context).size.width * .4,
                                   child: TextFormField(
+                                    textCapitalization:
+                                        TextCapitalization.sentences,
                                     validator: (String val) {
                                       if (val.length > 30) {
                                         return "They got a shorter last name?";

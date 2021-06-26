@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:snug/providers/DateProvider.dart';
 import 'package:provider/provider.dart';
 import 'package:snug/screens/navigation/MainPage.dart';
+import 'package:snug/screens/sync/sync.dart';
 
 class VerifyExit extends StatefulWidget {
   @override
@@ -27,12 +28,12 @@ class _VerifyExitState extends State<VerifyExit> {
         // content: Text('Yes'),
         actions: <Widget>[
           FlatButton(
-            onPressed: () {
+            onPressed: () async {
               //deletes the last date created
               dateProvider.getCurrentDates.removeLast();
               // Navigator.of(context).pop(true);
               // Navigator.of(context).pop(true);
-              Navigator.pushReplacement(
+              Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => MainPage()),
               );

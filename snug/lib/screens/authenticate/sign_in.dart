@@ -317,7 +317,7 @@ class _SignInState extends State<SignIn> {
                                                     .secondaryVariant),
                                           ),
                                           onPressed: () {
-                                            Navigator.pushReplacement(
+                                            Navigator.push(
                                               context,
                                               MaterialPageRoute(
                                                   builder: (context) =>

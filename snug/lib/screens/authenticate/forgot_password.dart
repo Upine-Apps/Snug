@@ -70,6 +70,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         child: Scaffold(
           extendBodyBehindAppBar: true,
           appBar: AppBar(
+              automaticallyImplyLeading:
+                  false, // Removes default back button on app bar
               elevation: 0,
               backgroundColor: Colors.transparent,
               title: Row(

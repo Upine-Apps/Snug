@@ -122,6 +122,7 @@ class _ProfileState extends State<Profile> {
                               height: MediaQuery.of(context).size.height * .075,
                             ),
                             TextFormField(
+                              textCapitalization: TextCapitalization.sentences,
                               validator: (String val) {
                                 if (val.length > 30) {
                                   return "Ya got a shorter first name?";
@@ -153,6 +154,7 @@ class _ProfileState extends State<Profile> {
                               height: 10.0,
                             ),
                             TextFormField(
+                              textCapitalization: TextCapitalization.sentences,
                               validator: (String val) {
                                 if (val.length > 30) {
                                   return "Ya got a shorter last name?";
@@ -444,6 +446,7 @@ class _ProfileState extends State<Profile> {
                                           await SharedPreferences.getInstance();
 
                                       profile.setString('uid', user_id);
+                                      tempUser.uid = user_id;
                                       profile.setString(
                                           'first_name', tempUser.first_name);
                                       _userProvider.editUser(tempUser);

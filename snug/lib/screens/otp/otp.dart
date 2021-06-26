@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:snug/core/errors/OTPException.dart';
 import 'package:snug/core/logger.dart';
 import 'package:snug/custom_widgets/CustomToast.dart';
+import 'package:snug/providers/UserProvider.dart';
 import 'package:snug/screens/authenticate/authenticate.dart';
 import 'package:snug/screens/authenticate/profile.dart';
 import 'package:snug/screens/sync/sync.dart';
@@ -36,6 +37,8 @@ class _OtpState extends State<Otp> {
 
   Future<String> validateOtp(String confirmationCode) async {
     print('Pressed button to validate');
+    final _userProvider = Provider.of<UserProvider>(context, listen: false);
+
     try {
       Map<String, Object> confirmationResult = await CognitoService.instance
           .confirmUser('+1${widget.phonenumber}', confirmationCode);
@@ -43,6 +46,10 @@ class _OtpState extends State<Otp> {
         Map<String, Object> signInResult = await CognitoService.instance
             .signInUser('+1${widget.phonenumber}', widget.password);
         if (signInResult['status'] == true) {
+          CognitoUser confirmedUser = signInResult['cognitoUser'];
+          CognitoUserSession userSession = signInResult['cognitoSession'];
+          _userProvider.setCognitoUser(confirmedUser);
+          _userProvider.setUserSession(userSession);
           setState(() {
             cognitoUser = signInResult['cognitoUser'];
           });
@@ -73,12 +80,12 @@ class _OtpState extends State<Otp> {
 
   void moveToNextScreen(context) {
     if (returnToSignIn == true) {
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => Authenticate()),
       );
     } else {
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
             builder: (context) => Profile(

@@ -169,8 +169,6 @@ class _DetailDateState extends State<DetailDate> {
                                     MediaQuery.of(context).size.width * .025),
                             child: Container(
                                 width: MediaQuery.of(context).size.width * .95,
-                                height:
-                                    MediaQuery.of(context).size.height * .075,
                                 child: Card(
                                     shape: RoundedRectangleBorder(
                                         borderRadius:
@@ -180,6 +178,7 @@ class _DetailDateState extends State<DetailDate> {
                                         .secondaryVariant,
                                     elevation: 10.0,
                                     child: Container(
+
                                         //Container for everything that is going in the who card
                                         decoration: BoxDecoration(
                                             borderRadius: BorderRadius.all(

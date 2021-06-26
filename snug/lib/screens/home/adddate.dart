@@ -596,7 +596,40 @@ class _AddDateState extends State<AddDate> {
                                                           .getRecentDate;
                                                   print('Dates');
                                                   print(currentDate);
-                                                  if (DateTime.parse(
+                                                  if (currentDate.dateEnd ==
+                                                          null ||
+                                                      currentDate
+                                                          .dateEnd.isEmpty) {
+                                                    scrollController.animateTo(
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            2,
+                                                        duration: Duration(
+                                                            milliseconds: 500),
+                                                        curve: Curves.ease);
+                                                    CustomToast.showDialog(
+                                                        'Please enter a start time',
+                                                        context,
+                                                        Toast.BOTTOM);
+                                                  } else if (currentDate
+                                                              .dateStart ==
+                                                          null ||
+                                                      currentDate
+                                                          .dateStart.isEmpty) {
+                                                    scrollController.animateTo(
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            2,
+                                                        duration: Duration(
+                                                            milliseconds: 500),
+                                                        curve: Curves.ease);
+                                                    CustomToast.showDialog(
+                                                        'Please enter a end time',
+                                                        context,
+                                                        Toast.BOTTOM);
+                                                  } else if (DateTime.parse(
                                                           currentDate.dateStart)
                                                       .isAfter(DateTime.parse(
                                                           currentDate

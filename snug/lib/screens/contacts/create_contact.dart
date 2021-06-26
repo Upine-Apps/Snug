@@ -66,6 +66,8 @@ class _CreateContactState extends State<CreateContact> {
                           child: Column(
                             children: <Widget>[
                               TextFormField(
+                                  textCapitalization:
+                                      TextCapitalization.sentences,
                                   onEditingComplete: () => node.nextFocus(),
                                   controller: nameCtrl,
                                   decoration: InputDecoration(

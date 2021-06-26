@@ -322,7 +322,7 @@ class MapScreenState extends State<ProfilePage>
                                   mainAxisSize: MainAxisSize.min,
                                   children: <Widget>[
                                     Text(
-                                        '${currentUser.first_name}  ${currentUser.last_name}')
+                                        '${currentUser.first_name} ${currentUser.last_name}')
                                   ],
                                 ))
                               ],
