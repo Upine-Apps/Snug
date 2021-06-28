@@ -1,0 +1,9 @@
+Patch Notes For Snug 0.1.7
+
+1.) Users can no longer enter their own phone number when creating a date
+    -- No more dating yourself ;)
+
+2.) Users can no longer create a contact with no name and multiple contacts cannot have the same phone numebrs
+    -- This should help users and us make sure that the date goes well
+
+
