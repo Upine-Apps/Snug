@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:snug/custom_widgets/CustomToast.dart';
 import 'package:snug/custom_widgets/raised_rounded_gradient_button.dart';
 import 'package:snug/models/User.dart';
 import 'package:snug/providers/ContactProvider.dart';
 import 'package:snug/providers/UserProvider.dart';
 import 'package:snug/screens/navigation/MainPage.dart';
 import 'package:provider/provider.dart';
+import 'package:toast/toast.dart';
 
 class CreateContact extends StatefulWidget {
   @override
@@ -16,10 +18,11 @@ class _CreateContactState extends State<CreateContact> {
   @override
   var _formKey = GlobalKey<FormState>();
   bool get wantKeepAlive => true;
+  bool contactExist = false;
 
-  String _phone = '';
+  String _phone;
 
-  String _name = '';
+  String _name;
 
   String _userId = '';
 
@@ -129,8 +132,29 @@ class _CreateContactState extends State<CreateContact> {
 
                                           if (_formKey.currentState
                                               .validate()) {
-                                            contactList.addContact(
-                                                _name, _phone, _userId);
+                                            for (var checkContacts
+                                                in contactList.getContacts) {
+                                              if (checkContacts.phoneNumber ==
+                                                  _phone) {
+                                                setState(() {
+                                                  contactExist = true;
+                                                });
+                                              }
+                                            }
+                                            if (contactExist == true) {
+                                              CustomToast.showDialog(
+                                                  "This contact already exists",
+                                                  context,
+                                                  Toast.BOTTOM);
+                                            } else if (_name == null) {
+                                              CustomToast.showDialog(
+                                                  "Does this contact have a name?",
+                                                  context,
+                                                  Toast.BOTTOM);
+                                            } else {
+                                              contactList.addContact(
+                                                  _name, _phone, _userId);
+                                            }
                                             if (contactList
                                                     .getContacts.length ==
                                                 1) {

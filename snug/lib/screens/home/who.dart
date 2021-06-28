@@ -16,6 +16,7 @@ import 'package:snug/services/remote_db_service.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_conditional_rendering/flutter_conditional_rendering.dart';
 import 'package:toast/toast.dart';
+import 'package:snug/providers/UserProvider.dart';
 
 class ShowToastComponent {
   static showDialog(String msg, context) {
@@ -120,6 +121,7 @@ class _WhoState extends State<Who> {
     final node = FocusScope.of(context);
 
     final dateProvider = Provider.of<DateProvider>(context, listen: false);
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
 
     return Container(
         child: Conditional.single(
@@ -168,8 +170,17 @@ class _WhoState extends State<Who> {
                                         color: Theme.of(context).dividerColor)),
                                 onPressed: () async {
                                   if (_whoFormKey.currentState.validate()) {
-                                    findUser(
-                                        dateProvider); //first thing is find user
+                                    if (userProvider.getUser.phone_number ==
+                                        phone_number) {
+                                      CustomToast.showDialog(
+                                          "You going on a date with yourself?",
+                                          context,
+                                          Toast.CENTER);
+                                    } else {
+                                      findUser(dateProvider);
+                                    }
+
+                                    //first thing is find user
                                   }
                                 }))),
                   ]),
