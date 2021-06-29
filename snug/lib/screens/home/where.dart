@@ -18,11 +18,6 @@ class _WhereState extends State<Where> {
   StreamSubscription locationSubscription;
   Date currentDate;
 
-  void checkPermissions(MapProvider mp) async {
-    Position p = await mp.determinePosition();
-    print(p);
-  }
-
   @override
   void initState() {
     final dateProvider = Provider.of<DateProvider>(context, listen: false);
@@ -55,7 +50,8 @@ class _WhereState extends State<Where> {
   @override
   Widget build(BuildContext context) {
     final mapProvider = Provider.of<MapProvider>(context, listen: true);
-    checkPermissions(mapProvider);
+    print('Printing location');
+    print(mapProvider.currentLocation);
     return (mapProvider.currentLocation == null)
         ? Center(
             child: CircularProgressIndicator(),

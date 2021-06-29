@@ -338,8 +338,6 @@ class _RegisterState extends State<Register> {
                                                                     phonenumber,
                                                                 password:
                                                                     password2,
-                                                                fromSignIn:
-                                                                    false,
                                                               )),
                                                     );
                                                   }
