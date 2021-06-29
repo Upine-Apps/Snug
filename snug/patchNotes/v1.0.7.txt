@@ -6,4 +6,4 @@ Patch Notes For Snug 0.1.7
 2.) Users can no longer create a contact with no name and multiple contacts cannot have the same phone numebrs
     -- This should help users and us make sure that the date goes well
 
-
+3.) Pop-ups on create a date screen moved up for better visibility
