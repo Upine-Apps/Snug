@@ -1,6 +1,7 @@
 import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_conditional_rendering/conditional.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:snug/core/logger.dart';
@@ -12,6 +13,7 @@ import 'package:snug/models/User.dart';
 import 'package:snug/models/Date.dart';
 import 'package:snug/providers/ContactProvider.dart';
 import 'package:snug/providers/DateProvider.dart';
+import 'package:snug/providers/MapProvider.dart';
 import 'package:snug/providers/UserProvider.dart';
 import 'package:snug/screens/authenticate/authenticate.dart';
 import 'package:snug/screens/home/detailed_date.dart';
@@ -37,6 +39,12 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   String _date = "Not set";
   String _time = "Not set";
   String _who;
+
+  void checkPermissions(MapProvider mp) async {
+    Position p = await mp.determinePosition();
+    print(p);
+  }
+
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
@@ -150,9 +158,13 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
   bool userHasDate = true;
   Widget build(BuildContext context) {
+    final mapProvider = Provider.of<MapProvider>(context, listen: true);
+
     final dateProvider = Provider.of<DateProvider>(context, listen: true);
     final userProvider = Provider.of<UserProvider>(context, listen: true);
     final contactProvider = Provider.of<ContactProvider>(context, listen: true);
+    checkPermissions(mapProvider);
+
     if (dateProvider.getCurrentDates.length == 0 ||
         dateProvider.getCurrentDates.length == null) {
       userHasDate = false;
