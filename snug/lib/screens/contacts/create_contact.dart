@@ -34,6 +34,7 @@ class _CreateContactState extends State<CreateContact> {
     final node = FocusScope.of(context);
     final contactList = Provider.of<ContactProvider>(context, listen: true);
     final profileUser = Provider.of<UserProvider>(context, listen: true);
+
     User _tempUser = profileUser.getUser;
     _userId = _tempUser.uid;
     return AlertDialog(
@@ -127,8 +128,8 @@ class _CreateContactState extends State<CreateContact> {
                                                 color: Theme.of(context)
                                                     .dividerColor)),
                                         onPressed: () {
-                                          print(
-                                              _formKey.currentState.validate());
+                                          FocusScope.of(context)
+                                              .requestFocus(new FocusNode());
 
                                           if (_formKey.currentState
                                               .validate()) {
@@ -149,6 +150,13 @@ class _CreateContactState extends State<CreateContact> {
                                             } else if (_name == null) {
                                               CustomToast.showDialog(
                                                   "Does this contact have a name?",
+                                                  context,
+                                                  Toast.BOTTOM);
+                                            } else if (profileUser
+                                                    .getUser.phone_number ==
+                                                _phone) {
+                                              CustomToast.showDialog(
+                                                  'You\'re your own contact? ',
                                                   context,
                                                   Toast.BOTTOM);
                                             } else {

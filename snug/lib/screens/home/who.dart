@@ -442,6 +442,8 @@ class _WhoState extends State<Who> {
                                   style: TextStyle(
                                       color: Theme.of(context).dividerColor)),
                               onPressed: () {
+                                FocusScope.of(context)
+                                    .requestFocus(new FocusNode());
                                 currentDate.who.phone_number = phone_number;
                                 currentDate.who.first_name = _firstName;
                                 currentDate.who.last_name = _lastName;
@@ -457,10 +459,10 @@ class _WhoState extends State<Who> {
                                 dateProvider.setRecentDate(currentDate);
                                 if (userFound = true) {
                                   CustomToast.showDialog(
-                                      'Updated user', context, Toast.BOTTOM);
+                                      'Updated user', context, Toast.CENTER);
                                 } else {
                                   CustomToast.showDialog(
-                                      'Created user', context, Toast.BOTTOM);
+                                      'Created user', context, Toast.CENTER);
                                 }
                               }))
                     ]),
