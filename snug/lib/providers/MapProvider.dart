@@ -20,14 +20,6 @@ class MapProvider with ChangeNotifier {
   StreamController<Place> selectedLocation = StreamController<
       Place>.broadcast(); //broadcast lets you listen to the stream more than once
 
-  // MapProvider() {}
-
-  // setCurrentLocation() async {
-  //   currentLocation = await geoLocatorService.getCurrentLocation();
-  //   print(currentLocation);
-  //   notifyListeners();
-  // }
-
   searchPlaces(String searchTerm) async {
     searchResults = await placesService.getAutocomplete(searchTerm);
     notifyListeners();
@@ -67,7 +59,7 @@ class MapProvider with ChangeNotifier {
     if (permission == LocationPermission.deniedForever) {
       // Permissions are denied forever, handle appropriately.
       throw LocationPermissionException(
-          'Location permissions are permanently denied, cannot request permissions');
+          'Location permissions are denied, please reset in your device settings');
     }
     return permission;
   }

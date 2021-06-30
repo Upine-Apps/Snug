@@ -1,4 +1,4 @@
-Patch Notes For Snug 0.1.7
+Patch Notes For Snug 1.0.7
 
 1.) Users can no longer enter their own phone number when creating a date
     -- No more dating yourself ;)
