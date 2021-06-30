@@ -582,7 +582,6 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                   CustomToast.showDialog(
                       'You need to enable location', context, Toast.CENTER);
                 } else {
-                  await mapProvider.determinePosition();
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => AddDate()));
                 }

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:snug/core/logger.dart';
 import 'package:snug/models/Date.dart';
 import 'package:snug/models/place.dart';
 import 'package:snug/providers/DateProvider.dart';
@@ -17,7 +18,8 @@ class _WhereState extends State<Where> {
   Completer<GoogleMapController> _mapController = Completer();
   StreamSubscription locationSubscription;
   Date currentDate;
-
+  bool gotLocation = false;
+  final log = getLogger('where');
   @override
   void initState() {
     final dateProvider = Provider.of<DateProvider>(context, listen: false);
@@ -32,7 +34,20 @@ class _WhereState extends State<Where> {
         _goToPlace(place);
       }
     });
+
     super.initState();
+    getLocation();
+  }
+
+  getLocation() async {
+    final mapProvider = Provider.of<MapProvider>(context, listen: false);
+    await mapProvider.determinePosition();
+    log.i(mapProvider.currentLocation);
+    if (mapProvider.currentLocation != null) {
+      setState(() {
+        gotLocation = true;
+      });
+    }
   }
 
   @override
@@ -52,10 +67,11 @@ class _WhereState extends State<Where> {
     final mapProvider = Provider.of<MapProvider>(context, listen: true);
     print('Printing location');
     print(mapProvider.currentLocation);
-    return (mapProvider.currentLocation == null)
+    return (gotLocation == false)
         ? Center(
             child: CircularProgressIndicator(),
           )
+
         // return SingleChildScrollView(
         : SingleChildScrollView(
             child: Column(children: <Widget>[
