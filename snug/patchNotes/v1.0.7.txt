@@ -7,3 +7,15 @@ Patch Notes For Snug 0.1.7
     -- This should help users and us make sure that the date goes well
 
 3.) Pop-ups on create a date screen moved up for better visibility
+
+4.) After creating first contact, user is directed to the contact screen
+
+5.) Location permission is now asked in the home screen
+    -- Users cannot create a date without allowing location 
+    -- This should help with the map loading with creating a date
+    -- Proper pop up messages are shown to help users with location issues
+
+6.) The next button in the walkthrough section has been moved up a little bit
+    -- For all the homies using iOS 
+
+
