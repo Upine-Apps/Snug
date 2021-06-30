@@ -11,7 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:showcaseview/showcaseview.dart';
 
 class MainPage extends StatefulWidget {
-  final bool firstContact;
+  bool firstContact;
   MainPage({this.firstContact});
   @override
   _MainPageState createState() => _MainPageState();
@@ -39,15 +39,9 @@ class _MainPageState extends State<MainPage> {
     pageController = PageController();
 
     setProfilePic();
-
-    if (widget.firstContact == true) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (pageController.hasClients) {
-          pageController.jumpToPage(1);
-        }
-      });
-    }
   }
+
+  moveToContactScreen() {}
 
   setProfilePic() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -61,11 +55,6 @@ class _MainPageState extends State<MainPage> {
       });
     }
   }
-
-  // @override
-  // void dispose() {
-  //   pageController.dispose();
-  // }
 
   _onTapped(int index) {
     setState(() {
@@ -83,6 +72,15 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context, listen: true);
+    if (widget.firstContact == true) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        print(pageController.hasClients);
+        if (pageController.hasClients) {
+          pageController.jumpToPage(1);
+          widget.firstContact = false;
+        }
+      });
+    }
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(

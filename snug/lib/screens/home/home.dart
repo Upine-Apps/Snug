@@ -163,7 +163,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     final dateProvider = Provider.of<DateProvider>(context, listen: true);
     final userProvider = Provider.of<UserProvider>(context, listen: true);
     final contactProvider = Provider.of<ContactProvider>(context, listen: true);
-    checkPermissions(mapProvider);
+    // checkPermissions(mapProvider);
 
     if (dateProvider.getCurrentDates.length == 0 ||
         dateProvider.getCurrentDates.length == null) {
@@ -328,7 +328,6 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                                         height:
                                             MediaQuery.of(context).size.height *
                                                 .25,
-
                                         alignment: Alignment.topLeft,
                                         width:
                                             MediaQuery.of(context).size.width *
@@ -533,235 +532,6 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                                             ),
                                           ],
                                         ),
-                                        // child: Column(
-                                        //   children: <Widget>[
-                                        //     Align(
-                                        //         alignment:
-                                        //             Alignment.centerLeft,
-                                        //         child: Container(
-                                        //             width:
-                                        //                 MediaQuery.of(context)
-                                        //                         .size
-                                        //                         .width *
-                                        //                     .5,
-                                        //             child: Flexible(
-                                        //                 child: Text(
-                                        //                     '${dateProvider.getCurrentDates[index].who.first_name} ${dateProvider.getCurrentDates[index].who.last_name}',
-                                        //                     style: TextStyle(
-                                        //                         color: Theme.of(
-                                        //                                 context)
-                                        //                             .dividerColor,
-                                        //                         fontSize: 24,
-                                        //                         fontWeight:
-                                        //                             FontWeight
-                                        //                                 .bold))))),
-                                        //     Padding(
-                                        //         padding: EdgeInsets.only(
-                                        //             top:
-                                        //                 MediaQuery.of(context)
-                                        //                         .size
-                                        //                         .height *
-                                        //                     .01),
-                                        //         child: Align(
-                                        //             alignment:
-                                        //                 Alignment.centerLeft,
-                                        //             child: Container(
-                                        //                 width: MediaQuery.of(
-                                        //                             context)
-                                        //                         .size
-                                        //                         .width *
-                                        //                     .5,
-                                        //                 child: Row(
-                                        //                   children: <Widget>[
-                                        //                     Padding(
-                                        //                         padding: EdgeInsets.only(
-                                        //                             right: MediaQuery.of(context)
-                                        //                                     .size
-                                        //                                     .width *
-                                        //                                 .025),
-                                        //                         child: Icon(
-                                        //                           Icons.phone,
-                                        //                           color: Theme.of(
-                                        //                                   context)
-                                        //                               .colorScheme
-                                        //                               .secondary,
-                                        //                         )),
-                                        //                     Text(
-                                        //                       "(" +
-                                        //                           dateProvider
-                                        //                               .getCurrentDates[
-                                        //                                   index]
-                                        //                               .who
-                                        //                               .phone_number
-                                        //                               .substring(
-                                        //                                   0,
-                                        //                                   3) +
-                                        //                           ") - " +
-                                        //                           dateProvider
-                                        //                               .getCurrentDates[
-                                        //                                   index]
-                                        //                               .who
-                                        //                               .phone_number
-                                        //                               .substring(
-                                        //                                   3,
-                                        //                                   6) +
-                                        //                           " - " +
-                                        //                           dateProvider
-                                        //                               .getCurrentDates[
-                                        //                                   index]
-                                        //                               .who
-                                        //                               .phone_number
-                                        //                               .substring(
-                                        //                                   6,
-                                        //                                   10),
-                                        //                       style:
-                                        //                           TextStyle(
-                                        //                         color: Theme.of(
-                                        //                                 context)
-                                        //                             .dividerColor,
-                                        //                         fontSize: 16,
-                                        //                       ),
-                                        //                     )
-                                        //                   ],
-                                        //                 )))),
-                                        //     Padding(
-                                        //       padding: EdgeInsets.only(
-                                        //           top: MediaQuery.of(context)
-                                        //                   .size
-                                        //                   .height *
-                                        //               .005),
-                                        //       child: Align(
-                                        //           alignment:
-                                        //               Alignment.centerLeft,
-                                        //           child: Container(
-                                        //               width: MediaQuery.of(
-                                        //                           context)
-                                        //                       .size
-                                        //                       .width *
-                                        //                   .5,
-                                        //               child: Row(
-                                        //                 children: <Widget>[
-                                        //                   Padding(
-                                        //                       padding: EdgeInsets.only(
-                                        //                           right: MediaQuery.of(context)
-                                        //                                   .size
-                                        //                                   .width *
-                                        //                               .025),
-                                        //                       child: Icon(
-                                        //                         Icons.place,
-                                        //                         color: Theme.of(
-                                        //                                 context)
-                                        //                             .colorScheme
-                                        //                             .secondary,
-                                        //                       )),
-                                        //                   Flexible(
-                                        //                       child: Text(
-                                        //                     '${dateProvider.getCurrentDates[index].placeName}',
-                                        //                     style: TextStyle(
-                                        //                         color: Theme.of(
-                                        //                                 context)
-                                        //                             .dividerColor,
-                                        //                         fontSize: 16),
-                                        //                   ))
-                                        //                 ],
-                                        //               ))),
-                                        //     ),
-                                        //     Padding(
-                                        //       padding: EdgeInsets.only(
-                                        //           top: MediaQuery.of(context)
-                                        //                   .size
-                                        //                   .height *
-                                        //               .005),
-                                        //       child: Align(
-                                        //         alignment:
-                                        //             Alignment.centerLeft,
-                                        //         child: Container(
-                                        //             width:
-                                        //                 MediaQuery.of(context)
-                                        //                         .size
-                                        //                         .width *
-                                        //                     .5,
-                                        //             child: Row(
-                                        //               children: <Widget>[
-                                        //                 Padding(
-                                        //                     padding: EdgeInsets.only(
-                                        //                         right: MediaQuery.of(
-                                        //                                     context)
-                                        //                                 .size
-                                        //                                 .width *
-                                        //                             .025),
-                                        //                     child: Icon(
-                                        //                       Icons
-                                        //                           .flight_takeoff,
-                                        //                       color: Theme.of(
-                                        //                               context)
-                                        //                           .colorScheme
-                                        //                           .secondary,
-                                        //                     )),
-                                        //                 Text(
-                                        //                     _convertDateTime(
-                                        //                         dateProvider
-                                        //                             .getCurrentDates[
-                                        //                                 index]
-                                        //                             .dateStart),
-                                        //                     style: TextStyle(
-                                        //                         color: Theme.of(
-                                        //                                 context)
-                                        //                             .dividerColor,
-                                        //                         fontSize: 16))
-                                        //               ],
-                                        //             )),
-                                        //       ),
-                                        //     ),
-                                        //     Padding(
-                                        //       padding: EdgeInsets.only(
-                                        //           top: MediaQuery.of(context)
-                                        //                   .size
-                                        //                   .height *
-                                        //               .005),
-                                        //       child: Align(
-                                        //         alignment:
-                                        //             Alignment.centerLeft,
-                                        //         child: Container(
-                                        //             width:
-                                        //                 MediaQuery.of(context)
-                                        //                         .size
-                                        //                         .width *
-                                        //                     .5,
-                                        //             child: Row(
-                                        //               children: <Widget>[
-                                        //                 Padding(
-                                        //                     padding: EdgeInsets.only(
-                                        //                         right: MediaQuery.of(
-                                        //                                     context)
-                                        //                                 .size
-                                        //                                 .width *
-                                        //                             .025),
-                                        //                     child: Icon(
-                                        //                       Icons
-                                        //                           .flight_land,
-                                        //                       color: Theme.of(
-                                        //                               context)
-                                        //                           .colorScheme
-                                        //                           .secondary,
-                                        //                     )),
-                                        //                 Text(
-                                        //                     _convertDateTime(
-                                        //                         dateProvider
-                                        //                             .getCurrentDates[
-                                        //                                 index]
-                                        //                             .dateEnd),
-                                        //                     style: TextStyle(
-                                        //                         color: Theme.of(
-                                        //                                 context)
-                                        //                             .dividerColor,
-                                        //                         fontSize: 16))
-                                        //               ],
-                                        //             )),
-                                        //       ),
-                                        //     ),
-                                        //   ],
-                                        // ),
                                       )
                                     ]),
                                   ),
@@ -803,8 +573,23 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                   context,
                   Toast.CENTER);
             } else {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => AddDate()));
+              try {
+                LocationPermission locationPermission =
+                    await mapProvider.checkPermissions();
+                log.i(locationPermission);
+                if (locationPermission == LocationPermission.denied ||
+                    locationPermission == LocationPermission.deniedForever) {
+                  CustomToast.showDialog(
+                      'You need to enable location', context, Toast.CENTER);
+                } else {
+                  await mapProvider.determinePosition();
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => AddDate()));
+                }
+              } catch (e) {
+                log.e(e);
+                CustomToast.showDialog(e.toString(), context, Toast.CENTER);
+              }
             }
           }),
     );

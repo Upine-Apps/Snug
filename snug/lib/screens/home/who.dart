@@ -103,11 +103,11 @@ class _WhoState extends State<Who> {
         });
 
         CustomToast.showDialog(
-            'Does the user info look right?', context, Toast.BOTTOM);
+            'Does the user info look right?', context, Toast.CENTER);
       } else {
         //user not found in database
 
-        CustomToast.showDialog('Couldn\'t find user', context, Toast.BOTTOM);
+        CustomToast.showDialog('Couldn\'t find user', context, Toast.CENTER);
         _phoneController.text = phone_number;
       }
     } catch (e) {

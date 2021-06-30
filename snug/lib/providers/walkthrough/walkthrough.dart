@@ -368,35 +368,41 @@ class _WalkthroughState extends State<Walkthrough> {
                       ),
                     ),
                     _currentPage != _numPages - 1
-                        ? Expanded(
-                            child: Align(
-                              alignment: FractionalOffset.bottomRight,
-                              child: FlatButton(
-                                onPressed: () {
-                                  _pageController.nextPage(
-                                      duration: Duration(milliseconds: 500),
-                                      curve: Curves.ease);
-                                },
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    Text('Next',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 22.0,
-                                        )),
-                                    SizedBox(
-                                      width: MediaQuery.of(context).size.width *
-                                          .05,
-                                    ),
-                                    Icon(
-                                      Icons.arrow_forward,
-                                      color: Colors.white,
-                                      size: MediaQuery.of(context).size.width *
-                                          .075,
-                                    )
-                                  ],
+                        ? Padding(
+                            padding: EdgeInsets.only(
+                                top: MediaQuery.of(context).size.height * .1),
+                            child: Expanded(
+                              child: Align(
+                                alignment: FractionalOffset.bottomRight,
+                                child: FlatButton(
+                                  onPressed: () {
+                                    _pageController.nextPage(
+                                        duration: Duration(milliseconds: 500),
+                                        curve: Curves.ease);
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      Text('Next',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 22.0,
+                                          )),
+                                      SizedBox(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                .05,
+                                      ),
+                                      Icon(
+                                        Icons.arrow_forward,
+                                        color: Colors.white,
+                                        size:
+                                            MediaQuery.of(context).size.width *
+                                                .075,
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
