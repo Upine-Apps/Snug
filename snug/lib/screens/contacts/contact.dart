@@ -72,7 +72,7 @@ class _ContactState extends State<Contact>
         CustomToast.showDialog(
             'Failed to refresh your session. Please sign in again',
             context,
-            Toast.CENTER);
+            Toast.BOTTOM);
         await Future.delayed(Duration(seconds: 2), () {
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => Authenticate()));
@@ -204,7 +204,7 @@ class _ContactState extends State<Contact>
                                     onDismissed: (direction) {
                                       contactList.removeContact(index, _userId);
                                       CustomToast.showDialog('Contact deleted',
-                                          context, Toast.CENTER);
+                                          context, Toast.BOTTOM);
                                     },
                                     background:
                                         Container(color: Colors.transparent),
@@ -439,7 +439,7 @@ class _ContactState extends State<Contact>
           onPressed: () {
             if (contactList.getContacts.length == 5) {
               CustomToast.showDialog(
-                  'You can only have 5 contacts', context, Toast.CENTER);
+                  'You can only have 5 contacts', context, Toast.BOTTOM);
             } else {
               //////////////////////////////////////////////////
               ////////////  Pop up to create a contact  ////////

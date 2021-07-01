@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gradient_bottom_navigation_bar/gradient_bottom_navigation_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:snug/core/logger.dart';
+import 'package:snug/custom_widgets/CustomToast.dart';
 import 'package:snug/providers/UserProvider.dart';
 import 'package:snug/screens/contacts/contact.dart';
 import 'package:snug/screens/home/home.dart';
@@ -9,10 +10,14 @@ import 'package:snug/screens/profile/profile.dart';
 import 'package:snug/screens/settings/settings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:showcaseview/showcaseview.dart';
+import 'package:toast/toast.dart';
+import 'package:emojis/emojis.dart';
+import 'package:emojis/emoji.dart';
 
 class MainPage extends StatefulWidget {
   bool firstContact;
-  MainPage({this.firstContact});
+  bool fromAddDate;
+  MainPage({this.firstContact, this.fromAddDate});
   @override
   _MainPageState createState() => _MainPageState();
 }
@@ -30,6 +35,8 @@ class _MainPageState extends State<MainPage> {
   PageController pageController;
 
   int _selectedIndex = 0;
+
+  Emoji heart = Emoji.byChar(Emojis.redHeart);
   final log = getLogger('MainPage');
 
   @override
@@ -39,6 +46,12 @@ class _MainPageState extends State<MainPage> {
     pageController = PageController();
 
     setProfilePic();
+    if (widget.fromAddDate == true) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        CustomToast.showDialog(
+            'Glad you\'re safe! $heart', context, Toast.BOTTOM);
+      });
+    }
   }
 
   moveToContactScreen() {}

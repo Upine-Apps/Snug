@@ -28,7 +28,9 @@ import 'adddate.dart';
 
 class Home extends StatefulWidget {
   @override
-  const Home({Key key}) : super(key: key);
+  const Home({
+    Key key,
+  }) : super(key: key);
 
   _HomeState createState() => _HomeState();
 }
@@ -81,7 +83,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
         CustomToast.showDialog(
             'Failed to refresh your session. Please sign in again',
             context,
-            Toast.CENTER);
+            Toast.BOTTOM);
         await Future.delayed(Duration(seconds: 2), () {
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => Authenticate()));
@@ -571,7 +573,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
               CustomToast.showDialog(
                   'Please add at least one contact before creating a date',
                   context,
-                  Toast.CENTER);
+                  Toast.BOTTOM);
             } else {
               try {
                 LocationPermission locationPermission =
@@ -580,14 +582,14 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                 if (locationPermission == LocationPermission.denied ||
                     locationPermission == LocationPermission.deniedForever) {
                   CustomToast.showDialog(
-                      'You need to enable location', context, Toast.CENTER);
+                      'You need to enable location', context, Toast.BOTTOM);
                 } else {
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => AddDate()));
                 }
               } catch (e) {
                 log.e(e);
-                CustomToast.showDialog(e.toString(), context, Toast.CENTER);
+                CustomToast.showDialog(e.toString(), context, Toast.BOTTOM);
               }
             }
           }),

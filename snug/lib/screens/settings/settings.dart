@@ -78,7 +78,7 @@ class _SettingState extends State<SettingScreen> with WidgetsBindingObserver {
         CustomToast.showDialog(
             'Failed to refresh your session. Please sign in again',
             context,
-            Toast.CENTER);
+            Toast.BOTTOM);
         await Future.delayed(Duration(seconds: 2), () {
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => Authenticate()));

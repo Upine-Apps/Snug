@@ -1,21 +1,31 @@
-Patch Notes For Snug 0.1.7
+Patch Notes For Snug 1.0.7
 
 1.) Users can no longer enter their own phone number when creating a date
     -- No more dating yourself ;)
 
 2.) Users can no longer create a contact with no name and multiple contacts cannot have the same phone numebrs
-    -- This should help users and us make sure that the date goes well
+    -- This should help users and us make sure that the date goes well.
 
 3.) Pop-ups on create a date screen moved up for better visibility
 
 4.) After creating first contact, user is directed to the contact screen
 
 5.) Location permission is now asked in the home screen
-    -- Users cannot create a date without allowing location 
-    -- This should help with the map loading with creating a date
-    -- Proper pop up messages are shown to help users with location issues
+    -- Users cannot create a date without allowing location .
+    -- This should help with the map loading with creating a date.
+    -- Proper pop up messages are shown to help users with location issues.
 
 6.) The next button in the walkthrough section has been moved up a little bit
-    -- For all the homies using iOS 
+    -- For all the homies using iOS.
+
+7.) After marking your date as safe a popup will display in the home screen to confirm
+    -- Should help with the flow and user interation.
+
+8.) All popup colors have been changed to help stand out from background color
+    -- Our UI guy might be color blind ;)
+
+9.) After choosing a from a drop down, the title of that drop down will be displayed
+    -- This should help users know which drop down is for what.
+    -- No more getting hair and eye colors mixed up!
 
 
