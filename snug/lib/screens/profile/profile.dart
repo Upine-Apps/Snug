@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:snug/custom_widgets/CustomToast.dart';
 import 'package:snug/custom_widgets/customshowcase.dart';
 import 'package:snug/custom_widgets/raise_gradient_circular_button.dart';
@@ -143,7 +142,6 @@ class MapScreenState extends State<ProfilePage>
     User currentUser = userProvider.getUser;
 
     File _image;
-    final picker = ImagePicker();
 
     final _formKey = GlobalKey<FormState>();
     super.build(context);
