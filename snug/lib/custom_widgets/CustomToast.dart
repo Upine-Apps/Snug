@@ -6,7 +6,7 @@ class CustomToast {
     Toast.show(msg, context,
         duration: Toast.LENGTH_LONG,
         gravity: location,
-        textColor: Theme.of(context).dividerColor,
-        backgroundColor: Theme.of(context).colorScheme.secondaryVariant);
+        textColor: Theme.of(context).colorScheme.secondaryVariant,
+        backgroundColor: Theme.of(context).dividerColor);
   }
 }

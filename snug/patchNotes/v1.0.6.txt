@@ -1,4 +1,4 @@
-Patch Notes for Snug 0.1.6
+Patch Notes for Snug 1.0.6
 
 1) Fixed account deletion bug
     -- This bug only showed if you created a new account and immediately went to delete it without signing out and signing into the app.

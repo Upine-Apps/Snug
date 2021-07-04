@@ -954,7 +954,11 @@ class _LoadingScreenState extends State<LoadingScreen> {
       await Future.delayed(Duration(seconds: 1), () {
         dateProvider.removeDate(widget.someIndex);
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => MainPage()));
+            context,
+            MaterialPageRoute(
+                builder: (context) => MainPage(
+                      fromAddDate: true,
+                    )));
       });
     });
     return LoaderOverlay(

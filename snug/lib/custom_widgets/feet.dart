@@ -10,6 +10,8 @@ class Feet extends StatelessWidget {
   Widget build(BuildContext context) {
     return DropdownButtonFormField<String>(
         decoration: InputDecoration(
+            labelText: 'Feet',
+            alignLabelWithHint: true,
             errorStyle: TextStyle(
                 color: Theme.of(context).colorScheme.secondaryVariant),
             enabledBorder: UnderlineInputBorder(
