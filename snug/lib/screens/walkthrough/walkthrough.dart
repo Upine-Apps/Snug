@@ -4,10 +4,6 @@ import 'package:snug/screens/navigation/MainPage.dart';
 import 'package:snug/screens/sync/sync.dart';
 
 class Walkthrough extends StatefulWidget {
-  final bool isFirst;
-
-  Walkthrough({this.isFirst});
-
   @override
   _WalkthroughState createState() => _WalkthroughState();
 }
@@ -62,15 +58,10 @@ class _WalkthroughState extends State<Walkthrough> {
                       alignment: Alignment.centerRight,
                       child: FlatButton(
                         onPressed: () {
-                          if (widget.isFirst == true) {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => MainPage()),
-                            );
-                          } else {
-                            Navigator.of(context).pop();
-                          }
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (context) => MainPage()),
+                          );
                         },
                         child: Text(
                           'Skip',
@@ -419,14 +410,10 @@ class _WalkthroughState extends State<Walkthrough> {
                 color: Colors.white,
                 child: GestureDetector(
                   onTap: () {
-                    if (widget.isFirst == true) {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => SyncScreen()),
-                      );
-                    } else {
-                      Navigator.of(context).pop();
-                    }
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => MainPage()),
+                    );
                   },
                   child: Center(
                     child: Text(

@@ -1,14 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:snug/providers/ContactProvider.dart';
 import 'package:snug/providers/DateProvider.dart';
 import 'package:snug/providers/MapProvider.dart';
 import 'package:snug/providers/UserProvider.dart';
-import 'package:snug/providers/walkthrough/walkthrough.dart';
 import 'package:snug/screens/authenticate/authenticate.dart';
-import 'package:snug/screens/authenticate/forgot_password.dart';
-import 'package:snug/screens/authenticate/profile.dart';
 import 'package:snug/themes/constants.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';

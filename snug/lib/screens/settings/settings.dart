@@ -6,7 +6,7 @@ import 'package:snug/custom_widgets/topheader.dart';
 import 'package:snug/providers/ContactProvider.dart';
 import 'package:snug/providers/DateProvider.dart';
 import 'package:snug/providers/UserProvider.dart';
-import 'package:snug/providers/walkthrough/walkthrough.dart';
+import 'package:snug/screens/walkthrough/walkthrough.dart';
 import 'package:snug/screens/authenticate/authenticate.dart';
 import 'package:snug/screens/settings/verifydelete.dart';
 import 'package:snug/services/cognito/CognitoService.dart';
@@ -49,8 +49,7 @@ class _SettingState extends State<SettingScreen> with WidgetsBindingObserver {
   _getSavedTheme() async {
     prefs = await SharedPreferences.getInstance();
     setState(() {
-      _selectedPosition = themes.indexOf(
-          prefs.getString(Constants.APP_THEME) ?? Constants.SYSTEM_DEFAULT);
+      _selectedPosition = themes.indexOf(prefs.getString("Theme"));
     });
   }
 
@@ -215,12 +214,10 @@ class _SettingState extends State<SettingScreen> with WidgetsBindingObserver {
                       alignment: Alignment.centerLeft,
                       child: FlatButton(
                           color: Theme.of(context).colorScheme.secondaryVariant,
-                          onPressed: () async => Navigator.push(
+                          onPressed: () async => Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => Walkthrough(
-                                          isFirst: false,
-                                        )),
+                                    builder: (context) => Walkthrough()),
                               ),
                           child: Container(
                               width: MediaQuery.of(context).size.width * .40,
