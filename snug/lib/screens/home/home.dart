@@ -548,7 +548,6 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
             );
           }),
       floatingActionButton: FloatingActionButton(
-          heroTag: "btn1",
           child: Container(
             height: 60,
             width: 60,
