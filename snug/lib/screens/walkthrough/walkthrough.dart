@@ -193,7 +193,7 @@ class _WalkthroughState extends State<Walkthrough> {
                                     width:
                                         MediaQuery.of(context).size.width * .9,
                                     child: Text(
-                                      'The above button is displayed on the home screen. Use it to create a date! Once the date is created we will make sure that you are safe throughout. If something happens, we\'ll let your contact know. ',
+                                      'The above button is displayed on the home screen. Use it to create a date! Once the date is created we will make sure that you are safe throughout via text message. If something happens, we\'ll let your contact know. ',
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 18,
