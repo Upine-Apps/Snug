@@ -23,7 +23,7 @@ Future main() async {
           if (theme == null ||
               theme == "" ||
               theme == Constants.SYSTEM_DEFAULT) {
-            value.setString(Constants.APP_THEME, Constants.SYSTEM_DEFAULT);
+            value.setString(Constants.APP_THEME, "Light");
             return ThemeNotifier(ThemeMode.light);
           }
           return ThemeNotifier(

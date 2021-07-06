@@ -35,7 +35,9 @@ class MapScreenState extends State<ProfilePage>
     'assets/image/dog1.jpg',
     'assets/image/dog2.jpg',
     'assets/image/dog3.jpg',
-    'assets/image/dog4.jpg'
+    'assets/image/dog4.jpg',
+    'assets/image/dog5.jpg',
+    'assets/image/dog6.jpg',
   ];
   var random = new Random();
   TextEditingController _controller;
@@ -61,6 +63,7 @@ class MapScreenState extends State<ProfilePage>
       setState(() {
         picture = 'assets/image/pug.jpg';
       });
+      prefs.setString('profilePicture', picture);
       _userProvider.setProfilePic(picture);
     }
   }
@@ -121,20 +124,19 @@ class MapScreenState extends State<ProfilePage>
 
   getImage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    final currentProfilePic = prefs.getString("profilePicture");
+    var currentProfilePic =
+        profilePics.indexOf(prefs.getString("profilePicture"));
     final _userProvider = Provider.of<UserProvider>(context, listen: false);
-
-    int randomInt = random.nextInt(6);
-    String randomPic = profilePics[randomInt];
-    while (randomPic == currentProfilePic) {
-      randomInt = random.nextInt(6);
-      randomPic = profilePics[randomInt];
-    }
+    log.i(currentProfilePic);
+    currentProfilePic != profilePics.length - 1
+        ? currentProfilePic += 1
+        : currentProfilePic = 0;
+    String nextPic = profilePics[currentProfilePic];
     setState(() {
-      picture = randomPic;
-      prefs.setString("profilePicture", randomPic);
+      picture = nextPic;
+      prefs.setString("profilePicture", nextPic);
     });
-    _userProvider.setProfilePic(randomPic);
+    _userProvider.setProfilePic(nextPic);
   }
 
   Widget build(BuildContext context) {

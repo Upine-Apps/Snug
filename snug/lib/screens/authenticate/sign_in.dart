@@ -167,10 +167,30 @@ class _SignInState extends State<SignIn> {
                                   RaisedRoundedGradientButton(
                                       //check button size
 
-                                      child: Text(
-                                        'Login',
-                                        style: TextStyle(color: Colors.white),
-                                      ),
+                                      child: didPressLogin == true
+                                          ? SizedBox(
+                                              child: CircularProgressIndicator(
+                                                strokeWidth: 2,
+                                                valueColor:
+                                                    AlwaysStoppedAnimation<
+                                                            Color>(
+                                                        Theme.of(context)
+                                                            .colorScheme
+                                                            .secondary),
+                                              ),
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  .025,
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  .05)
+                                          : Text(
+                                              'Login',
+                                              style: TextStyle(
+                                                  color: Colors.white),
+                                            ),
                                       onPressed: () async {
                                         print(didPressLogin);
                                         if (didPressLogin == false) {

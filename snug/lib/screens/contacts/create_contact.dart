@@ -109,7 +109,7 @@ class _CreateContactState extends State<CreateContact> {
                                       labelText: 'Phone Number'),
                                   validator: (String val) {
                                     if (val.length != 10) {
-                                      return "Please enter a valid phone number";
+                                      return "Enter a valid phone number";
                                     }
                                   },
                                   onChanged: (val) {
