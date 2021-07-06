@@ -38,6 +38,8 @@ class MapScreenState extends State<ProfilePage>
     'assets/image/dog4.jpg',
     'assets/image/dog5.jpg',
     'assets/image/dog6.jpg',
+    'assets/image/dog7.jpg',
+    'assets/image/dog8.jpg',
   ];
   var random = new Random();
   TextEditingController _controller;
