@@ -36,6 +36,8 @@ class Who extends StatefulWidget {
 class _WhoState extends State<Who> {
   bool triedToFindUser = false;
   bool userFound = false;
+  FocusNode firstNameFocusNode = FocusNode();
+  FocusNode lastNameFocusNode = FocusNode();
 
   final log = getLogger('addDate: who');
   Date currentDate;
@@ -169,6 +171,8 @@ class _WhoState extends State<Who> {
                                     style: TextStyle(
                                         color: Theme.of(context).dividerColor)),
                                 onPressed: () async {
+                                  FocusScope.of(context)
+                                      .requestFocus(new FocusNode());
                                   if (_whoFormKey.currentState.validate()) {
                                     if (userProvider.getUser.phone_number ==
                                         phone_number) {
@@ -227,6 +231,10 @@ class _WhoState extends State<Who> {
                                     width:
                                         MediaQuery.of(context).size.width * .4,
                                     child: TextFormField(
+                                      focusNode: firstNameFocusNode,
+                                      onEditingComplete: () =>
+                                          FocusScope.of(context)
+                                              .requestFocus(lastNameFocusNode),
                                       textCapitalization:
                                           TextCapitalization.sentences,
                                       validator: (String val) {
@@ -262,6 +270,7 @@ class _WhoState extends State<Who> {
                               Container(
                                   width: MediaQuery.of(context).size.width * .4,
                                   child: TextFormField(
+                                    focusNode: lastNameFocusNode,
                                     textCapitalization:
                                         TextCapitalization.sentences,
                                     validator: (String val) {
@@ -378,17 +387,6 @@ class _WhoState extends State<Who> {
                           ],
                         ),
                       ])),
-                      // Container(
-                      //     alignment: Alignment.centerLeft,
-                      //     child: Text(
-                      //       "Height",
-                      //       style: TextStyle(
-                      //           fontSize: 16,
-                      //           color: Theme.of(context).brightness ==
-                      //                   Brightness.dark
-                      //               ? Colors.white
-                      //               : Colors.black54),
-                      //     )),
                       Container(
                           child: Column(children: <Widget>[
                         Row(
