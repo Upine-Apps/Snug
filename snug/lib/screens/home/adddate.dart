@@ -156,7 +156,7 @@ class _AddDateState extends State<AddDate> {
                                   SizedBox(
                                       height:
                                           MediaQuery.of(context).size.height *
-                                              .03),
+                                              .02),
                                   Container(
                                     padding: EdgeInsets.only(
                                         left:
@@ -167,12 +167,9 @@ class _AddDateState extends State<AddDate> {
                                                 .05),
                                     width: MediaQuery.of(context).size.width,
                                     height: MediaQuery.of(context).size.height *
-                                        .55,
+                                        .57,
                                     child: Who(),
                                   ),
-
-                                  // padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * ),
-
                                   Container(
                                       padding: EdgeInsets.only(
                                           right:
