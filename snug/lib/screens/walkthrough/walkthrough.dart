@@ -193,7 +193,7 @@ class _WalkthroughState extends State<Walkthrough> {
                                     width:
                                         MediaQuery.of(context).size.width * .9,
                                     child: Text(
-                                      'The above button is displayed on the home screen. Use it to create a date! Once the date is created we will make sure that you are safe throughout via text message. If something happens, we\'ll let your contact know. ',
+                                      'The above button is displayed on the home screen. Use it to create a date! Once the date is finished, we will check in with you via text message if you haven\'t marked yourself safe. If we don\'t hear back after 20 minutes, we\'ll let your contact know.',
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 18,
@@ -266,7 +266,7 @@ class _WalkthroughState extends State<Walkthrough> {
                                     width:
                                         MediaQuery.of(context).size.width * .9,
                                     child: Text(
-                                      'The above button is displayed on the contact screen. Use it to create your contacts! These are the people that got your back if anything happens.',
+                                      'This button is displayed on the contact screen. Use it to create your contacts! These are the people that got your back if anything happens.',
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 18,
@@ -338,7 +338,7 @@ class _WalkthroughState extends State<Walkthrough> {
                                     width:
                                         MediaQuery.of(context).size.width * .9,
                                     child: Text(
-                                      'The above button is displayed on the profile screen. Use it to edit your profile!',
+                                      'Changed your hair color? Look for this button on the profile screen to edit your profile!',
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 18,

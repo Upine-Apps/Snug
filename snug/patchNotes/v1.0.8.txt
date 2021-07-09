@@ -11,7 +11,7 @@ Patch Notes For Snug 1.0.8
 4.) After creating first contact, user is directed to the contact screen
 
 5.) Location permission is now asked in the home screen
-    -- Users cannot create a date without allowing location .
+    -- Users cannot create a date without allowing location.
     -- This should help with the map loading with creating a date.
     -- Proper pop up messages are shown to help users with location issues.
 
