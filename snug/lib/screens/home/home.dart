@@ -251,7 +251,6 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                       padding: EdgeInsets.only(
                           top: MediaQuery.of(context).size.height * .02),
                       child: Container(
-                        height: MediaQuery.of(context).size.height * .05,
                         child: Header(
                             child: Image.asset(
                           'assets/image/logo1.png',
@@ -260,9 +259,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                         )),
                       ),
                     ),
-                    SingleChildScrollView(
+                    Flexible(
                       child: Container(
-                        height: MediaQuery.of(context).size.height * .75,
                         child: ListView.builder(
                           itemCount: dateProvider.getCurrentDates.length,
                           itemBuilder: (context, index) {
@@ -317,14 +315,15 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                                                         .width *
                                                     .25,
                                                 decoration: new BoxDecoration(
-                                                    image: new DecorationImage(
-                                                        fit: BoxFit.fitHeight,
-                                                        alignment:
-                                                            FractionalOffset
-                                                                .topCenter,
-                                                        image: new NetworkImage(
-                                                          'https://maps.googleapis.com/maps/api/place/photo?maxwidth=1920&photoreference=${dateProvider.getCurrentDates[index].photoReference}&key=AIzaSyBQgN0iD8Wo5zNt_FSu_YLreNK9zfwjeKQ',
-                                                        ))),
+                                                  image: new DecorationImage(
+                                                    fit: BoxFit.fitHeight,
+                                                    alignment: FractionalOffset
+                                                        .topCenter,
+                                                    image: new NetworkImage(
+                                                      'https://maps.googleapis.com/maps/api/place/photo?maxwidth=1920&photoreference=${dateProvider.getCurrentDates[index].photoReference}&key=AIzaSyBQgN0iD8Wo5zNt_FSu_YLreNK9zfwjeKQ',
+                                                    ),
+                                                  ),
+                                                ),
                                               ))),
                                       Container(
                                         height:
@@ -358,59 +357,51 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                                                           .size
                                                           .height *
                                                       .005),
-                                              child: Align(
-                                                  alignment:
-                                                      Alignment.centerLeft,
-                                                  child: Row(
-                                                    children: <Widget>[
-                                                      Padding(
-                                                          padding: EdgeInsets.only(
-                                                              right: MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .width *
-                                                                  .025),
-                                                          child: Icon(
-                                                            Icons.phone,
-                                                            color: Theme.of(
-                                                                    context)
-                                                                .colorScheme
-                                                                .secondary,
-                                                          )),
-                                                      Text(
-                                                        "(" +
-                                                            dateProvider
-                                                                .getCurrentDates[
-                                                                    index]
-                                                                .who
-                                                                .phone_number
-                                                                .substring(
-                                                                    0, 3) +
-                                                            ") - " +
-                                                            dateProvider
-                                                                .getCurrentDates[
-                                                                    index]
-                                                                .who
-                                                                .phone_number
-                                                                .substring(
-                                                                    3, 6) +
-                                                            " - " +
-                                                            dateProvider
-                                                                .getCurrentDates[
-                                                                    index]
-                                                                .who
-                                                                .phone_number
-                                                                .substring(
-                                                                    6, 10),
-                                                        style: TextStyle(
-                                                          color:
-                                                              Theme.of(context)
-                                                                  .dividerColor,
-                                                          fontSize: 16,
-                                                        ),
-                                                      )
-                                                    ],
-                                                  )),
+                                              child: Row(
+                                                children: <Widget>[
+                                                  Padding(
+                                                      padding: EdgeInsets.only(
+                                                          right: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .width *
+                                                              .025),
+                                                      child: Icon(
+                                                        Icons.phone,
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .secondary,
+                                                      )),
+                                                  Text(
+                                                    "(" +
+                                                        dateProvider
+                                                            .getCurrentDates[
+                                                                index]
+                                                            .who
+                                                            .phone_number
+                                                            .substring(0, 3) +
+                                                        ") - " +
+                                                        dateProvider
+                                                            .getCurrentDates[
+                                                                index]
+                                                            .who
+                                                            .phone_number
+                                                            .substring(3, 6) +
+                                                        " - " +
+                                                        dateProvider
+                                                            .getCurrentDates[
+                                                                index]
+                                                            .who
+                                                            .phone_number
+                                                            .substring(6, 10),
+                                                    style: TextStyle(
+                                                      color: Theme.of(context)
+                                                          .dividerColor,
+                                                      fontSize: 16,
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
                                             ),
                                             Padding(
                                               padding: EdgeInsets.only(

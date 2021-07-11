@@ -128,7 +128,12 @@ class _SignInState extends State<SignIn> {
                                           color: Theme.of(context)
                                               .colorScheme
                                               .secondaryVariant),
-                                      icon: Icon(Icons.phone),
+                                      icon: Icon(
+                                        Icons.phone,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondaryVariant,
+                                      ),
                                       labelText: 'Phone Number',
                                       labelStyle: TextStyle(
                                           color: Theme.of(context).hintColor,
@@ -149,7 +154,10 @@ class _SignInState extends State<SignIn> {
                                   ),
                                   TextFormField(
                                     decoration: InputDecoration(
-                                      icon: Icon(Icons.security),
+                                      icon: Icon(Icons.security,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .secondaryVariant),
                                       labelText: 'Password',
                                       labelStyle: TextStyle(
                                           color: Theme.of(context).hintColor,

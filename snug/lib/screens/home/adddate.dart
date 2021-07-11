@@ -143,16 +143,16 @@ class _AddDateState extends State<AddDate> {
                                           MediaQuery.of(context).size.height *
                                               .105),
                                   Container(
-                                      width:
-                                          MediaQuery.of(context).size.width / 2,
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              .15,
-                                      child: Text(
-                                        'Tell us a little bit about your date!',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(fontSize: 26),
-                                      )),
+                                    width:
+                                        MediaQuery.of(context).size.width / 2,
+                                    height: MediaQuery.of(context).size.height *
+                                        .15,
+                                    child: Text(
+                                      'Tell us a little bit about your date!',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(fontSize: 26),
+                                    ),
+                                  ),
                                   SizedBox(
                                       height:
                                           MediaQuery.of(context).size.height *
@@ -178,7 +178,7 @@ class _AddDateState extends State<AddDate> {
                                       alignment: Alignment.centerRight,
                                       height:
                                           MediaQuery.of(context).size.height *
-                                              .07,
+                                              .05,
                                       child: IconButton(
                                           icon: Icon(Icons.arrow_forward,
                                               color: Theme.of(context)
