@@ -141,7 +141,7 @@ class _AddDateState extends State<AddDate> {
                                   SizedBox(
                                       height:
                                           MediaQuery.of(context).size.height *
-                                              .105),
+                                              .05),
                                   Container(
                                     width:
                                         MediaQuery.of(context).size.width / 2,
@@ -153,10 +153,10 @@ class _AddDateState extends State<AddDate> {
                                       style: TextStyle(fontSize: 26),
                                     ),
                                   ),
-                                  SizedBox(
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              .02),
+                                  // SizedBox(
+                                  //     height:
+                                  //         MediaQuery.of(context).size.height *
+                                  //             .02),
                                   Container(
                                     padding: EdgeInsets.only(
                                         left:
@@ -167,14 +167,18 @@ class _AddDateState extends State<AddDate> {
                                                 .05),
                                     width: MediaQuery.of(context).size.width,
                                     height: MediaQuery.of(context).size.height *
-                                        .57,
+                                        .65,
                                     child: Who(),
                                   ),
                                   Container(
                                       padding: EdgeInsets.only(
                                           right:
                                               MediaQuery.of(context).size.width *
-                                                  .05),
+                                                  .05,
+                                          bottom: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              .02),
                                       alignment: Alignment.centerRight,
                                       height:
                                           MediaQuery.of(context).size.height *
@@ -184,15 +188,11 @@ class _AddDateState extends State<AddDate> {
                                               color: Theme.of(context)
                                                   .colorScheme
                                                   .secondaryVariant),
-                                          onPressed:
-                                              () =>
-                                                  scrollController.animateTo(
-                                                      MediaQuery.of(context)
-                                                          .size
-                                                          .width,
-                                                      duration: Duration(
-                                                          milliseconds: 500),
-                                                      curve: Curves.ease)))
+                                          onPressed: () => scrollController.animateTo(
+                                              MediaQuery.of(context).size.width,
+                                              duration:
+                                                  Duration(milliseconds: 500),
+                                              curve: Curves.ease)))
                                 ],
                               )),
                             )),
@@ -241,7 +241,7 @@ class _AddDateState extends State<AddDate> {
                                   SizedBox(
                                       height:
                                           MediaQuery.of(context).size.height *
-                                              .105),
+                                              .05),
                                   Container(
                                       width:
                                           MediaQuery.of(context).size.width / 2,
@@ -251,10 +251,10 @@ class _AddDateState extends State<AddDate> {
                                       child: Text("Where are y'all headed to?",
                                           textAlign: TextAlign.center,
                                           style: TextStyle(fontSize: 26))),
-                                  SizedBox(
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              .03),
+                                  // SizedBox(
+                                  //     height:
+                                  //         MediaQuery.of(context).size.height *
+                                  //             .02),
                                   Container(
                                       padding: EdgeInsets.only(
                                           left: MediaQuery.of(context)
@@ -270,38 +270,36 @@ class _AddDateState extends State<AddDate> {
                                       width: MediaQuery.of(context).size.width,
                                       height:
                                           MediaQuery.of(context).size.height *
-                                              .55,
+                                              .65,
                                       child: Where()),
                                   Container(
                                       height:
                                           MediaQuery.of(context).size.height *
-                                              .07,
+                                              .05,
                                       child:
                                           // BELOW WIDGET IS FOR THE TWO FORWARD AND BACKWARD ARROWS TO NAVIGATE
 
                                           Row(children: <Widget>[
                                         Padding(
                                             padding: EdgeInsets.only(
-                                                right: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
+                                                right: MediaQuery.of(context).size.width *
                                                     .7,
+                                                bottom:
+                                                    MediaQuery.of(context).size.height *
+                                                        .02,
                                                 left: MediaQuery.of(context).size.width *
                                                     .05),
                                             child: Container(
                                                 padding: EdgeInsets.all(0),
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
+                                                width: MediaQuery.of(context).size.width *
                                                     .1,
                                                 child: IconButton(
                                                     icon: Icon(Icons.arrow_back,
                                                         color: Theme.of(context)
                                                             .colorScheme
                                                             .secondaryVariant),
-                                                    onPressed: () => scrollController.animateTo(0,
-                                                        duration: Duration(milliseconds: 500),
-                                                        curve: Curves.ease)))),
+                                                    onPressed: () =>
+                                                        scrollController.animateTo(0, duration: Duration(milliseconds: 500), curve: Curves.ease)))),
                                         Padding(
                                             padding: EdgeInsets.only(
                                                 right: MediaQuery.of(context)
@@ -372,7 +370,7 @@ class _AddDateState extends State<AddDate> {
                                     SizedBox(
                                         height:
                                             MediaQuery.of(context).size.height *
-                                                .105),
+                                                .05),
                                     Container(
                                         width:
                                             MediaQuery.of(context).size.width /
@@ -383,10 +381,10 @@ class _AddDateState extends State<AddDate> {
                                         child: Text("When is this date?",
                                             textAlign: TextAlign.center,
                                             style: TextStyle(fontSize: 26))),
-                                    SizedBox(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                .03),
+                                    // SizedBox(
+                                    //     height:
+                                    //         MediaQuery.of(context).size.height *
+                                    //             .02),
                                     Container(
                                       padding: EdgeInsets.only(
                                           left: MediaQuery.of(context)
@@ -402,7 +400,7 @@ class _AddDateState extends State<AddDate> {
                                       width: MediaQuery.of(context).size.width,
                                       height:
                                           MediaQuery.of(context).size.height *
-                                              .55,
+                                              .65,
 
                                       child: When(),
 
@@ -411,14 +409,23 @@ class _AddDateState extends State<AddDate> {
                                     Container(
                                         height:
                                             MediaQuery.of(context).size.height *
-                                                .07,
+                                                .05,
                                         child: Row(children: <Widget>[
                                           Padding(
                                               padding: EdgeInsets.only(
-                                                  right: MediaQuery.of(context).size.width *
-                                                      .7,
-                                                  left: MediaQuery.of(context).size.width *
-                                                      .05),
+                                                right: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    .7,
+                                                left: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    .05,
+                                                bottom: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    .02,
+                                              ),
                                               child: Container(
                                                   padding: EdgeInsets.all(0),
                                                   width: MediaQuery.of(context)
@@ -431,8 +438,11 @@ class _AddDateState extends State<AddDate> {
                                                               .colorScheme
                                                               .secondaryVariant),
                                                       onPressed: () => scrollController.animateTo(
-                                                          MediaQuery.of(context).size.width,
-                                                          duration: Duration(milliseconds: 500),
+                                                          MediaQuery.of(context)
+                                                              .size
+                                                              .width,
+                                                          duration: Duration(
+                                                              milliseconds: 500),
                                                           curve: Curves.ease)))),
                                           Padding(
                                             padding: EdgeInsets.only(
@@ -510,20 +520,21 @@ class _AddDateState extends State<AddDate> {
                                   SizedBox(
                                       height:
                                           MediaQuery.of(context).size.height *
-                                              .105),
+                                              .05),
                                   Container(
                                       width:
                                           MediaQuery.of(context).size.width / 2,
-                                      //height:
-                                      //MediaQuery.of(context).size.height * .165,
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              .2,
                                       child: Text(
                                           "Which contact would you like to use for this date?",
                                           textAlign: TextAlign.center,
                                           style: TextStyle(fontSize: 26))),
-                                  SizedBox(
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              .03),
+                                  // SizedBox(
+                                  //     height:
+                                  //         MediaQuery.of(context).size.height *
+                                  //             .02),
                                   Container(
                                       padding: EdgeInsets.only(
                                           left: MediaQuery.of(context)
@@ -539,37 +550,49 @@ class _AddDateState extends State<AddDate> {
                                       width: MediaQuery.of(context).size.width,
                                       height:
                                           MediaQuery.of(context).size.height *
-                                              .55,
+                                              .6,
                                       child: ContactDate()
 
                                       //INSERT CONTACTS TO CHOOSE FROM
                                       ),
                                   Container(
                                     height: MediaQuery.of(context).size.height *
-                                        .07,
+                                        .05,
                                     child: Row(
                                       children: <Widget>[
                                         Padding(
                                             padding: EdgeInsets.only(
-                                                right: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    .7,
-                                                left: MediaQuery.of(context).size.width *
-                                                    .05),
+                                              right: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  .7,
+                                              left: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  .05,
+                                              bottom: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  .02,
+                                            ),
                                             child: Container(
                                                 padding: EdgeInsets.all(0),
-                                                width:
-                                                    MediaQuery.of(context).size.width *
-                                                        .1,
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    .1,
                                                 child: IconButton(
                                                     icon: Icon(Icons.arrow_back,
                                                         color: Theme.of(context)
                                                             .colorScheme
                                                             .secondaryVariant),
                                                     onPressed: () => scrollController.animateTo(
-                                                        MediaQuery.of(context).size.width * 2,
-                                                        duration: Duration(milliseconds: 500),
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            2,
+                                                        duration:
+                                                            Duration(milliseconds: 500),
                                                         curve: Curves.ease)))),
                                         Padding(
                                           padding: EdgeInsets.only(

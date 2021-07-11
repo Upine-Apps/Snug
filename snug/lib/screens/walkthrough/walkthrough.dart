@@ -91,9 +91,9 @@ class _WalkthroughState extends State<Walkthrough> {
                                     child: Image(
                                   image: AssetImage('assets/image/logo1.png'),
                                   height:
-                                      MediaQuery.of(context).size.height * .4,
+                                      MediaQuery.of(context).size.height * .3,
                                   width:
-                                      MediaQuery.of(context).size.height * .4,
+                                      MediaQuery.of(context).size.height * .3,
                                 )),
                                 SizedBox(
                                   height:
@@ -150,17 +150,17 @@ class _WalkthroughState extends State<Walkthrough> {
                                               height: MediaQuery.of(context)
                                                       .size
                                                       .height *
-                                                  .4,
+                                                  .3,
                                               width: MediaQuery.of(context)
                                                       .size
                                                       .height *
-                                                  .4,
+                                                  .3,
                                               child: Icon(
                                                 Icons.favorite,
                                                 size: MediaQuery.of(context)
                                                         .size
                                                         .height *
-                                                    .2,
+                                                    .15,
                                                 color: Colors.white,
                                               ),
                                             ),
@@ -197,7 +197,6 @@ class _WalkthroughState extends State<Walkthrough> {
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 18,
-                                        height: 1.2,
                                       ),
                                     ),
                                   ),
@@ -223,17 +222,17 @@ class _WalkthroughState extends State<Walkthrough> {
                                               height: MediaQuery.of(context)
                                                       .size
                                                       .height *
-                                                  .4,
+                                                  .3,
                                               width: MediaQuery.of(context)
                                                       .size
                                                       .height *
-                                                  .4,
+                                                  .3,
                                               child: Icon(
                                                 Icons.person_add,
                                                 size: MediaQuery.of(context)
                                                         .size
                                                         .height *
-                                                    .2,
+                                                    .15,
                                                 color: Colors.white,
                                               ),
                                             ),
@@ -295,17 +294,17 @@ class _WalkthroughState extends State<Walkthrough> {
                                               height: MediaQuery.of(context)
                                                       .size
                                                       .height *
-                                                  .4,
+                                                  .35,
                                               width: MediaQuery.of(context)
                                                       .size
                                                       .height *
-                                                  .4,
+                                                  .35,
                                               child: Icon(
                                                 Icons.edit,
                                                 size: MediaQuery.of(context)
                                                         .size
                                                         .height *
-                                                    .2,
+                                                    .15,
                                                 color: Colors.white,
                                               ),
                                             ),
@@ -361,7 +360,7 @@ class _WalkthroughState extends State<Walkthrough> {
                     _currentPage != _numPages - 1
                         ? Padding(
                             padding: EdgeInsets.only(
-                                top: MediaQuery.of(context).size.height * .1),
+                                top: MediaQuery.of(context).size.height * .075),
                             child: Align(
                               alignment: FractionalOffset.bottomRight,
                               child: FlatButton(

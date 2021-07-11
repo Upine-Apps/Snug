@@ -100,7 +100,7 @@ class _WhereState extends State<Where> {
               Stack(
                 children: [
                   Container(
-                      height: MediaQuery.of(context).size.height * .425,
+                      height: MediaQuery.of(context).size.height * .5,
                       color: Colors.black,
                       child: GoogleMap(
                         mapType: MapType.normal,
@@ -120,7 +120,7 @@ class _WhereState extends State<Where> {
                     // does not work well on fresh start. line 55 is null
                     Container(
                       padding: EdgeInsets.all(0),
-                      height: MediaQuery.of(context).size.height * .425,
+                      height: MediaQuery.of(context).size.height * .5,
                       decoration: BoxDecoration(
                           color: Colors.black.withOpacity(.50),
                           backgroundBlendMode: BlendMode.darken),
