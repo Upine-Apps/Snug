@@ -108,7 +108,12 @@ class _RegisterState extends State<Register> {
                                                 color: Theme.of(context)
                                                     .colorScheme
                                                     .secondaryVariant),
-                                            icon: Icon(Icons.phone),
+                                            icon: Icon(
+                                              Icons.phone,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .secondaryVariant,
+                                            ),
                                             labelText: 'Phone Number'),
                                         validator: (String val) {
                                           if (val.length != 10) {
@@ -132,7 +137,12 @@ class _RegisterState extends State<Register> {
                                                 color: Theme.of(context)
                                                     .colorScheme
                                                     .secondaryVariant),
-                                            icon: Icon(Icons.security),
+                                            icon: Icon(
+                                              Icons.security,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .secondaryVariant,
+                                            ),
                                             labelText: 'Password'),
                                         validator: (val) => val.length < 6
                                             ? 'Enter a password 6+ char long'
@@ -153,7 +163,12 @@ class _RegisterState extends State<Register> {
                                                 color: Theme.of(context)
                                                     .colorScheme
                                                     .secondaryVariant),
-                                            icon: Icon(Icons.security),
+                                            icon: Icon(
+                                              Icons.security,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .secondaryVariant,
+                                            ),
                                             labelText: 'Confirm Password'),
                                         validator: (String val) {
                                           if (val != _passOne.text) {

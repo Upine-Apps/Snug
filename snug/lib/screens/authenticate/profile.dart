@@ -75,6 +75,22 @@ class _ProfileState extends State<Profile> {
 
   final log = getLogger('CreateProfile');
 
+  String fixDate(date) {
+    String month;
+    String day;
+    if (date.month < 10) {
+      month = '0${date.month}';
+    } else {
+      month = date.month.toString();
+    }
+    if (date.day < 10) {
+      day = '0${date.day}';
+    } else {
+      day = date.day.toString();
+    }
+    return '${date.year}-${month}-${day}';
+  }
+
   @override
   Widget build(BuildContext context) {
     final node = FocusScope.of(context);
@@ -201,7 +217,8 @@ class _ProfileState extends State<Profile> {
                                 _dob = date == null
                                     ? 'Date of Birth'
                                     : '${date.month}/${date.day}/${date.year}';
-                                tempUser.dob = _dob;
+
+                                tempUser.dob = fixDate(date);
                               },
                               child: Row(
                                 mainAxisAlignment:

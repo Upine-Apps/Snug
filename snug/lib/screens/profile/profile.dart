@@ -60,14 +60,13 @@ class MapScreenState extends State<ProfilePage>
       setState(() {
         picture = prefs.getString('profilePicture');
       });
-      _userProvider.setProfilePic(picture);
     } else {
       setState(() {
         picture = 'assets/image/pug.jpg';
       });
       prefs.setString('profilePicture', picture);
-      _userProvider.setProfilePic(picture);
     }
+    _userProvider.setProfilePic(picture);
   }
 
   @override
@@ -78,7 +77,6 @@ class MapScreenState extends State<ProfilePage>
 
   @override
   bool get wantKeepAlive => true;
-  bool _status = true;
   final log = getLogger('Profile');
 
   @override
@@ -117,6 +115,7 @@ class MapScreenState extends State<ProfilePage>
   final FocusNode myFocusNode = FocusNode();
 
   _convertDob(String dob) {
+    log.i(dob);
     String year = dob.substring(0, 4);
     String month = dob.substring(5, 7);
     String day = dob.substring(8, 10);
@@ -533,7 +532,6 @@ class MapScreenState extends State<ProfilePage>
                                         "${currentUser.ft}' ${currentUser.inch}\""))
                               ],
                             )),
-
                         SizedBox(
                           height: 5,
                         ),
@@ -578,7 +576,6 @@ class MapScreenState extends State<ProfilePage>
                                 new Container(child: Text("${currentUser.zip}"))
                               ],
                             )),
-                        // !_status ? _getActionButtons() : new Container(),
                       ],
                     ),
                   ),
