@@ -373,7 +373,12 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                                     color: Theme.of(context)
                                                         .colorScheme
                                                         .secondaryVariant),
-                                                icon: Icon(Icons.security),
+                                                icon: Icon(
+                                                  Icons.security,
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .secondaryVariant,
+                                                ),
                                                 labelText: 'Password'),
                                             validator: (val) => val.length < 6
                                                 ? 'Enter a password 6+ char long'
@@ -400,7 +405,12 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                                     color: Theme.of(context)
                                                         .colorScheme
                                                         .secondaryVariant),
-                                                icon: Icon(Icons.security),
+                                                icon: Icon(
+                                                  Icons.security,
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .secondaryVariant,
+                                                ),
                                                 labelText: 'Confirm Password'),
                                             validator: (String val) {
                                               if (val != _passOne.text) {
