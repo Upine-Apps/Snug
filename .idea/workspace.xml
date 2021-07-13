@@ -5,8 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="061bec86-66a6-4fda-b165-3bb1e37c34e8" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/Snug_Mobile_App.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Snug_Mobile_App.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/snug/lib/providers/MapProvider.dart" beforeDir="false" afterPath="$PROJECT_DIR$/snug/lib/providers/MapProvider.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/snug/lib/providers/walkthrough/walkthrough.dart" beforeDir="false" afterPath="$PROJECT_DIR$/snug/lib/providers/walkthrough/walkthrough.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/snug/lib/screens/contacts/create_contact.dart" beforeDir="false" afterPath="$PROJECT_DIR$/snug/lib/screens/contacts/create_contact.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/snug/lib/screens/home/home.dart" beforeDir="false" afterPath="$PROJECT_DIR$/snug/lib/screens/home/home.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/snug/lib/screens/home/who.dart" beforeDir="false" afterPath="$PROJECT_DIR$/snug/lib/screens/home/who.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/snug/lib/screens/navigation/MainPage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/snug/lib/screens/navigation/MainPage.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/snug/patchNotes/v1.0.6.txt" beforeDir="false" afterPath="$PROJECT_DIR$/snug/patchNotes/v1.0.6.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/snug/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/snug/pubspec.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,6 +52,7 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
+<<<<<<< HEAD
     <state x="140" y="91" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1625003394348">
       <screen x="0" y="0" width="1368" height="872" />
     </state>
@@ -57,6 +64,14 @@
     <state x="92" y="92" width="2376" height="1216" key="AVDManager/0.0.2560.1400/-1920.108.1920.1160@0.0.2560.1400" timestamp="1623127954565" />
     <state x="726" y="301" key="FileChooserDialogImpl" timestamp="1625003548520">
       <screen x="0" y="0" width="1368" height="872" />
+=======
+    <state x="92" y="92" width="2376" height="1216" key="AVDManager" timestamp="1625026918074">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="92" y="92" width="2376" height="1216" key="AVDManager/0.0.2560.1400/-1920.108.1920.1160@0.0.2560.1400" timestamp="1625026918074" />
+    <state x="1359" y="483" key="FileChooserDialogImpl" timestamp="1622453709776">
+      <screen x="0" y="0" width="2560" height="1400" />
+>>>>>>> db062969fd1163308875819f10f51541d9eed2a2
     </state>
     <state x="726" y="301" key="FileChooserDialogImpl/0.0.1368.872@0.0.1368.872" timestamp="1625003548520" />
     <state x="1359" y="483" key="FileChooserDialogImpl/0.0.2560.1400/-1920.108.1920.1160@0.0.2560.1400" timestamp="1622453709776" />

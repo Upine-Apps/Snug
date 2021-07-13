@@ -4,10 +4,6 @@ import 'package:snug/screens/navigation/MainPage.dart';
 import 'package:snug/screens/sync/sync.dart';
 
 class Walkthrough extends StatefulWidget {
-  final bool isFirst;
-
-  Walkthrough({this.isFirst});
-
   @override
   _WalkthroughState createState() => _WalkthroughState();
 }
@@ -62,15 +58,10 @@ class _WalkthroughState extends State<Walkthrough> {
                       alignment: Alignment.centerRight,
                       child: FlatButton(
                         onPressed: () {
-                          if (widget.isFirst == true) {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => MainPage()),
-                            );
-                          } else {
-                            Navigator.of(context).pop();
-                          }
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (context) => MainPage()),
+                          );
                         },
                         child: Text(
                           'Skip',
@@ -100,9 +91,9 @@ class _WalkthroughState extends State<Walkthrough> {
                                     child: Image(
                                   image: AssetImage('assets/image/logo1.png'),
                                   height:
-                                      MediaQuery.of(context).size.height * .4,
+                                      MediaQuery.of(context).size.height * .3,
                                   width:
-                                      MediaQuery.of(context).size.height * .4,
+                                      MediaQuery.of(context).size.height * .3,
                                 )),
                                 SizedBox(
                                   height:
@@ -159,17 +150,17 @@ class _WalkthroughState extends State<Walkthrough> {
                                               height: MediaQuery.of(context)
                                                       .size
                                                       .height *
-                                                  .4,
+                                                  .3,
                                               width: MediaQuery.of(context)
                                                       .size
                                                       .height *
-                                                  .4,
+                                                  .3,
                                               child: Icon(
                                                 Icons.favorite,
                                                 size: MediaQuery.of(context)
                                                         .size
                                                         .height *
-                                                    .2,
+                                                    .15,
                                                 color: Colors.white,
                                               ),
                                             ),
@@ -202,11 +193,10 @@ class _WalkthroughState extends State<Walkthrough> {
                                     width:
                                         MediaQuery.of(context).size.width * .9,
                                     child: Text(
-                                      'The above button is displayed on the home screen. Use it to create a date! Once the date is created we will make sure that you are safe throughout. If something happens, we\'ll let your contact know. ',
+                                      'The above button is displayed on the home screen. Use it to create a date! Once the date is finished, we will check in with you via text message if you haven\'t marked yourself safe. If we don\'t hear back after 20 minutes, we\'ll let your contact know.',
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 18,
-                                        height: 1.2,
                                       ),
                                     ),
                                   ),
@@ -232,17 +222,17 @@ class _WalkthroughState extends State<Walkthrough> {
                                               height: MediaQuery.of(context)
                                                       .size
                                                       .height *
-                                                  .4,
+                                                  .3,
                                               width: MediaQuery.of(context)
                                                       .size
                                                       .height *
-                                                  .4,
+                                                  .3,
                                               child: Icon(
                                                 Icons.person_add,
                                                 size: MediaQuery.of(context)
                                                         .size
                                                         .height *
-                                                    .2,
+                                                    .15,
                                                 color: Colors.white,
                                               ),
                                             ),
@@ -275,7 +265,7 @@ class _WalkthroughState extends State<Walkthrough> {
                                     width:
                                         MediaQuery.of(context).size.width * .9,
                                     child: Text(
-                                      'The above button is displayed on the contact screen. Use it to create your contacts! These are the people that got your back if anything happens.',
+                                      'This button is displayed on the contact screen. Use it to create your contacts! These are the people that got your back if anything happens.',
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 18,
@@ -304,17 +294,17 @@ class _WalkthroughState extends State<Walkthrough> {
                                               height: MediaQuery.of(context)
                                                       .size
                                                       .height *
-                                                  .4,
+                                                  .35,
                                               width: MediaQuery.of(context)
                                                       .size
                                                       .height *
-                                                  .4,
+                                                  .35,
                                               child: Icon(
                                                 Icons.edit,
                                                 size: MediaQuery.of(context)
                                                         .size
                                                         .height *
-                                                    .2,
+                                                    .15,
                                                 color: Colors.white,
                                               ),
                                             ),
@@ -347,7 +337,7 @@ class _WalkthroughState extends State<Walkthrough> {
                                     width:
                                         MediaQuery.of(context).size.width * .9,
                                     child: Text(
-                                      'The above button is displayed on the profile screen. Use it to edit your profile!',
+                                      'Changed your hair color? Look for this button on the profile screen to edit your profile!',
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 18,
@@ -368,7 +358,9 @@ class _WalkthroughState extends State<Walkthrough> {
                       ),
                     ),
                     _currentPage != _numPages - 1
-                        ? Expanded(
+                        ? Padding(
+                            padding: EdgeInsets.only(
+                                top: MediaQuery.of(context).size.height * .075),
                             child: Align(
                               alignment: FractionalOffset.bottomRight,
                               child: FlatButton(
@@ -413,14 +405,10 @@ class _WalkthroughState extends State<Walkthrough> {
                 color: Colors.white,
                 child: GestureDetector(
                   onTap: () {
-                    if (widget.isFirst == true) {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => SyncScreen()),
-                      );
-                    } else {
-                      Navigator.of(context).pop();
-                    }
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => MainPage()),
+                    );
                   },
                   child: Center(
                     child: Text(

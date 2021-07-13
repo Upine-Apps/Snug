@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gradient_bottom_navigation_bar/gradient_bottom_navigation_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:snug/core/logger.dart';
+import 'package:snug/custom_widgets/CustomToast.dart';
 import 'package:snug/providers/UserProvider.dart';
 import 'package:snug/screens/contacts/contact.dart';
 import 'package:snug/screens/home/home.dart';
@@ -9,10 +10,14 @@ import 'package:snug/screens/profile/profile.dart';
 import 'package:snug/screens/settings/settings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:showcaseview/showcaseview.dart';
+import 'package:toast/toast.dart';
+import 'package:emojis/emojis.dart';
+import 'package:emojis/emoji.dart';
 
 class MainPage extends StatefulWidget {
-  final bool firstContact;
-  MainPage({this.firstContact});
+  bool firstContact;
+  bool fromAddDate;
+  MainPage({this.firstContact, this.fromAddDate});
   @override
   _MainPageState createState() => _MainPageState();
 }
@@ -30,24 +35,26 @@ class _MainPageState extends State<MainPage> {
   PageController pageController;
 
   int _selectedIndex = 0;
-  final log = getLogger('MainPage');
+
+  Emoji heart = Emoji.byChar(Emojis.redHeart);
+  //final log = getLogger('MainPage');
 
   @override
   void initState() {
     super.initState();
-    log.i('OnMainPage');
+    //log.i('OnMainPage');
     pageController = PageController();
 
     setProfilePic();
-
-    if (widget.firstContact == true) {
+    if (widget.fromAddDate == true) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (pageController.hasClients) {
-          pageController.jumpToPage(1);
-        }
+        CustomToast.showDialog(
+            'Glad you\'re safe! $heart', context, Toast.BOTTOM);
       });
     }
   }
+
+  moveToContactScreen() {}
 
   setProfilePic() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -61,11 +68,6 @@ class _MainPageState extends State<MainPage> {
       });
     }
   }
-
-  // @override
-  // void dispose() {
-  //   pageController.dispose();
-  // }
 
   _onTapped(int index) {
     setState(() {
@@ -83,6 +85,15 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context, listen: true);
+    if (widget.firstContact == true) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        print(pageController.hasClients);
+        if (pageController.hasClients) {
+          pageController.jumpToPage(1);
+          widget.firstContact = false;
+        }
+      });
+    }
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(

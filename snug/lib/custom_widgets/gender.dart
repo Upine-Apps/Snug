@@ -13,6 +13,8 @@ class Gender extends StatelessWidget {
     return DropdownButtonFormField<String>(
         style: TextStyle(color: Theme.of(context).hintColor, fontSize: 16),
         decoration: InputDecoration(
+            labelText: 'Sex',
+            alignLabelWithHint: true,
             errorStyle: TextStyle(
                 color: Theme.of(context).colorScheme.secondaryVariant),
             enabledBorder: UnderlineInputBorder(

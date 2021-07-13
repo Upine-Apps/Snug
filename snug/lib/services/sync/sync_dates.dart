@@ -8,15 +8,15 @@ import 'package:snug/services/remote_db_service.dart';
 import 'package:provider/provider.dart';
 
 Future syncDates(String _userId, BuildContext context) async {
-  final log = getLogger('syncDates');
-  log.i('syncDates | userId: $_userId BuildContext: $context');
+  //final log = getLogger('syncDates');
+  //log.i('syncDates | userId: $_userId BuildContext: $context');
   final dateProvider = Provider.of<DateProvider>(context, listen: false);
   try {
     var result = await RemoteDatabaseHelper.instance.getUserDates(_userId);
     if (result['status'] == true) {
       if (result['data'] != null) {
         for (var _date in result['data']) {
-          log.d(_date);
+          //log.d(_date);
           var userTwoResponse = await RemoteDatabaseHelper.instance
               .getUser(_date['user_2'].toString());
           if (userTwoResponse['status'] == true) {
@@ -33,7 +33,7 @@ Future syncDates(String _userId, BuildContext context) async {
       throw DateNotSyncedException('Failed to sync dates');
     }
   } catch (e) {
-    log.e('Caught exception $e');
+    //log.e('Caught exception $e');
     return {'status': false};
   }
 }

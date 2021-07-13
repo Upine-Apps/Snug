@@ -26,7 +26,7 @@ class Otp extends StatefulWidget {
 }
 
 class _OtpState extends State<Otp> {
-  final log = getLogger('Otp');
+  //final log = getLogger('Otp');
   CognitoUser cognitoUser;
   bool returnToSignIn = false;
 
@@ -48,16 +48,16 @@ class _OtpState extends State<Otp> {
           setState(() {
             cognitoUser = signInResult['cognitoUser'];
           });
-          log.i('pushToProfileCreation');
+          //log.i('pushToProfileCreation');
           return null;
         } else {
-          log.e('ERROR: ${signInResult['message']} | ${signInResult['error']}');
-          log.i('pushToAuthenticate');
+          //log.e('ERROR: ${signInResult['message']} | ${signInResult['error']}');
+          //log.i('pushToAuthenticate');
           throw Error;
         }
       }
     } on OTPException catch (e) {
-      log.e(e);
+      //log.e(e);
       return ('Incorrect OTP code');
     } catch (e) {
       await Future.delayed(Duration(seconds: 2), () {

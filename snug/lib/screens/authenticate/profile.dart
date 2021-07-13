@@ -16,7 +16,7 @@ import 'package:snug/custom_widgets/raised_rounded_gradient_button.dart';
 import 'package:snug/custom_widgets/topheader.dart';
 import 'package:snug/models/User.dart';
 import 'package:snug/providers/UserProvider.dart';
-import 'package:snug/providers/walkthrough/walkthrough.dart';
+import 'package:snug/screens/walkthrough/walkthrough.dart';
 
 import 'package:snug/screens/sync/sync.dart';
 import 'package:snug/services/cognito/CognitoService.dart';
@@ -73,7 +73,23 @@ class _ProfileState extends State<Profile> {
   String _dob = 'Date of Birth';
   String _zip;
 
-  final log = getLogger('CreateProfile');
+  //final log = getLogger('CreateProfile');
+
+  String fixDate(date) {
+    String month;
+    String day;
+    if (date.month < 10) {
+      month = '0${date.month}';
+    } else {
+      month = date.month.toString();
+    }
+    if (date.day < 10) {
+      day = '0${date.day}';
+    } else {
+      day = date.day.toString();
+    }
+    return '${date.year}-${month}-${day}';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -145,7 +161,7 @@ class _ProfileState extends State<Profile> {
                                               Theme.of(context).primaryColor)),
                                   labelText: 'First Name'),
                               onChanged: (val) {
-                                log.i('setFirstName | $val');
+                                // log.i('setFirstName | $val');
                                 tempUser.first_name = val;
                                 setState(() => first_name = val);
                               },
@@ -176,7 +192,7 @@ class _ProfileState extends State<Profile> {
                                               Theme.of(context).primaryColor)),
                                   labelText: 'Last Name'),
                               onChanged: (val) {
-                                log.i('setLastName | $val');
+                                // log.i('setLastName | $val');
                                 tempUser.last_name = val;
                                 setState(() => last_name = val);
                               },
@@ -201,7 +217,8 @@ class _ProfileState extends State<Profile> {
                                 _dob = date == null
                                     ? 'Date of Birth'
                                     : '${date.month}/${date.day}/${date.year}';
-                                tempUser.dob = _dob;
+
+                                tempUser.dob = fixDate(date);
                               },
                               child: Row(
                                 mainAxisAlignment:
@@ -239,7 +256,7 @@ class _ProfileState extends State<Profile> {
                               onChanged: (val) {
                                 FocusScope.of(context)
                                     .requestFocus(new FocusNode());
-                                log.i('setSex | $val');
+                                // log.i('setSex | $val');
                                 tempUser.sex = val;
                                 setState(() {
                                   _sex = val;
@@ -256,7 +273,7 @@ class _ProfileState extends State<Profile> {
                               onChanged: (val) {
                                 FocusScope.of(context)
                                     .requestFocus(new FocusNode());
-                                log.i('setRace | $val');
+                                // log.i('setRace | $val');
                                 tempUser.race = val;
                                 setState(() {
                                   _race = val;
@@ -273,7 +290,7 @@ class _ProfileState extends State<Profile> {
                               onChanged: (val) {
                                 FocusScope.of(context)
                                     .requestFocus(new FocusNode());
-                                log.i('setEye | $val');
+                                // log.i('setEye | $val');
                                 tempUser.eye = val;
                                 setState(() {
                                   _eye = val;
@@ -290,7 +307,7 @@ class _ProfileState extends State<Profile> {
                               onChanged: (val) {
                                 FocusScope.of(context)
                                     .requestFocus(new FocusNode());
-                                log.i('setHair | $val');
+                                // log.i('setHair | $val');
                                 tempUser.hair = val;
                                 setState(() {
                                   _hair = val;
@@ -324,7 +341,7 @@ class _ProfileState extends State<Profile> {
                                       onChanged: (val) {
                                         FocusScope.of(context)
                                             .requestFocus(new FocusNode());
-                                        log.i('setFt | $val');
+                                        //log.i('setFt | $val');
                                         tempUser.ft = val;
                                         setState(() {
                                           _ft = val;
@@ -344,7 +361,7 @@ class _ProfileState extends State<Profile> {
                                       onChanged: (val) {
                                         FocusScope.of(context)
                                             .requestFocus(new FocusNode());
-                                        log.i('setInches | $val');
+                                        //log.i('setInches | $val');
                                         tempUser.inch = val;
                                         setState(() {
                                           _in = val;
@@ -391,7 +408,7 @@ class _ProfileState extends State<Profile> {
                                                       .primaryColor)),
                                           labelText: 'Zip Code'),
                                       onChanged: (val) {
-                                        log.i('setZip | $val');
+                                        //log.i('setZip | $val');
                                         tempUser.zip = val;
                                         setState(() => _zip = val);
                                       },
@@ -421,13 +438,13 @@ class _ProfileState extends State<Profile> {
                                       context,
                                       Toast.BOTTOM);
                                 } else if (_formKey.currentState.validate()) {
-                                  log.i('convertHeight | _ft: $_ft _in: $_in');
+                                  //log.i('convertHeight | _ft: $_ft _in: $_in');
                                   // Convert height into a total of inches for data base.
                                   var ft1 = int.parse(_ft);
                                   var in1 = int.parse(_in);
                                   var h = (ft1 * 12) + in1;
                                   // Convert height into a total of inches for data base.
-                                  log.d('Height: $h');
+                                  //log.d('Height: $h');
                                   height =
                                       '$h'; //pretty sure we aren't even doing anything with this variable
                                   // tempUser.phone_number = '1111111111';
@@ -455,13 +472,12 @@ class _ProfileState extends State<Profile> {
                                               .addUserAttributes(
                                                   widget.cognitoUser, user_id);
                                       if (attributeUpdated['status'] == true) {
-                                        log.i('pushToMainPage');
+                                        //log.i('pushToMainPage');
                                         Navigator.pushReplacement(
                                           context,
                                           MaterialPageRoute(
-                                              builder: (context) => Walkthrough(
-                                                    isFirst: true,
-                                                  )),
+                                              builder: (context) =>
+                                                  Walkthrough()),
                                         );
                                       } else {
                                         throw AddUserAttributeException(
@@ -472,8 +488,8 @@ class _ProfileState extends State<Profile> {
                                           'Failed to add the user');
                                     }
                                   } catch (e) {
-                                    log.e(
-                                        'Failed to add user profile. Error: $e');
+                                    //log.e(
+                                    // 'Failed to add user profile. Error: $e');
                                     CustomToast.showDialog(
                                         'Looks like we ran into an error. Please try again later! $somethingWentWrong',
                                         context,

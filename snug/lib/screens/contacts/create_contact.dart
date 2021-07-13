@@ -32,7 +32,7 @@ class _CreateContactState extends State<CreateContact> {
 
   Widget build(BuildContext context) {
     final node = FocusScope.of(context);
-    final contactList = Provider.of<ContactProvider>(context, listen: true);
+    final contactList = Provider.of<ContactProvider>(context, listen: false);
     final profileUser = Provider.of<UserProvider>(context, listen: true);
 
     User _tempUser = profileUser.getUser;
@@ -109,7 +109,7 @@ class _CreateContactState extends State<CreateContact> {
                                       labelText: 'Phone Number'),
                                   validator: (String val) {
                                     if (val.length != 10) {
-                                      return "Please enter a valid phone number";
+                                      return "Enter a valid phone number";
                                     }
                                   },
                                   onChanged: (val) {
@@ -162,20 +162,21 @@ class _CreateContactState extends State<CreateContact> {
                                             } else {
                                               contactList.addContact(
                                                   _name, _phone, _userId);
-                                            }
-                                            if (contactList
-                                                    .getContacts.length ==
-                                                1) {
-                                              Navigator.pushReplacement(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        MainPage(
-                                                          firstContact: true,
-                                                        )),
-                                              );
-                                            } else {
-                                              Navigator.pop(context);
+
+                                              if (contactList
+                                                      .getContacts.length ==
+                                                  1) {
+                                                Navigator.pushReplacement(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          MainPage(
+                                                            firstContact: true,
+                                                          )),
+                                                );
+                                              } else {
+                                                Navigator.pop(context);
+                                              }
                                             }
                                           }
                                         },

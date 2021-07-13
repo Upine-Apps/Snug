@@ -1,11 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:snug/core/logger.dart';
 import 'package:snug/custom_widgets/CustomToast.dart';
 import 'package:snug/custom_widgets/raised_rounded_gradient_button.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:snug/providers/LogProvider.dart';
 import 'package:snug/providers/UserProvider.dart';
 import 'package:snug/screens/authenticate/profile.dart';
 import 'package:toast/toast.dart';
@@ -27,19 +31,22 @@ class SignIn extends StatefulWidget {
 class _SignInState extends State<SignIn> {
   FocusNode myFocusNode = new FocusNode();
   var _formKey = GlobalKey<FormState>();
-
   bool didPressLogin = false;
   String phonenumber = '';
   String password = '';
   String fname = '';
+  Directory directory;
 
   final userPool =
       CognitoUserPool('us-east-2_rweyLTmso', '26gd072a3jrqsjubrmaj0r4nr3');
+
   @override
   void initState() {
     super.initState();
+
     // autoLogin();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await getPath();
       await getInfo();
     });
     myFocusNode.addListener(() {
@@ -49,7 +56,7 @@ class _SignInState extends State<SignIn> {
 
   final TextEditingController _controller = TextEditingController();
   Future<void> getInfo() async {
-    log.i('getInfo | null');
+    //log.i('getInfo | null');
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final _savedPhoneNumber = prefs.getString('phonenumber');
 
@@ -67,7 +74,7 @@ class _SignInState extends State<SignIn> {
   }
 
   displayName() {
-    log.i('displayName | $fname');
+    //log.i('displayName | $fname');
     if (fname != null) {
       return Text('Welcome Back, $fname!');
     } else {
@@ -75,12 +82,22 @@ class _SignInState extends State<SignIn> {
     }
   }
 
-  final log = getLogger('SignIn');
+  getPath() async {
+    Directory dir = await getApplicationDocumentsDirectory();
+    setState(() {
+      directory = dir;
+    });
+    print('getPath Function');
+  }
 
   @override
   Widget build(BuildContext context) {
     final _userProvider = Provider.of<UserProvider>(context, listen: true);
+    final logProvider = Provider.of<LogProvider>(context, listen: false);
+    logProvider.setLogPath(directory);
     final node = FocusScope.of(context);
+    final log = getLogger('SignIn', logProvider.getLogPath);
+    final consoleLog = getConsoleLogger('SignIn');
     return WillPopScope(
       onWillPop: () async => false,
       child: GestureDetector(
@@ -128,7 +145,12 @@ class _SignInState extends State<SignIn> {
                                           color: Theme.of(context)
                                               .colorScheme
                                               .secondaryVariant),
-                                      icon: Icon(Icons.phone),
+                                      icon: Icon(
+                                        Icons.phone,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondaryVariant,
+                                      ),
                                       labelText: 'Phone Number',
                                       labelStyle: TextStyle(
                                           color: Theme.of(context).hintColor,
@@ -140,7 +162,7 @@ class _SignInState extends State<SignIn> {
                                       }
                                     },
                                     onChanged: (val) {
-                                      log.i('setPhoneNumber | $val');
+                                      //log.i('setPhoneNumber | $val');
                                       setState(() => phonenumber = val);
                                     },
                                   ),
@@ -149,7 +171,10 @@ class _SignInState extends State<SignIn> {
                                   ),
                                   TextFormField(
                                     decoration: InputDecoration(
-                                      icon: Icon(Icons.security),
+                                      icon: Icon(Icons.security,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .secondaryVariant),
                                       labelText: 'Password',
                                       labelStyle: TextStyle(
                                           color: Theme.of(context).hintColor,
@@ -157,7 +182,7 @@ class _SignInState extends State<SignIn> {
                                     ),
                                     obscureText: true,
                                     onChanged: (val) {
-                                      log.i('setPassword | ****');
+                                      //log.i('setPassword | ****');
                                       setState(() => password = val);
                                     },
                                   ),
@@ -167,10 +192,30 @@ class _SignInState extends State<SignIn> {
                                   RaisedRoundedGradientButton(
                                       //check button size
 
-                                      child: Text(
-                                        'Login',
-                                        style: TextStyle(color: Colors.white),
-                                      ),
+                                      child: didPressLogin == true
+                                          ? SizedBox(
+                                              child: CircularProgressIndicator(
+                                                strokeWidth: 2,
+                                                valueColor:
+                                                    AlwaysStoppedAnimation<
+                                                            Color>(
+                                                        Theme.of(context)
+                                                            .colorScheme
+                                                            .secondary),
+                                              ),
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  .025,
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  .05)
+                                          : Text(
+                                              'Login',
+                                              style: TextStyle(
+                                                  color: Colors.white),
+                                            ),
                                       onPressed: () async {
                                         print(didPressLogin);
                                         if (didPressLogin == false) {
@@ -251,7 +296,7 @@ class _SignInState extends State<SignIn> {
                                                 throw Error;
                                               }
                                             } on CognitoClientException catch (e) {
-                                              log.w(e);
+                                              consoleLog.e(e);
                                               if (e.code ==
                                                   'UserNotConfirmedException') {
                                                 log.e('OTP needed');

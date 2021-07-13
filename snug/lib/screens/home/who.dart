@@ -36,8 +36,10 @@ class Who extends StatefulWidget {
 class _WhoState extends State<Who> {
   bool triedToFindUser = false;
   bool userFound = false;
+  FocusNode firstNameFocusNode = FocusNode();
+  FocusNode lastNameFocusNode = FocusNode();
 
-  final log = getLogger('addDate: who');
+  //final log = getLogger('addDate: who');
   Date currentDate;
 
   String phone_number;
@@ -169,13 +171,15 @@ class _WhoState extends State<Who> {
                                     style: TextStyle(
                                         color: Theme.of(context).dividerColor)),
                                 onPressed: () async {
+                                  FocusScope.of(context)
+                                      .requestFocus(new FocusNode());
                                   if (_whoFormKey.currentState.validate()) {
                                     if (userProvider.getUser.phone_number ==
                                         phone_number) {
                                       CustomToast.showDialog(
                                           "You going on a date with yourself?",
                                           context,
-                                          Toast.CENTER);
+                                          Toast.BOTTOM);
                                     } else {
                                       findUser(dateProvider);
                                     }
@@ -189,233 +193,206 @@ class _WhoState extends State<Who> {
             },
             fallbackBuilder: (BuildContext context) {
               return Container(
-                  height: MediaQuery.of(context).size.height * .5,
                   child: Form(
-                    key: _whoFormKey1,
-                    child: Column(children: <Widget>[
-                      Container(
-                          height: MediaQuery.of(context).size.height * .083,
-                          child: TextFormField(
-                            enabled: false,
-                            style: TextStyle(
-                                color: Theme.of(context).brightness ==
-                                        Brightness.dark
+                key: _whoFormKey1,
+                child: Column(children: <Widget>[
+                  Container(
+                      height: MediaQuery.of(context).size.height * .083,
+                      child: TextFormField(
+                        enabled: false,
+                        style: TextStyle(
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
                                     ? Colors.white
                                     : Colors.black54),
-                            controller: _phoneController,
-                            keyboardType: TextInputType.number,
-                            decoration: InputDecoration(
-                                enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Theme.of(context).primaryColor)),
-                                labelText: 'Phone Number'),
-                            onChanged: (val) {
-                              setState(() {
-                                phone_number = val;
-                              });
-                            },
-                          )),
-                      Container(
-                          height: MediaQuery.of(context).size.height * .083,
-                          child: Row(
-                            children: <Widget>[
-                              Padding(
-                                  padding: EdgeInsets.only(
-                                      right: MediaQuery.of(context).size.width *
-                                          .1),
-                                  child: Container(
-                                    width:
-                                        MediaQuery.of(context).size.width * .4,
-                                    child: TextFormField(
-                                      textCapitalization:
-                                          TextCapitalization.sentences,
-                                      validator: (String val) {
-                                        if (val.length > 30) {
-                                          return "They got a shorter first name?";
-                                        } else if (val.length == 0) {
-                                          return "What's their first name?";
-                                        }
-                                      },
-                                      style: TextStyle(
-                                          color: Theme.of(context).brightness ==
-                                                  Brightness.dark
-                                              ? Colors.white
-                                              : Colors.black54),
-                                      controller: _fNameController,
-                                      decoration: InputDecoration(
-                                          errorStyle: TextStyle(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .secondaryVariant),
-                                          enabledBorder: UnderlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  color: Theme.of(context)
-                                                      .primaryColor)),
-                                          labelText: 'First Name'),
-                                      onChanged: (val) {
-                                        setState(() {
-                                          _firstName = val;
-                                        });
-                                      },
-                                    ),
-                                  )),
-                              Container(
-                                  width: MediaQuery.of(context).size.width * .4,
-                                  child: TextFormField(
-                                    textCapitalization:
-                                        TextCapitalization.sentences,
-                                    validator: (String val) {
-                                      if (val.length > 30) {
-                                        return "They got a shorter last name?";
-                                      } else if (val.length == 0) {
-                                        return "What's their last name?";
-                                      }
-                                    },
-                                    style: TextStyle(
-                                        color: Theme.of(context).brightness ==
-                                                Brightness.dark
-                                            ? Colors.white
-                                            : Colors.black54),
-                                    controller: _lNameController,
-                                    decoration: InputDecoration(
-                                        errorStyle: TextStyle(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .secondaryVariant),
-                                        enabledBorder: UnderlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Theme.of(context)
-                                                    .primaryColor)),
-                                        labelText: 'Last Name'),
-                                    onChanged: (val) {
-                                      setState(() {
-                                        _lastName = val;
-                                      });
-                                    },
-                                  )),
-                            ],
-                          )),
-                      Container(
-                          child: Row(
+                        controller: _phoneController,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                            enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Theme.of(context).primaryColor)),
+                            labelText: 'Phone Number'),
+                        onChanged: (val) {
+                          setState(() {
+                            phone_number = val;
+                          });
+                        },
+                      )),
+                  Container(
+                      height: MediaQuery.of(context).size.height * .083,
+                      child: Row(
                         children: <Widget>[
                           Padding(
-                            padding: EdgeInsets.only(
-                              right: MediaQuery.of(context).size.width * .1,
-                            ),
-                            child: Container(
-                                padding: EdgeInsets.all(0),
+                              padding: EdgeInsets.only(
+                                  right:
+                                      MediaQuery.of(context).size.width * .1),
+                              child: Container(
                                 width: MediaQuery.of(context).size.width * .4,
-                                child: Gender(
-                                  validator: (val) {
-                                    if (val == null) {
-                                      return "Please choose his/her race.";
+                                child: TextFormField(
+                                  focusNode: firstNameFocusNode,
+                                  onEditingComplete: () =>
+                                      FocusScope.of(context)
+                                          .requestFocus(lastNameFocusNode),
+                                  textCapitalization:
+                                      TextCapitalization.sentences,
+                                  validator: (String val) {
+                                    if (val.length > 30) {
+                                      return "They got a shorter first name?";
+                                    } else if (val.length == 0) {
+                                      return "What's their first name?";
                                     }
                                   },
-                                  onChanged: (String val) {
+                                  style: TextStyle(
+                                      color: Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? Colors.white
+                                          : Colors.black54),
+                                  controller: _fNameController,
+                                  decoration: InputDecoration(
+                                      errorStyle: TextStyle(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .secondaryVariant),
+                                      enabledBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Theme.of(context)
+                                                  .primaryColor)),
+                                      labelText: 'First Name'),
+                                  onChanged: (val) {
                                     setState(() {
-                                      _sex = val;
+                                      _firstName = val;
                                     });
                                   },
-                                  value: _sex,
-                                )),
-                          ),
+                                ),
+                              )),
                           Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Race(
-                                validator: (val) {
-                                  if (val == null) {
-                                    return "Please choose his/her race.";
+                              child: TextFormField(
+                                focusNode: lastNameFocusNode,
+                                textCapitalization:
+                                    TextCapitalization.sentences,
+                                validator: (String val) {
+                                  if (val.length > 30) {
+                                    return "They got a shorter last name?";
+                                  } else if (val.length == 0) {
+                                    return "What's their last name?";
                                   }
                                 },
-                                onChanged: (String val) {
+                                style: TextStyle(
+                                    color: Theme.of(context).brightness ==
+                                            Brightness.dark
+                                        ? Colors.white
+                                        : Colors.black54),
+                                controller: _lNameController,
+                                decoration: InputDecoration(
+                                    errorStyle: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondaryVariant),
+                                    enabledBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Theme.of(context)
+                                                .primaryColor)),
+                                    labelText: 'Last Name'),
+                                onChanged: (val) {
                                   setState(() {
-                                    _race = val;
+                                    _lastName = val;
                                   });
                                 },
-                                value: _race,
                               )),
                         ],
                       )),
+                  Container(
+                      child: Row(
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(
+                          right: MediaQuery.of(context).size.width * .1,
+                        ),
+                        child: Container(
+                            padding: EdgeInsets.all(0),
+                            width: MediaQuery.of(context).size.width * .4,
+                            child: Gender(
+                              validator: (val) {
+                                if (val == null) {
+                                  return "Please choose his/her race.";
+                                }
+                              },
+                              onChanged: (String val) {
+                                setState(() {
+                                  _sex = val;
+                                });
+                              },
+                              value: _sex,
+                            )),
+                      ),
                       Container(
-                          child: Column(children: <Widget>[
-                        Row(
-                          children: <Widget>[
-                            Padding(
-                                padding: EdgeInsets.only(
-                                    right:
-                                        MediaQuery.of(context).size.width * .1),
-                                child: Container(
-                                    width:
-                                        MediaQuery.of(context).size.width * .4,
-                                    child: Eye(
-                                      validator: (val) {
-                                        if (val == null) {
-                                          return "Please choose their eye color.";
-                                        }
-                                      },
-                                      onChanged: (String val) {
-                                        setState(() {
-                                          _eye = val;
-                                        });
-                                      },
-                                      value: _eye,
-                                    ))),
-                            Container(
+                          width: MediaQuery.of(context).size.width * .4,
+                          child: Race(
+                            validator: (val) {
+                              if (val == null) {
+                                return "Please choose his/her race.";
+                              }
+                            },
+                            onChanged: (String val) {
+                              setState(() {
+                                _race = val;
+                              });
+                            },
+                            value: _race,
+                          )),
+                    ],
+                  )),
+                  Container(
+                      child: Column(children: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        Padding(
+                            padding: EdgeInsets.only(
+                                right: MediaQuery.of(context).size.width * .1),
+                            child: Container(
                                 width: MediaQuery.of(context).size.width * .4,
-                                child: Hair(
+                                child: Eye(
                                   validator: (val) {
                                     if (val == null) {
-                                      return "Please choose their hair color";
+                                      return "Please choose their eye color.";
                                     }
                                   },
                                   onChanged: (String val) {
                                     setState(() {
-                                      _hair = val;
+                                      _eye = val;
                                     });
                                   },
-                                  value: _hair,
-                                )),
-                          ],
-                        ),
-                      ])),
-                      // Container(
-                      //     alignment: Alignment.centerLeft,
-                      //     child: Text(
-                      //       "Height",
-                      //       style: TextStyle(
-                      //           fontSize: 16,
-                      //           color: Theme.of(context).brightness ==
-                      //                   Brightness.dark
-                      //               ? Colors.white
-                      //               : Colors.black54),
-                      //     )),
-                      Container(
-                          child: Column(children: <Widget>[
-                        Row(
-                          children: <Widget>[
-                            Padding(
-                                padding: EdgeInsets.only(
-                                    right:
-                                        MediaQuery.of(context).size.width * .1),
-                                child: Container(
-                                    width:
-                                        MediaQuery.of(context).size.width * .4,
-                                    child: Feet(
-                                      validator: (val) {
-                                        if (val == null) {
-                                          return "Please choose their height";
-                                        }
-                                      },
-                                      onChanged: (String val) {
-                                        setState(() {
-                                          _ft = val;
-                                        });
-                                      },
-                                      value: _ft,
-                                    ))),
-                            Container(
+                                  value: _eye,
+                                ))),
+                        Container(
+                            width: MediaQuery.of(context).size.width * .4,
+                            child: Hair(
+                              validator: (val) {
+                                if (val == null) {
+                                  return "Please choose their hair color";
+                                }
+                              },
+                              onChanged: (String val) {
+                                setState(() {
+                                  _hair = val;
+                                });
+                              },
+                              value: _hair,
+                            )),
+                      ],
+                    ),
+                  ])),
+                  Container(
+                      child: Column(children: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        Padding(
+                            padding: EdgeInsets.only(
+                                right: MediaQuery.of(context).size.width * .1),
+                            child: Container(
                                 width: MediaQuery.of(context).size.width * .4,
-                                child: Inch(
+                                child: Feet(
                                   validator: (val) {
                                     if (val == null) {
                                       return "Please choose their height";
@@ -423,50 +400,63 @@ class _WhoState extends State<Who> {
                                   },
                                   onChanged: (String val) {
                                     setState(() {
-                                      _in = val;
+                                      _ft = val;
                                     });
                                   },
-                                  value: _in,
-                                )),
-                          ],
-                        ),
-                      ])),
-                      Padding(
-                          padding: EdgeInsets.only(
-                              top: MediaQuery.of(context).size.height * .0225),
-                          child: RaisedRoundedGradientButton(
-                              child: Text(
-                                  userFound == true
-                                      ? 'Update Info'
-                                      : 'Submit Info',
-                                  style: TextStyle(
-                                      color: Theme.of(context).dividerColor)),
-                              onPressed: () {
-                                FocusScope.of(context)
-                                    .requestFocus(new FocusNode());
-                                currentDate.who.phone_number = phone_number;
-                                currentDate.who.first_name = _firstName;
-                                currentDate.who.last_name = _lastName;
-                                currentDate.who.sex = _sex;
-                                currentDate.who.race = _race;
-                                currentDate.who.eye = _eye;
-                                currentDate.who.hair = _hair;
-                                currentDate.who.ft = _ft;
-                                currentDate.who.inch = _in;
-                                currentDate.who.temp = 'true';
-                                print('FIRST NAME');
-                                print(currentDate.who.first_name);
-                                dateProvider.setRecentDate(currentDate);
-                                if (userFound = true) {
-                                  CustomToast.showDialog(
-                                      'Updated user', context, Toast.CENTER);
-                                } else {
-                                  CustomToast.showDialog(
-                                      'Created user', context, Toast.CENTER);
+                                  value: _ft,
+                                ))),
+                        Container(
+                            width: MediaQuery.of(context).size.width * .4,
+                            child: Inch(
+                              validator: (val) {
+                                if (val == null) {
+                                  return "Please choose their height";
                                 }
-                              }))
-                    ]),
-                  ));
+                              },
+                              onChanged: (String val) {
+                                setState(() {
+                                  _in = val;
+                                });
+                              },
+                              value: _in,
+                            )),
+                      ],
+                    ),
+                  ])),
+                  Padding(
+                      padding: EdgeInsets.only(
+                          top: MediaQuery.of(context).size.height * .0225),
+                      child: RaisedRoundedGradientButton(
+                          child: Text(
+                              userFound == true ? 'Update Info' : 'Submit Info',
+                              style: TextStyle(
+                                  color: Theme.of(context).dividerColor)),
+                          onPressed: () {
+                            FocusScope.of(context)
+                                .requestFocus(new FocusNode());
+                            currentDate.who.phone_number = phone_number;
+                            currentDate.who.first_name = _firstName;
+                            currentDate.who.last_name = _lastName;
+                            currentDate.who.sex = _sex;
+                            currentDate.who.race = _race;
+                            currentDate.who.eye = _eye;
+                            currentDate.who.hair = _hair;
+                            currentDate.who.ft = _ft;
+                            currentDate.who.inch = _in;
+                            currentDate.who.temp = 'true';
+                            print('FIRST NAME');
+                            print(currentDate.who.first_name);
+                            dateProvider.setRecentDate(currentDate);
+                            if (userFound = true) {
+                              CustomToast.showDialog(
+                                  'Updated user', context, Toast.BOTTOM);
+                            } else {
+                              CustomToast.showDialog(
+                                  'Created user', context, Toast.BOTTOM);
+                            }
+                          }))
+                ]),
+              ));
             }));
   }
 }

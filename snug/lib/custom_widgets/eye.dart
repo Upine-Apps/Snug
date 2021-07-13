@@ -12,6 +12,8 @@ class Eye extends StatelessWidget {
     return Container(
         child: DropdownButtonFormField<String>(
             decoration: InputDecoration(
+                labelText: 'Eye Color',
+                alignLabelWithHint: true,
                 errorStyle: TextStyle(
                     color: Theme.of(context).colorScheme.secondaryVariant),
                 enabledBorder: UnderlineInputBorder(
@@ -71,11 +73,9 @@ class Eye extends StatelessWidget {
                   value: 'OTH'),
             ],
             onChanged: onChanged,
-            hint: Text('Eye Color',
-                style: TextStyle(
-                    color: Theme.of(context).brightness == Brightness.dark
-                        ? Colors.white
-                        : Colors.black54)),
+            hint: Text(
+              'Eye Color',
+            ),
             value: value));
   }
 }

@@ -56,7 +56,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   CognitoUser cognitoUser;
   var _formKey = GlobalKey<FormState>();
   final _phoneFormKey = GlobalKey<FormState>();
-  final log = getLogger('forgotPassword');
+  //final log = getLogger('forgotPassword');
   @override
   Widget build(BuildContext context) {
     final node = FocusScope.of(context);
@@ -118,7 +118,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                 });
                               }
                             } catch (e) {
-                              log.e(e);
+                              //log.e(e);
                               CustomToast.showDialog(
                                   'Failed to resend OTP code. Please check your texts for the original code',
                                   context,
@@ -265,7 +265,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                                                   });
                                                                 }
                                                               } catch (e) {
-                                                                log.e(e);
+                                                                //log.e(e);
                                                               }
                                                             }
                                                           }))),
@@ -373,14 +373,19 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                                     color: Theme.of(context)
                                                         .colorScheme
                                                         .secondaryVariant),
-                                                icon: Icon(Icons.security),
+                                                icon: Icon(
+                                                  Icons.security,
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .secondaryVariant,
+                                                ),
                                                 labelText: 'Password'),
                                             validator: (val) => val.length < 6
                                                 ? 'Enter a password 6+ char long'
                                                 : null,
                                             obscureText: true,
                                             onChanged: (val) {
-                                              log.i('setPassword | ****');
+                                              //log.i('setPassword | ****');
                                               setState(() => password1 = val);
                                             },
                                           ),
@@ -400,7 +405,12 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                                     color: Theme.of(context)
                                                         .colorScheme
                                                         .secondaryVariant),
-                                                icon: Icon(Icons.security),
+                                                icon: Icon(
+                                                  Icons.security,
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .secondaryVariant,
+                                                ),
                                                 labelText: 'Confirm Password'),
                                             validator: (String val) {
                                               if (val != _passOne.text) {
@@ -424,7 +434,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                                   setState(() {
                                                     didPressSubmit = true;
                                                   });
-                                                  log.d(_otp);
+                                                  //log.d(_otp);
                                                   FocusScope.of(context)
                                                       .requestFocus(
                                                           FocusNode());
@@ -467,7 +477,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                                         didPressSubmit = false;
                                                       });
                                                     }
-                                                    log.e(e);
+                                                    //log.e(e);
                                                   }
                                                 }
                                               }

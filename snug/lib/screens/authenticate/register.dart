@@ -38,7 +38,7 @@ class _RegisterState extends State<Register> {
   String error = '';
   bool checkPrivacyPolicy = false;
   bool checkEULA = false;
-  final log = getLogger('Register');
+  //final log = getLogger('Register');
   @override
   Widget build(BuildContext context) {
     final node = FocusScope.of(context);
@@ -54,7 +54,7 @@ class _RegisterState extends State<Register> {
               icon: Icon(Icons.arrow_back),
               color: Theme.of(context).colorScheme.secondaryVariant,
               onPressed: () {
-                log.i('pushToSignIn');
+                //log.i('pushToSignIn');
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => SignIn()),
@@ -108,7 +108,12 @@ class _RegisterState extends State<Register> {
                                                 color: Theme.of(context)
                                                     .colorScheme
                                                     .secondaryVariant),
-                                            icon: Icon(Icons.phone),
+                                            icon: Icon(
+                                              Icons.phone,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .secondaryVariant,
+                                            ),
                                             labelText: 'Phone Number'),
                                         validator: (String val) {
                                           if (val.length != 10) {
@@ -116,7 +121,7 @@ class _RegisterState extends State<Register> {
                                           }
                                         },
                                         onChanged: (val) {
-                                          log.i('setPhoneNumber | $val');
+                                          //log.i('setPhoneNumber | $val');
                                           setState(() => phonenumber = val);
                                         },
                                       ),
@@ -132,14 +137,19 @@ class _RegisterState extends State<Register> {
                                                 color: Theme.of(context)
                                                     .colorScheme
                                                     .secondaryVariant),
-                                            icon: Icon(Icons.security),
+                                            icon: Icon(
+                                              Icons.security,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .secondaryVariant,
+                                            ),
                                             labelText: 'Password'),
                                         validator: (val) => val.length < 6
                                             ? 'Enter a password 6+ char long'
                                             : null,
                                         obscureText: true,
                                         onChanged: (val) {
-                                          log.i('setPassword | ****');
+                                          //log.i('setPassword | ****');
                                           setState(() => password1 = val);
                                         },
                                       ),
@@ -153,7 +163,12 @@ class _RegisterState extends State<Register> {
                                                 color: Theme.of(context)
                                                     .colorScheme
                                                     .secondaryVariant),
-                                            icon: Icon(Icons.security),
+                                            icon: Icon(
+                                              Icons.security,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .secondaryVariant,
+                                            ),
                                             labelText: 'Confirm Password'),
                                         validator: (String val) {
                                           if (val != _passOne.text) {
@@ -200,7 +215,7 @@ class _RegisterState extends State<Register> {
                                                           .colorScheme
                                                           .secondaryVariant),
                                                   onTap: (url) async {
-                                                    log.i('openPrivacyPolicy');
+                                                    //log.i('openPrivacyPolicy');
                                                     const privacyPolicyUrl =
                                                         "https://upineapps.com/snug-privacy-policy";
                                                     try {
@@ -257,7 +272,7 @@ class _RegisterState extends State<Register> {
                                                           .colorScheme
                                                           .secondaryVariant),
                                                   onTap: (url) async {
-                                                    log.i('openEULA');
+                                                    //log.i('openEULA');
                                                     const eulaUrl =
                                                         "https://upineapps.com/snug-eula";
                                                     try {
@@ -342,8 +357,8 @@ class _RegisterState extends State<Register> {
                                                     );
                                                   }
                                                 } catch (e) {
-                                                  log.d('registration error');
-                                                  log.e(e);
+                                                  //log.d('registration error');
+                                                  //log.e(e);
                                                 }
                                               } else {
                                                 CustomToast.showDialog(

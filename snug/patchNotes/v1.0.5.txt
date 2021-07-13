@@ -1,4 +1,4 @@
-Patch Notes For Snug 0.1.5
+Patch Notes For Snug 1.0.5
 
 1) Users can now set different profile pictures!
     -- Tap on the "paw" button underneath your profile picture and a random profile pic will be set
