@@ -1,7 +1,12 @@
+import 'dart:io';
+import 'package:logger/src/outputs/file_output.dart';
 import 'package:logger/logger.dart';
+import 'package:path_provider/path_provider.dart';
 
-Logger getLogger(String className) {
-  return Logger(printer: SimpleLogPrinter(className));
+Future<Logger> getLogger(String className) async {
+  return Logger(
+      printer: SimpleLogPrinter(className),
+      output: FileOutput(file: File("$path/log.txt")));
 }
 
 class SimpleLogPrinter extends LogPrinter {

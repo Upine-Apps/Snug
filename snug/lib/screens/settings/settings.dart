@@ -17,6 +17,9 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:snug/core/logger.dart';
 import 'package:toast/toast.dart';
+import 'package:emojis/emojis.dart';
+import 'package:emojis/emoji.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingScreen extends StatefulWidget {
   @override
@@ -24,10 +27,13 @@ class SettingScreen extends StatefulWidget {
 }
 
 class _SettingState extends State<SettingScreen> with WidgetsBindingObserver {
+  Emoji coffee = Emoji.byChar(Emojis.hotBeverage);
+  Emoji share = Emoji.byChar(Emojis.link);
+  Emoji sad = Emoji.byChar(Emojis.flushedFace);
   GlobalKey logOut = GlobalKey();
   int _selectedPosition;
   var isDarkTheme;
-  List themes = Constants.themes;
+  List themes = Constant.themes;
   SharedPreferences prefs;
   ThemeNotifier themeNotifier;
   final log = getLogger('Settings');
@@ -235,6 +241,79 @@ class _SettingState extends State<SettingScreen> with WidgetsBindingObserver {
                   ],
                 ),
               ),
+              Padding(
+                padding: EdgeInsets.only(
+                    left: MediaQuery.of(context).size.width * .05,
+                    top: MediaQuery.of(context).size.height * .01),
+                child: Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.only(
+                          bottom: MediaQuery.of(context).size.height * .01),
+                      child: Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Support Us',
+                            style: TextStyle(
+                                color: Theme.of(context).hintColor,
+                                fontSize: 16),
+                          )),
+                    ),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: FlatButton(
+                          color: Theme.of(context).colorScheme.secondaryVariant,
+                          onPressed: () async {
+                            const buyCoffee =
+                                'https://www.buymeacoffee.com/upineapps';
+                                try {
+                                  if(await canLaunch(buyCoffee)) {
+                                    await launch(buyCoffee);
+                                  } else {
+                                    throw 'Can\'t launch url';
+                                  }
+                                } catch (e) {
+                                  CustomToast.showDialog('Failed to donate $sad', context, Toast.BOTTOM)
+                                }
+                          },
+                          child: Container(
+                              width: MediaQuery.of(context).size.width * .40,
+                              padding: EdgeInsets.all(0),
+                              // height: MediaQuery.of(context).size.height * .025,
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                'Buy Us Some ${coffee}',
+                                style: TextStyle(
+                                    color: Theme.of(context).dividerColor,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold),
+                              ))),
+                    ),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: FlatButton(
+                          color: Theme.of(context).colorScheme.secondaryVariant,
+                          onPressed: () async => Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Walkthrough()),
+                              ),
+                          child: Container(
+                              width: MediaQuery.of(context).size.width * .40,
+                              padding: EdgeInsets.all(0),
+                              // height: MediaQuery.of(context).size.height * .025,
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                'Share The App ${share}',
+                                style: TextStyle(
+                                    color: Theme.of(context).dividerColor,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold),
+                              ))),
+                    )
+                  ],
+                ),
+              ),
             ],
           )),
       floatingActionButton: FloatingActionButton(
@@ -310,11 +389,11 @@ class _SettingState extends State<SettingScreen> with WidgetsBindingObserver {
 
   void onThemeChanged(String value) async {
     var prefs = await SharedPreferences.getInstance();
-    if (value == Constants.DARK) {
+    if (value == Constant.DARK) {
       themeNotifier.setThemeMode(ThemeMode.dark);
     } else {
       themeNotifier.setThemeMode(ThemeMode.light);
     }
-    prefs.setString(Constants.APP_THEME, value);
+    prefs.setString(Constant.APP_THEME, value);
   }
 }
