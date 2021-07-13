@@ -77,29 +77,29 @@ class MapScreenState extends State<ProfilePage>
 
   @override
   bool get wantKeepAlive => true;
-  final log = getLogger('Profile');
+  //final log = getLogger('Profile');
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     // I think this will successfully refresh the user session
-    log.i("APP_STATE: $state");
+    //log.i("APP_STATE: $state");
 
     if (state == AppLifecycleState.resumed) {
       // user returned to our app
       final prefs = await SharedPreferences.getInstance();
-      log.i('Current user auth token: ${prefs.getString('accessToken')}');
+      //log.i('Current user auth token: ${prefs.getString('accessToken')}');
       final _userProvider = Provider.of<UserProvider>(context, listen: false);
       Map<String, dynamic> refreshResponse = await CognitoService.instance
           .refreshAuth(
               _userProvider.getCognitoUser, prefs.getString('refreshToken'));
       if (refreshResponse['status'] == true) {
         final prefs = await SharedPreferences.getInstance();
-        log.i('Successfully refreshed user session');
+        //log.i('Successfully refreshed user session');
         CognitoUserSession userSession = refreshResponse['data'];
         _userProvider.setUserSession(userSession);
-        log.i('New user auth token: ${prefs.getString('accessToken')}');
+        //log.i('New user auth token: ${prefs.getString('accessToken')}');
       } else {
-        log.e('Failed to refresh user session. Returning to home screen');
+        //log.e('Failed to refresh user session. Returning to home screen');
         CustomToast.showDialog(
             'Failed to refresh your session. Please sign in again',
             context,
@@ -115,7 +115,7 @@ class MapScreenState extends State<ProfilePage>
   final FocusNode myFocusNode = FocusNode();
 
   _convertDob(String dob) {
-    log.i(dob);
+    //log.i(dob);
     String year = dob.substring(0, 4);
     String month = dob.substring(5, 7);
     String day = dob.substring(8, 10);
@@ -128,7 +128,7 @@ class MapScreenState extends State<ProfilePage>
     var currentProfilePic =
         profilePics.indexOf(prefs.getString("profilePicture"));
     final _userProvider = Provider.of<UserProvider>(context, listen: false);
-    log.i(currentProfilePic);
+    //log.i(currentProfilePic);
     currentProfilePic != profilePics.length - 1
         ? currentProfilePic += 1
         : currentProfilePic = 0;

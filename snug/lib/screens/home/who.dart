@@ -39,7 +39,7 @@ class _WhoState extends State<Who> {
   FocusNode firstNameFocusNode = FocusNode();
   FocusNode lastNameFocusNode = FocusNode();
 
-  final log = getLogger('addDate: who');
+  //final log = getLogger('addDate: who');
   Date currentDate;
 
   String phone_number;

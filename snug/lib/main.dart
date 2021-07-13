@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:snug/providers/ContactProvider.dart';
 import 'package:snug/providers/DateProvider.dart';
+import 'package:snug/providers/LogProvider.dart';
 import 'package:snug/providers/MapProvider.dart';
 import 'package:snug/providers/UserProvider.dart';
 import 'package:snug/screens/authenticate/authenticate.dart';
@@ -16,13 +17,8 @@ import 'package:snug/themes/themeNotifier.dart';
 import 'package:snug/themes/apptheme.dart';
 import 'package:logger/logger.dart';
 
-Future<Directory> _requestAppDocumentsDirectory() async {
-  return await getApplicationDocumentsDirectory();
-}
-
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Directory dir = await _requestAppDocumentsDirectory();
 
   Future<SharedPreferences> prefs = SharedPreferences.getInstance();
   prefs.then((value) {
@@ -63,12 +59,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeNotifier = Provider.of<ThemeNotifier>(context);
+
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (context) => ContactProvider()),
           ChangeNotifierProvider(create: (context) => DateProvider()),
           ChangeNotifierProvider(create: (context) => UserProvider()),
           ChangeNotifierProvider(create: (context) => MapProvider()),
+          ChangeNotifierProvider(create: (context) => LogProvider()),
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,

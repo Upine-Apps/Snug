@@ -8,8 +8,8 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future syncUser(String userId, BuildContext context) async {
-  final log = getLogger('syncUser');
-  log.i('syncUser | userId: $userId BuildContext: $context');
+  //final log = getLogger('syncUser');
+  //log.i('syncUser | userId: $userId BuildContext: $context');
   final userProvider = Provider.of<UserProvider>(context, listen: false);
   SharedPreferences _profile = await SharedPreferences.getInstance();
 
@@ -28,7 +28,7 @@ Future syncUser(String userId, BuildContext context) async {
       throw GetUserException('Failed to sync user.');
     }
   } catch (e) {
-    log.e('Error syncing user. Caught exception: %e');
+    //log.e('Error syncing user. Caught exception: %e');
     return {'status': false, 'data': null, 'trusted_contacts': null};
   }
 }

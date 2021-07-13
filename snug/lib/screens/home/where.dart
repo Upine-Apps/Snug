@@ -19,7 +19,7 @@ class _WhereState extends State<Where> {
   StreamSubscription locationSubscription;
   Date currentDate;
   bool gotLocation = false;
-  final log = getLogger('where');
+  //final log = getLogger('where');
   @override
   void initState() {
     final dateProvider = Provider.of<DateProvider>(context, listen: false);
@@ -42,7 +42,7 @@ class _WhereState extends State<Where> {
   getLocation() async {
     final mapProvider = Provider.of<MapProvider>(context, listen: false);
     await mapProvider.determinePosition();
-    log.i(mapProvider.currentLocation);
+    //log.i(mapProvider.currentLocation);
     if (mapProvider.currentLocation != null) {
       setState(() {
         gotLocation = true;

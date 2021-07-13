@@ -36,7 +36,7 @@ class _DetailDateState extends State<DetailDate> {
   List<Contact> trusted;
   List<Marker> _markers = <Marker>[];
   final Conversion _conversion = Conversion();
-  final log = getLogger('DetailDate');
+  //final log = getLogger('DetailDate');
   String _endStatus;
   Emoji somethingWentWrong = Emoji.byChar(Emojis.flushedFace);
 
@@ -881,8 +881,8 @@ class _DetailDateState extends State<DetailDate> {
                                               'Failed to cancel date');
                                         }
                                       } catch (e) {
-                                        log.e(
-                                            'Failed to cancel date. Caught exception: $e');
+                                        //log.e(
+                                        // 'Failed to cancel date. Caught exception: $e');
                                         CustomToast.showDialog(
                                             'Failed to cancel date. Please try again later $somethingWentWrong',
                                             context,
@@ -908,8 +908,8 @@ class _DetailDateState extends State<DetailDate> {
                                               'Failed to mark safe');
                                         }
                                       } catch (e) {
-                                        log.e(
-                                            'Failed to mark date safe. Caught exception: $e');
+                                        //log.e(
+                                        // 'Failed to mark date safe. Caught exception: $e');
                                         CustomToast.showDialog(
                                             'Failed to mark date safe. Please try again later $somethingWentWrong',
                                             context,

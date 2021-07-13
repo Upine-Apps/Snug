@@ -37,12 +37,12 @@ class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
 
   Emoji heart = Emoji.byChar(Emojis.redHeart);
-  final log = getLogger('MainPage');
+  //final log = getLogger('MainPage');
 
   @override
   void initState() {
     super.initState();
-    log.i('OnMainPage');
+    //log.i('OnMainPage');
     pageController = PageController();
 
     setProfilePic();

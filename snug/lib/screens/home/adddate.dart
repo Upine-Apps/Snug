@@ -48,8 +48,8 @@ class _AddDateState extends State<AddDate> {
 
   String fName = '';
   Date dateToSend;
-  final log = getLogger('AddDate');
 
+// final log = getLogger('AddDate');
   @override
   Widget build(BuildContext context) {
     final dateProvider = Provider.of<DateProvider>(context, listen: false);
@@ -769,8 +769,8 @@ class _AddDateState extends State<AddDate> {
                                                             if (dateResult[
                                                                     'status'] ==
                                                                 true) {
-                                                              log.i(
-                                                                  'Successfully added date');
+                                                              // log.i(
+                                                              //     'Successfully added date');
                                                               currentDate
                                                                       .dateId =
                                                                   dateResult[
@@ -789,8 +789,8 @@ class _AddDateState extends State<AddDate> {
                                                                   'Failed to add date');
                                                             }
                                                           } on AddDateException catch (e) {
-                                                            log.e(
-                                                                'Failed to add date. Error: $e');
+                                                            // log.e(
+                                                            //     'Failed to add date. Error: $e');
                                                             dateProvider
                                                                 .getCurrentDates
                                                                 .removeLast();
@@ -812,8 +812,8 @@ class _AddDateState extends State<AddDate> {
                                                                               MainPage()));
                                                             });
                                                           } catch (e) {
-                                                            log.e(
-                                                                'Failed to add user. Error: $e');
+                                                            // log.e(
+                                                            //     'Failed to add user. Error: $e');
                                                             dateProvider
                                                                 .getCurrentDates
                                                                 .removeLast();
@@ -831,8 +831,8 @@ class _AddDateState extends State<AddDate> {
                                                         dateProvider
                                                             .getCurrentDates
                                                             .removeLast();
-                                                        log.e(
-                                                            'Failed to add user. Error: $e');
+                                                        // log.e(
+                                                        // 'Failed to add user. Error: $e');
                                                         CustomToast.showDialog(
                                                             'Looks like we ran into an error. Please try again later! $somethingWentWrong',
                                                             context,

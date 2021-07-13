@@ -1,5 +1,6 @@
 import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 import 'package:flutter/material.dart';
+import 'package:share/share.dart';
 import 'package:snug/custom_widgets/CustomToast.dart';
 import 'package:snug/custom_widgets/customshowcase.dart';
 import 'package:snug/custom_widgets/topheader.dart';
@@ -36,7 +37,7 @@ class _SettingState extends State<SettingScreen> with WidgetsBindingObserver {
   List themes = Constant.themes;
   SharedPreferences prefs;
   ThemeNotifier themeNotifier;
-  final log = getLogger('Settings');
+  //final log = getLogger('Settings');
 
   @override
   void initState() {
@@ -62,24 +63,24 @@ class _SettingState extends State<SettingScreen> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     // I think this will successfully refresh the user session
-    log.i("APP_STATE: $state");
+    //log.i("APP_STATE: $state");
 
     if (state == AppLifecycleState.resumed) {
       // user returned to our app
       final prefs = await SharedPreferences.getInstance();
-      log.i('Current user auth token: ${prefs.getString('accessToken')}');
+      //log.i('Current user auth token: ${prefs.getString('accessToken')}');
       final _userProvider = Provider.of<UserProvider>(context, listen: false);
       Map<String, dynamic> refreshResponse = await CognitoService.instance
           .refreshAuth(
               _userProvider.getCognitoUser, prefs.getString('refreshToken'));
       if (refreshResponse['status'] == true) {
         final prefs = await SharedPreferences.getInstance();
-        log.i('Successfully refreshed user session');
+        //log.i('Successfully refreshed user session');
         CognitoUserSession userSession = refreshResponse['data'];
         _userProvider.setUserSession(userSession);
-        log.i('New user auth token: ${prefs.getString('accessToken')}');
+        //log.i('New user auth token: ${prefs.getString('accessToken')}');
       } else {
-        log.e('Failed to refresh user session. Returning to home screen');
+        //log.e('Failed to refresh user session. Returning to home screen');
         CustomToast.showDialog(
             'Failed to refresh your session. Please sign in again',
             context,
@@ -266,15 +267,16 @@ class _SettingState extends State<SettingScreen> with WidgetsBindingObserver {
                           onPressed: () async {
                             const buyCoffee =
                                 'https://www.buymeacoffee.com/upineapps';
-                                try {
-                                  if(await canLaunch(buyCoffee)) {
-                                    await launch(buyCoffee);
-                                  } else {
-                                    throw 'Can\'t launch url';
-                                  }
-                                } catch (e) {
-                                  CustomToast.showDialog('Failed to donate $sad', context, Toast.BOTTOM)
-                                }
+                            try {
+                              if (await canLaunch(buyCoffee)) {
+                                await launch(buyCoffee);
+                              } else {
+                                throw 'Can\'t launch url';
+                              }
+                            } catch (e) {
+                              CustomToast.showDialog('Failed to donate $sad',
+                                  context, Toast.BOTTOM);
+                            }
                           },
                           child: Container(
                               width: MediaQuery.of(context).size.width * .40,
@@ -293,11 +295,12 @@ class _SettingState extends State<SettingScreen> with WidgetsBindingObserver {
                       alignment: Alignment.centerLeft,
                       child: FlatButton(
                           color: Theme.of(context).colorScheme.secondaryVariant,
-                          onPressed: () async => Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => Walkthrough()),
-                              ),
+                          onPressed: () {
+                            final String shareText =
+                                'Snug is a great app to keep you safe no matter the situation! Find out more at https://upineapps.com';
+                            Share.share(shareText,
+                                subject: 'Snug, Safer Dating');
+                          },
                           child: Container(
                               width: MediaQuery.of(context).size.width * .40,
                               padding: EdgeInsets.all(0),

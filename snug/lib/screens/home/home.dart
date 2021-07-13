@@ -62,24 +62,24 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     // I think this will successfully refresh the user session
-    log.i("APP_STATE: $state");
+    //log.i("APP_STATE: $state");
 
     if (state == AppLifecycleState.resumed) {
       // user returned to our app
       final prefs = await SharedPreferences.getInstance();
-      log.i('Current user auth token: ${prefs.getString('accessToken')}');
+      //log.i('Current user auth token: ${prefs.getString('accessToken')}');
       final _userProvider = Provider.of<UserProvider>(context, listen: false);
       Map<String, dynamic> refreshResponse = await CognitoService.instance
           .refreshAuth(
               _userProvider.getCognitoUser, prefs.getString('refreshToken'));
       if (refreshResponse['status'] == true) {
         final prefs = await SharedPreferences.getInstance();
-        log.i('Successfully refreshed user session');
+        //log.i('Successfully refreshed user session');
         CognitoUserSession userSession = refreshResponse['data'];
         _userProvider.setUserSession(userSession);
-        log.i('New user auth token: ${prefs.getString('accessToken')}');
+        //log.i('New user auth token: ${prefs.getString('accessToken')}');
       } else {
-        log.e('Failed to refresh user session. Returning to home screen');
+        //log.e('Failed to refresh user session. Returning to home screen');
         CustomToast.showDialog(
             'Failed to refresh your session. Please sign in again',
             context,
@@ -107,7 +107,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   final TextEditingController lnameCtrl = new TextEditingController();
 
   final bool centerTitle = true;
-  final log = getLogger('Home');
+  //final log = getLogger('Home');
 
   _convertDateTime(String dateTime) {
     String period;
@@ -116,8 +116,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
     DateTime realDateTime = DateTime.parse(dateTime);
     DateTime actualDateTime = realDateTime.toLocal();
-    log.i('utc time | ${realDateTime}');
-    log.i('local time | ${actualDateTime} ');
+    //log.i('utc time | ${realDateTime}');
+    //log.i('local time | ${actualDateTime} ');
     actualDateTime.hour >= 12 ? period = "PM" : period = "AM";
     actualDateTime.hour > 12
         ? hour = (actualDateTime.hour - 12).toString()
@@ -558,7 +558,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
           ),
           onPressed: () async {
             if (contactProvider.getContacts.length == 0) {
-              log.d('User needs to add a contact before creating a date');
+              //log.d('User needs to add a contact before creating a date');
 
               CustomToast.showDialog(
                   'Please add at least one contact before creating a date',
@@ -568,7 +568,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
               try {
                 LocationPermission locationPermission =
                     await mapProvider.checkPermissions();
-                log.i(locationPermission);
+                //log.i(locationPermission);
                 if (locationPermission == LocationPermission.denied ||
                     locationPermission == LocationPermission.deniedForever) {
                   CustomToast.showDialog(
@@ -578,7 +578,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                       MaterialPageRoute(builder: (context) => AddDate()));
                 }
               } catch (e) {
-                log.e(e);
+                //log.e(e);
                 CustomToast.showDialog(e.toString(), context, Toast.BOTTOM);
               }
             }

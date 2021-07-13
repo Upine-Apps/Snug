@@ -22,7 +22,7 @@ class VerifyDelete extends StatefulWidget {
 
 class _VerifyDeleteState extends State<VerifyDelete> {
   bool didPressDelete = false;
-  final log = getLogger('verifyDelete');
+  //final log = getLogger('verifyDelete');
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -50,20 +50,20 @@ class _VerifyDeleteState extends State<VerifyDelete> {
                 CognitoUser cognitoUser = userProvider.getCognitoUser;
                 try {
                   String _userId = userProvider.getUser.uid;
-                  log.d('Deleting dates for user $_userId');
+                  //log.d('Deleting dates for user $_userId');
                   Map<String, Object> deleteDatesResult =
                       await RemoteDatabaseHelper.instance
                           .deleteUserDates(_userId);
                   if (deleteDatesResult['status'] == true) {
-                    log.d('Deleting user $_userId');
+                    //log.d('Deleting user $_userId');
                     Map<String, Object> deleteUserResult =
                         await RemoteDatabaseHelper.instance.deleteUser(_userId);
                     if (deleteUserResult['status'] == true) {
-                      log.d('Deleting cognito user');
+                      //log.d('Deleting cognito user');
                       Map<String, Object> deleteCognitoResult =
                           await CognitoService.instance.deleteUser(cognitoUser);
                       if (deleteCognitoResult['status'] == true) {
-                        log.d('Deleting providers');
+                        //log.d('Deleting providers');
                         //clear all data from app
                         userProvider.removeUser();
                         contactProvider.removeAllContacts();
@@ -86,7 +86,7 @@ class _VerifyDeleteState extends State<VerifyDelete> {
                   }
                 } catch (e) {
                   didPressDelete = false;
-                  log.e(e);
+                  //log.e(e);
                   CustomToast.showDialog(
                       'Failed to delete account, please try again.',
                       context,

@@ -36,7 +36,7 @@ class _ProfileEditState extends State<ProfileEdit> {
   String _in;
   String _state;
   Emoji somethingWentWrong = Emoji.byChar(Emojis.flushedFace);
-  final log = getLogger('EditProfile');
+  //final log = getLogger('EditProfile');
   var _profileEditKey = GlobalKey<FormState>();
 
   User tempUser = new User();
@@ -192,7 +192,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                                         'Failed to update the user');
                                   }
                                 } catch (e) {
-                                  log.e('Failed to update user. Error: $e');
+                                  //log.e('Failed to update user. Error: $e');
                                   CustomToast.showDialog(
                                       'Looks like we ran into an error. Please try again later! $somethingWentWrong',
                                       context,
