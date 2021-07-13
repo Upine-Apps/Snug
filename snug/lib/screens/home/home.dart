@@ -13,6 +13,7 @@ import 'package:snug/models/User.dart';
 import 'package:snug/models/Date.dart';
 import 'package:snug/providers/ContactProvider.dart';
 import 'package:snug/providers/DateProvider.dart';
+import 'package:snug/providers/LoggerProvider.dart';
 import 'package:snug/providers/MapProvider.dart';
 import 'package:snug/providers/UserProvider.dart';
 import 'package:snug/screens/authenticate/authenticate.dart';
@@ -165,6 +166,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     final dateProvider = Provider.of<DateProvider>(context, listen: true);
     final userProvider = Provider.of<UserProvider>(context, listen: true);
     final contactProvider = Provider.of<ContactProvider>(context, listen: true);
+    final logProvider = Provider.of<LogProvider>(context, listen: false);
+    final log = getLogger('Home', logProvider.getLogPath);
     // checkPermissions(mapProvider);
 
     if (dateProvider.getCurrentDates.length == 0 ||
@@ -173,6 +176,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     }
     User _tempUser = userProvider.getUser;
     _userId = _tempUser.uid;
+    log.i('In home screen');
 
     return Scaffold(
       appBar: PreferredSize(
@@ -274,6 +278,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
                             return GestureDetector(
                                 onTap: () {
+                                  log.i(
+                                      'Clicked on date ${dateProvider.getCurrentDates[index].who.first_name}, userID: ${dateProvider.getCurrentDates[index].who.uid}');
                                   int someIndex = _getIndexValue();
 
                                   Navigator.pushReplacement(
@@ -557,7 +563,9 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
             ),
           ),
           onPressed: () async {
+            log.i('Tapped on create a date button');
             if (contactProvider.getContacts.length == 0) {
+              log.i('Did not have atleast one contact');
               //log.d('User needs to add a contact before creating a date');
 
               CustomToast.showDialog(
@@ -571,14 +579,17 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                 //log.i(locationPermission);
                 if (locationPermission == LocationPermission.denied ||
                     locationPermission == LocationPermission.deniedForever) {
+                  log.i('Location not enabled');
                   CustomToast.showDialog(
                       'You need to enable location', context, Toast.BOTTOM);
                 } else {
+                  log.i('Moving to Add Date screen');
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => AddDate()));
                 }
               } catch (e) {
                 //log.e(e);
+                log.i('Unknown error: $e');
                 CustomToast.showDialog(e.toString(), context, Toast.BOTTOM);
               }
             }
