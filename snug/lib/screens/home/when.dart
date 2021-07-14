@@ -86,7 +86,7 @@ class _WhenState extends State<When> {
                 onTap: () {
                   log.i('Choosing start date');
                   log.d('_pickedDate');
-                  _pickedDate;
+                  _pickedDate();
                 },
               )),
           Container(
@@ -102,7 +102,7 @@ class _WhenState extends State<When> {
                     log.i('Chossing start time');
                     log.d('_pickedTime');
 
-                    _pickedTime;
+                    _pickedTime();
                   },
                 )),
           ),
@@ -125,7 +125,7 @@ class _WhenState extends State<When> {
                 onTap: () {
                   log.i('Choosing end date');
                   log.d('_pickedEndDate');
-                  _pickedEndDate;
+                  _pickedEndDate();
                 },
               )),
           Container(
@@ -137,7 +137,7 @@ class _WhenState extends State<When> {
                 onTap: () {
                   log.i('Choosing end time');
                   log.d('_pickedEndTime');
-                  _pickedEndTime;
+                  _pickedEndTime();
                 },
               ))
         ])

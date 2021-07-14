@@ -834,9 +834,8 @@ class _AddDateState extends State<AddDate> {
                                                         if (userResult[
                                                                 'status'] ==
                                                             true) {
-                                                          log.d('user id: ' +
-                                                              userResult[
-                                                                  'user_id']);
+                                                          log.d(
+                                                              'user id: ${userResult['user_id']}');
                                                           currentDate.who
                                                               .uid = userResult[
                                                                   'user_id']
