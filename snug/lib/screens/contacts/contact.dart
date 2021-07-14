@@ -6,6 +6,7 @@ import 'package:snug/custom_widgets/customshowcase.dart';
 import 'package:snug/custom_widgets/topheader.dart';
 import 'package:snug/models/User.dart';
 import 'package:snug/providers/ContactProvider.dart';
+import 'package:snug/providers/LogProvider.dart';
 import 'package:snug/providers/UserProvider.dart';
 import 'package:snug/screens/authenticate/authenticate.dart';
 import 'package:snug/screens/contacts/create_contact.dart';
@@ -84,6 +85,8 @@ class _ContactState extends State<Contact>
   Widget build(BuildContext context) {
     final contactList = Provider.of<ContactProvider>(context, listen: true);
     final profileUser = Provider.of<UserProvider>(context, listen: true);
+    final logProvider = Provider.of<LogProvider>(context, listen: false);
+    final log = getLogger('Contact', logProvider.getLogPath);
     User _tempUser = profileUser.getUser;
     _userId = _tempUser.uid;
 
@@ -202,6 +205,10 @@ class _ContactState extends State<Contact>
                                   return Dismissible(
                                     key: UniqueKey(),
                                     onDismissed: (direction) {
+                                      log.i('Deleting contact: ' +
+                                          contactList
+                                              .getContacts[index].phoneNumber);
+                                      log.d('contactList.removeContact');
                                       contactList.removeContact(index, _userId);
                                       CustomToast.showDialog('Contact deleted',
                                           context, Toast.BOTTOM);
@@ -212,6 +219,8 @@ class _ContactState extends State<Contact>
                                       children: <Widget>[
                                         GestureDetector(
                                           onTap: () {
+                                            log.i(
+                                                'Lanching ${contactList.getContacts[index].phoneNumber}');
                                             launch(
                                                 "tel:${contactList.getContacts[index].phoneNumber}");
                                           },
@@ -315,6 +324,8 @@ class _ContactState extends State<Contact>
                                     children: <Widget>[
                                       GestureDetector(
                                         onTap: () {
+                                          log.i(
+                                              'Lanching ${contactList.getContacts[index].phoneNumber}');
                                           launch(
                                               "tel:${contactList.getContacts[index].phoneNumber}");
                                         },
@@ -437,13 +448,13 @@ class _ContactState extends State<Contact>
             ),
           ),
           onPressed: () {
+            log.i('Creating a contact');
             if (contactList.getContacts.length == 5) {
+              log.i('5 contacts already exist');
               CustomToast.showDialog(
                   'You can only have 5 contacts', context, Toast.BOTTOM);
             } else {
-              //////////////////////////////////////////////////
-              ////////////  Pop up to create a contact  ////////
-              ///
+              log.i('Showing create contact popup form');
               showDialog(
                   context: context,
                   builder: (BuildContext context) {

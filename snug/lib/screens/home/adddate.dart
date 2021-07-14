@@ -9,6 +9,7 @@ import 'package:snug/core/logger.dart';
 import 'package:snug/custom_widgets/CustomToast.dart';
 import 'package:snug/models/Date.dart';
 import 'package:snug/providers/DateProvider.dart';
+import 'package:snug/providers/LogProvider.dart';
 import 'package:snug/providers/UserProvider.dart';
 import 'package:snug/screens/authenticate/authenticate.dart';
 import 'package:snug/screens/create_date/verify_exit.dart';
@@ -53,6 +54,8 @@ class _AddDateState extends State<AddDate> {
   @override
   Widget build(BuildContext context) {
     final dateProvider = Provider.of<DateProvider>(context, listen: false);
+    final logProvider = Provider.of<LogProvider>(context, listen: false);
+    final log = getLogger('Add Date', logProvider.getLogPath);
 
     return WillPopScope(
       onWillPop: () async => showDialog(
@@ -69,6 +72,7 @@ class _AddDateState extends State<AddDate> {
                 color: Theme.of(context).colorScheme.secondary, size: 50)),
         child: GestureDetector(
           onTap: () {
+            log.i('Tapped on screen outside of fields');
             FocusScope.of(context).requestFocus(new FocusNode());
           },
           child: Scaffold(
@@ -130,6 +134,8 @@ class _AddDateState extends State<AddDate> {
                                                     .colorScheme
                                                     .secondaryVariant),
                                             onPressed: () {
+                                              log.i(
+                                                  'Pressed home icon button on who section');
                                               showDialog(
                                                   context: context,
                                                   builder:
@@ -171,28 +177,31 @@ class _AddDateState extends State<AddDate> {
                                     child: Who(),
                                   ),
                                   Container(
-                                      padding: EdgeInsets.only(
-                                          right:
-                                              MediaQuery.of(context).size.width *
-                                                  .05,
-                                          bottom: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              .02),
-                                      alignment: Alignment.centerRight,
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              .05,
-                                      child: IconButton(
-                                          icon: Icon(Icons.arrow_forward,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .secondaryVariant),
-                                          onPressed: () => scrollController.animateTo(
+                                    padding: EdgeInsets.only(
+                                        right:
+                                            MediaQuery.of(context).size.width *
+                                                .05,
+                                        bottom:
+                                            MediaQuery.of(context).size.height *
+                                                .02),
+                                    alignment: Alignment.centerRight,
+                                    height: MediaQuery.of(context).size.height *
+                                        .05,
+                                    child: IconButton(
+                                        icon: Icon(Icons.arrow_forward,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .secondaryVariant),
+                                        onPressed: () {
+                                          log.i(
+                                              'Pressed next button on who page');
+                                          scrollController.animateTo(
                                               MediaQuery.of(context).size.width,
                                               duration:
                                                   Duration(milliseconds: 500),
-                                              curve: Curves.ease)))
+                                              curve: Curves.ease);
+                                        }),
+                                  ),
                                 ],
                               )),
                             )),
@@ -231,6 +240,8 @@ class _AddDateState extends State<AddDate> {
                                                       .colorScheme
                                                       .secondaryVariant),
                                               onPressed: () {
+                                                log.i(
+                                                    'Pressed home button on where section');
                                                 showDialog(
                                                     context: context,
                                                     builder:
@@ -281,46 +292,71 @@ class _AddDateState extends State<AddDate> {
 
                                           Row(children: <Widget>[
                                         Padding(
-                                            padding: EdgeInsets.only(
-                                                right: MediaQuery.of(context).size.width *
-                                                    .7,
-                                                bottom:
-                                                    MediaQuery.of(context).size.height *
-                                                        .02,
-                                                left: MediaQuery.of(context).size.width *
-                                                    .05),
-                                            child: Container(
-                                                padding: EdgeInsets.all(0),
-                                                width: MediaQuery.of(context).size.width *
-                                                    .1,
-                                                child: IconButton(
-                                                    icon: Icon(Icons.arrow_back,
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .secondaryVariant),
-                                                    onPressed: () =>
-                                                        scrollController.animateTo(0, duration: Duration(milliseconds: 500), curve: Curves.ease)))),
+                                          padding: EdgeInsets.only(
+                                              right: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  .7,
+                                              bottom: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  .02,
+                                              left: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  .05),
+                                          child: Container(
+                                            padding: EdgeInsets.all(0),
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                .1,
+                                            child: IconButton(
+                                                icon: Icon(Icons.arrow_back,
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .secondaryVariant),
+                                                onPressed: () {
+                                                  log.i(
+                                                      'Pressed back button on where screen');
+                                                  scrollController.animateTo(0,
+                                                      duration: Duration(
+                                                          milliseconds: 500),
+                                                      curve: Curves.ease);
+                                                }),
+                                          ),
+                                        ),
                                         Padding(
-                                            padding: EdgeInsets.only(
-                                                right: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    .05),
-                                            child: Container(
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    .1,
-                                                child: IconButton(
-                                                    icon: Icon(Icons.arrow_forward,
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .secondaryVariant),
-                                                    onPressed: () =>
-                                                        scrollController.animateTo(
-                                                            MediaQuery.of(context).size.width * 2,
-                                                            duration: Duration(milliseconds: 500),
-                                                            curve: Curves.ease))))
+                                          padding: EdgeInsets.only(
+                                              right: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  .05),
+                                          child: Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                .1,
+                                            child: IconButton(
+                                              icon: Icon(Icons.arrow_forward,
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .secondaryVariant),
+                                              onPressed: () {
+                                                log.i(
+                                                    'Pressed forward button on where button');
+                                                scrollController.animateTo(
+                                                    MediaQuery.of(context)
+                                                            .size
+                                                            .width *
+                                                        2,
+                                                    duration: Duration(
+                                                        milliseconds: 500),
+                                                    curve: Curves.ease);
+                                              },
+                                            ),
+                                          ),
+                                        ),
                                       ]))
                                 ])))),
                         //***********END OF WHERE SECTION ****************
@@ -359,6 +395,8 @@ class _AddDateState extends State<AddDate> {
                                                       .colorScheme
                                                       .secondaryVariant),
                                               onPressed: () {
+                                                log.i(
+                                                    'Pressed home button on where screen');
                                                 showDialog(
                                                     context: context,
                                                     builder:
@@ -433,17 +471,25 @@ class _AddDateState extends State<AddDate> {
                                                           .width *
                                                       .1,
                                                   child: IconButton(
-                                                      icon: Icon(Icons.arrow_back,
-                                                          color: Theme.of(context)
+                                                      icon: Icon(
+                                                          Icons.arrow_back,
+                                                          color: Theme.of(
+                                                                  context)
                                                               .colorScheme
                                                               .secondaryVariant),
-                                                      onPressed: () => scrollController.animateTo(
-                                                          MediaQuery.of(context)
-                                                              .size
-                                                              .width,
-                                                          duration: Duration(
-                                                              milliseconds: 500),
-                                                          curve: Curves.ease)))),
+                                                      onPressed: () {
+                                                        log.i(
+                                                            'Pressed back button on phone');
+                                                        scrollController.animateTo(
+                                                            MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width,
+                                                            duration: Duration(
+                                                                milliseconds:
+                                                                    500),
+                                                            curve: Curves.ease);
+                                                      }))),
                                           Padding(
                                             padding: EdgeInsets.only(
                                                 right: MediaQuery.of(context)
@@ -460,15 +506,18 @@ class _AddDateState extends State<AddDate> {
                                                     color: Theme.of(context)
                                                         .colorScheme
                                                         .secondaryVariant),
-                                                onPressed: () =>
-                                                    scrollController.animateTo(
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width *
-                                                            3,
-                                                        duration: Duration(
-                                                            milliseconds: 500),
-                                                        curve: Curves.ease),
+                                                onPressed: () {
+                                                  log.i(
+                                                      'Pressed forward button on where section');
+                                                  scrollController.animateTo(
+                                                      MediaQuery.of(context)
+                                                              .size
+                                                              .width *
+                                                          3,
+                                                      duration: Duration(
+                                                          milliseconds: 500),
+                                                      curve: Curves.ease);
+                                                },
                                               ),
                                             ),
                                           )
@@ -510,6 +559,8 @@ class _AddDateState extends State<AddDate> {
                                                       .colorScheme
                                                       .secondaryVariant),
                                               onPressed: () {
+                                                log.i(
+                                                    'Pressed home button on add contact section');
                                                 showDialog(
                                                     context: context,
                                                     builder:
@@ -582,18 +633,23 @@ class _AddDateState extends State<AddDate> {
                                                         .width *
                                                     .1,
                                                 child: IconButton(
-                                                    icon: Icon(Icons.arrow_back,
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .secondaryVariant),
-                                                    onPressed: () => scrollController.animateTo(
+                                                  icon: Icon(Icons.arrow_back,
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .secondaryVariant),
+                                                  onPressed: () {
+                                                    log.i(
+                                                        'Pressed back button on add contact section');
+                                                    scrollController.animateTo(
                                                         MediaQuery.of(context)
                                                                 .size
                                                                 .width *
                                                             2,
-                                                        duration:
-                                                            Duration(milliseconds: 500),
-                                                        curve: Curves.ease)))),
+                                                        duration: Duration(
+                                                            milliseconds: 500),
+                                                        curve: Curves.ease);
+                                                  },
+                                                ))),
                                         Padding(
                                           padding: EdgeInsets.only(
                                               right: MediaQuery.of(context)
@@ -611,32 +667,18 @@ class _AddDateState extends State<AddDate> {
                                                         .colorScheme
                                                         .secondaryVariant),
                                                 onPressed: () async {
+                                                  log.i(
+                                                      'Pressed check to add date');
                                                   Date currentDate =
                                                       dateProvider
                                                           .getRecentDate;
-                                                  print('Dates');
-                                                  print(currentDate);
+
                                                   if (currentDate.dateEnd ==
                                                           null ||
                                                       currentDate
                                                           .dateEnd.isEmpty) {
-                                                    scrollController.animateTo(
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width *
-                                                            2,
-                                                        duration: Duration(
-                                                            milliseconds: 500),
-                                                        curve: Curves.ease);
-                                                    CustomToast.showDialog(
-                                                        'Please enter a start time',
-                                                        context,
-                                                        Toast.BOTTOM);
-                                                  } else if (currentDate
-                                                              .dateStart ==
-                                                          null ||
-                                                      currentDate
-                                                          .dateStart.isEmpty) {
+                                                    log.i(
+                                                        'No end time selected for date');
                                                     scrollController.animateTo(
                                                         MediaQuery.of(context)
                                                                 .size
@@ -649,11 +691,32 @@ class _AddDateState extends State<AddDate> {
                                                         'Please enter a end time',
                                                         context,
                                                         Toast.BOTTOM);
+                                                  } else if (currentDate
+                                                              .dateStart ==
+                                                          null ||
+                                                      currentDate
+                                                          .dateStart.isEmpty) {
+                                                    log.i(
+                                                        'No start time selected for date');
+                                                    scrollController.animateTo(
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            2,
+                                                        duration: Duration(
+                                                            milliseconds: 500),
+                                                        curve: Curves.ease);
+                                                    CustomToast.showDialog(
+                                                        'Please enter a start time',
+                                                        context,
+                                                        Toast.BOTTOM);
                                                   } else if (DateTime.parse(
                                                           currentDate.dateStart)
                                                       .isAfter(DateTime.parse(
                                                           currentDate
                                                               .dateEnd))) {
+                                                    log.i(
+                                                        'End time behind start time');
                                                     scrollController.animateTo(
                                                         MediaQuery.of(context)
                                                                 .size
@@ -669,6 +732,9 @@ class _AddDateState extends State<AddDate> {
                                                   } else if (currentDate
                                                           .who.phone_number ==
                                                       null) {
+                                                    log.i(
+                                                        'No date phone number enterd');
+
                                                     CustomToast.showDialog(
                                                         'Please enter the phone number of your date',
                                                         context,
@@ -681,6 +747,8 @@ class _AddDateState extends State<AddDate> {
                                                   } else if (currentDate
                                                           .who.first_name ==
                                                       null) {
+                                                    log.i(
+                                                        'First name of date not entered');
                                                     scrollController.animateTo(
                                                         0,
                                                         duration: Duration(
@@ -693,6 +761,8 @@ class _AddDateState extends State<AddDate> {
                                                   } else if (currentDate
                                                           .who.sex ==
                                                       null) {
+                                                    log.i(
+                                                        'Sex of date not entered');
                                                     scrollController.animateTo(
                                                         0,
                                                         duration: Duration(
@@ -711,6 +781,8 @@ class _AddDateState extends State<AddDate> {
                                                       currentDate.dateLocation[
                                                               'y'] ==
                                                           null) {
+                                                    log.i(
+                                                        'Location for date not entered');
                                                     scrollController.animateTo(
                                                         MediaQuery.of(context)
                                                                 .size
@@ -726,6 +798,8 @@ class _AddDateState extends State<AddDate> {
                                                   } else if (currentDate
                                                           .trusted ==
                                                       null) {
+                                                    log.i(
+                                                        'No contacts chosen for date');
                                                     CustomToast.showDialog(
                                                         'Please choose at least one contact for this date',
                                                         context,
@@ -746,38 +820,57 @@ class _AddDateState extends State<AddDate> {
                                                           profile
                                                               .getString('uid');
                                                       try {
+                                                        log.i(
+                                                            'RemoteDatabaseHelper.addUser');
                                                         dynamic userResult =
                                                             await RemoteDatabaseHelper
                                                                 .instance
-                                                                .addUser(currentDate
-                                                                    .who); //create the user in the database and get the user id
+                                                                .addUser(
+                                                                    currentDate
+                                                                        .who);
+
+                                                        log.d(userResult[
+                                                            'status']); //create the user in the database and get the user id
                                                         if (userResult[
                                                                 'status'] ==
                                                             true) {
+                                                          log.d('user id: ' +
+                                                              userResult[
+                                                                  'user_id']);
                                                           currentDate.who
                                                               .uid = userResult[
                                                                   'user_id']
                                                               .toString(); //add the user id to currentDate.who
                                                           try {
+                                                            log.d(
+                                                                'RemoteDatabaseHelper.instance.addDate');
                                                             dynamic dateResult =
                                                                 await RemoteDatabaseHelper
                                                                     .instance
                                                                     .addDate(
                                                                         currentDate,
                                                                         user_one_id); //add the date to the database
-
+                                                            log.d(dateResult[
+                                                                'status']);
                                                             if (dateResult[
                                                                     'status'] ==
                                                                 true) {
-                                                              // log.i(
-                                                              //     'Successfully added date');
+                                                              log.i(
+                                                                  'Successfully added date');
+                                                              log.d('Date id: ' +
+                                                                  dateResult[
+                                                                      'data']);
                                                               currentDate
                                                                       .dateId =
                                                                   dateResult[
                                                                       'data'];
+                                                              log.d(
+                                                                  'dateProvider.setRecentDate');
                                                               dateProvider
                                                                   .setRecentDate(
                                                                       currentDate);
+                                                              log.i(
+                                                                  'Sent to DateLoadingScreen');
                                                               Navigator.pushReplacement(
                                                                   context,
                                                                   MaterialPageRoute(
@@ -789,8 +882,8 @@ class _AddDateState extends State<AddDate> {
                                                                   'Failed to add date');
                                                             }
                                                           } on AddDateException catch (e) {
-                                                            // log.e(
-                                                            //     'Failed to add date. Error: $e');
+                                                            log.e(
+                                                                'Failed to add date. Error: $e');
                                                             dateProvider
                                                                 .getCurrentDates
                                                                 .removeLast();
@@ -798,6 +891,8 @@ class _AddDateState extends State<AddDate> {
                                                                 'We ran into an error adding your date. Please try again later! $somethingWentWrong',
                                                                 context,
                                                                 Toast.BOTTOM);
+                                                            log.i(
+                                                                'Sent to MainPage');
                                                             await Future
                                                                 .delayed(
                                                                     Duration(
@@ -812,8 +907,8 @@ class _AddDateState extends State<AddDate> {
                                                                               MainPage()));
                                                             });
                                                           } catch (e) {
-                                                            // log.e(
-                                                            //     'Failed to add user. Error: $e');
+                                                            log.e(
+                                                                'Failed to add date. Error: $e');
                                                             dateProvider
                                                                 .getCurrentDates
                                                                 .removeLast();
@@ -821,6 +916,21 @@ class _AddDateState extends State<AddDate> {
                                                                 'Looks like we ran into an error. Please try again later! $somethingWentWrong',
                                                                 context,
                                                                 Toast.BOTTOM);
+                                                            log.i(
+                                                                'Sent to MainPage');
+                                                            await Future
+                                                                .delayed(
+                                                                    Duration(
+                                                                        seconds:
+                                                                            2),
+                                                                    () {
+                                                              Navigator.pushReplacement(
+                                                                  context,
+                                                                  MaterialPageRoute(
+                                                                      builder:
+                                                                          (context) =>
+                                                                              MainPage()));
+                                                            });
                                                           }
                                                           ;
                                                         } else {
@@ -831,13 +941,14 @@ class _AddDateState extends State<AddDate> {
                                                         dateProvider
                                                             .getCurrentDates
                                                             .removeLast();
-                                                        // log.e(
-                                                        // 'Failed to add user. Error: $e');
+                                                        log.e(
+                                                            'Failed to add user. Error: $e');
                                                         CustomToast.showDialog(
                                                             'Looks like we ran into an error. Please try again later! $somethingWentWrong',
                                                             context,
                                                             Toast.BOTTOM);
-
+                                                        log.i(
+                                                            'Sent to MainPage');
                                                         await Future.delayed(
                                                             Duration(
                                                                 seconds: 2),
@@ -891,8 +1002,11 @@ class _DateLoadingScreenState extends State<DateLoadingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final logProvider = Provider.of<LogProvider>(context, listen: false);
+    final log = getLogger('Date Loading Screen', logProvider.getLogPath);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       context.loaderOverlay.show();
+      log.i('In date loading screen sending to MainPage');
       await Future.delayed(Duration(seconds: 1), () {
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => MainPage()));

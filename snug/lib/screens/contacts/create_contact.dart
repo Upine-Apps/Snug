@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:snug/core/logger.dart';
 import 'package:snug/custom_widgets/CustomToast.dart';
 import 'package:snug/custom_widgets/raised_rounded_gradient_button.dart';
 import 'package:snug/models/User.dart';
 import 'package:snug/providers/ContactProvider.dart';
+import 'package:snug/providers/LogProvider.dart';
 import 'package:snug/providers/UserProvider.dart';
 import 'package:snug/screens/navigation/MainPage.dart';
 import 'package:provider/provider.dart';
@@ -34,6 +36,8 @@ class _CreateContactState extends State<CreateContact> {
     final node = FocusScope.of(context);
     final contactList = Provider.of<ContactProvider>(context, listen: false);
     final profileUser = Provider.of<UserProvider>(context, listen: true);
+    final logProvider = Provider.of<LogProvider>(context, listen: false);
+    final log = getLogger('Create Contact', logProvider.getLogPath);
 
     User _tempUser = profileUser.getUser;
     _userId = _tempUser.uid;
@@ -70,29 +74,33 @@ class _CreateContactState extends State<CreateContact> {
                           child: Column(
                             children: <Widget>[
                               TextFormField(
-                                  textCapitalization:
-                                      TextCapitalization.sentences,
-                                  onEditingComplete: () => node.nextFocus(),
-                                  controller: nameCtrl,
-                                  decoration: InputDecoration(
-                                      errorStyle: TextStyle(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .secondaryVariant),
-                                      icon: Icon(Icons.person),
-                                      labelText: 'Name'),
-                                  inputFormatters: <TextInputFormatter>[
-                                    FilteringTextInputFormatter.allow(
-                                        RegExp('[a-zA-Z\\s]')),
-                                  ],
-                                  validator: (String val) {
-                                    if (val.length > 30) {
-                                      return "Ya got a shorter name?";
-                                    }
-                                  },
-                                  onChanged: (val) {
-                                    _name = val;
-                                  }),
+                                textCapitalization:
+                                    TextCapitalization.sentences,
+                                onEditingComplete: () => node.nextFocus(),
+                                controller: nameCtrl,
+                                decoration: InputDecoration(
+                                    errorStyle: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondaryVariant),
+                                    icon: Icon(Icons.person),
+                                    labelText: 'Name'),
+                                inputFormatters: <TextInputFormatter>[
+                                  FilteringTextInputFormatter.allow(
+                                      RegExp('[a-zA-Z\\s]')),
+                                ],
+                                validator: (String val) {
+                                  if (val.length > 30) {
+                                    return "Ya got a shorter name?";
+                                  }
+                                },
+                                onChanged: (val) {
+                                  _name = val;
+                                },
+                                onTap: () {
+                                  log.i('Tapped on name field');
+                                },
+                              ),
                               TextFormField(
                                   inputFormatters: [
                                     FilteringTextInputFormatter.allow(
@@ -114,6 +122,9 @@ class _CreateContactState extends State<CreateContact> {
                                   },
                                   onChanged: (val) {
                                     _phone = val;
+                                  },
+                                  onTap: () {
+                                    log.i('Tapped on phone field');
                                   }),
                               Padding(
                                   padding: EdgeInsets.only(
@@ -128,6 +139,7 @@ class _CreateContactState extends State<CreateContact> {
                                                 color: Theme.of(context)
                                                     .dividerColor)),
                                         onPressed: () {
+                                          log.i('Saving contact');
                                           FocusScope.of(context)
                                               .requestFocus(new FocusNode());
 
@@ -143,11 +155,14 @@ class _CreateContactState extends State<CreateContact> {
                                               }
                                             }
                                             if (contactExist == true) {
+                                              log.i('Contact exist');
                                               CustomToast.showDialog(
                                                   "This contact already exists",
                                                   context,
                                                   Toast.BOTTOM);
                                             } else if (_name == null) {
+                                              log.i(
+                                                  'Contact name not provided');
                                               CustomToast.showDialog(
                                                   "Does this contact have a name?",
                                                   context,
@@ -155,13 +170,19 @@ class _CreateContactState extends State<CreateContact> {
                                             } else if (profileUser
                                                     .getUser.phone_number ==
                                                 _phone) {
+                                              log.i(
+                                                  'User user their own phone number');
                                               CustomToast.showDialog(
                                                   'You\'re your own contact? ',
                                                   context,
                                                   Toast.BOTTOM);
                                             } else {
+                                              log.i('Added contact');
+                                              log.d('contactList.addContact()');
                                               contactList.addContact(
                                                   _name, _phone, _userId);
+
+                                              log.d('Back to contact screen');
 
                                               if (contactList
                                                       .getContacts.length ==

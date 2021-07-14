@@ -15,6 +15,7 @@ import 'package:snug/custom_widgets/race.dart';
 import 'package:snug/custom_widgets/raised_rounded_gradient_button.dart';
 import 'package:snug/custom_widgets/topheader.dart';
 import 'package:snug/models/User.dart';
+import 'package:snug/providers/LogProvider.dart';
 import 'package:snug/providers/UserProvider.dart';
 import 'package:snug/screens/walkthrough/walkthrough.dart';
 
@@ -32,6 +33,7 @@ class Profile extends StatefulWidget {
   final Function toggleView;
   final String phonenumber;
   final CognitoUser cognitoUser;
+
   Profile({Key key, this.toggleView, this.phonenumber, this.cognitoUser})
       : super(key: key);
 
@@ -42,6 +44,7 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   Emoji somethingWentWrong = Emoji.byChar(Emojis.flushedFace);
   User tempUser = new User();
+  bool didPressSubmit = false;
 
   @override
   void initState() {
@@ -95,6 +98,9 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     final node = FocusScope.of(context);
     final _userProvider = Provider.of<UserProvider>(context, listen: true);
+    final logProvider = Provider.of<LogProvider>(context, listen: false);
+    final log = getLogger('ForgotPassword', logProvider.getLogPath);
+    final consoleLog = getConsoleLogger('ForgotPassword');
     return WillPopScope(
       onWillPop: () async => false,
       child: GestureDetector(
@@ -420,80 +426,120 @@ class _ProfileState extends State<Profile> {
                             ),
                             RaisedRoundedGradientButton(
                               //check size of button
-                              child: Text(
-                                'Register',
-                                style: TextStyle(
-                                    color: Theme.of(context).dividerColor),
-                              ),
+                              child: didPressSubmit == true
+                                  ? SizedBox(
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                                Theme.of(context)
+                                                    .colorScheme
+                                                    .secondary),
+                                      ),
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              .025,
+                                      width: MediaQuery.of(context).size.width *
+                                          .05)
+                                  : Text(
+                                      'Submit Profile',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
                               onPressed: () async {
-                                FocusScope.of(context)
-                                    .requestFocus(new FocusNode());
-                                // print(height);
-//DO ERROR HANDLING HERE
-//NEED TO CHECK IF ALL THE THINGS HAVE BEEN FILLED OUT
+                                if (didPressSubmit == false) {
+                                  //fixes double tap issue
+                                  log.i('didPressSubmit');
+                                  setState(() {
+                                    didPressSubmit = true;
+                                  });
 
-                                if (_dob == 'Date of Birth') {
-                                  CustomToast.showDialog(
-                                      'Please enter your date of birth',
-                                      context,
-                                      Toast.BOTTOM);
-                                } else if (_formKey.currentState.validate()) {
-                                  //log.i('convertHeight | _ft: $_ft _in: $_in');
-                                  // Convert height into a total of inches for data base.
-                                  var ft1 = int.parse(_ft);
-                                  var in1 = int.parse(_in);
-                                  var h = (ft1 * 12) + in1;
-                                  // Convert height into a total of inches for data base.
-                                  //log.d('Height: $h');
-                                  height =
-                                      '$h'; //pretty sure we aren't even doing anything with this variable
-                                  // tempUser.phone_number = '1111111111';
-                                  tempUser.temp = 'false';
-                                  tempUser.phone_number = widget.phonenumber;
-                                  tempUser.legal = 'true';
-                                  //UNCOMMENT THIS WHEN DONE TESTING ^^^^^
-                                  try {
-                                    dynamic result = await RemoteDatabaseHelper
-                                        .instance
-                                        .addUser(tempUser);
-                                    if (result['status'] == true) {
-                                      var user_id =
-                                          result['user_id'].toString();
-                                      SharedPreferences profile =
-                                          await SharedPreferences.getInstance();
+                                  FocusScope.of(context)
+                                      .requestFocus(new FocusNode());
 
-                                      profile.setString('uid', user_id);
-                                      tempUser.uid = user_id;
-                                      profile.setString(
-                                          'first_name', tempUser.first_name);
-                                      _userProvider.editUser(tempUser);
-                                      Map<String, Object> attributeUpdated =
-                                          await CognitoService.instance
-                                              .addUserAttributes(
-                                                  widget.cognitoUser, user_id);
-                                      if (attributeUpdated['status'] == true) {
-                                        //log.i('pushToMainPage');
-                                        Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  Walkthrough()),
-                                        );
-                                      } else {
-                                        throw AddUserAttributeException(
-                                            'Failed to add user attribute');
-                                      }
-                                    } else {
-                                      throw AddUserException(
-                                          'Failed to add the user');
-                                    }
-                                  } catch (e) {
-                                    //log.e(
-                                    // 'Failed to add user profile. Error: $e');
+                                  if (_dob == 'Date of Birth') {
                                     CustomToast.showDialog(
-                                        'Looks like we ran into an error. Please try again later! $somethingWentWrong',
+                                        'Please enter your date of birth',
                                         context,
                                         Toast.BOTTOM);
+                                  } else if (_formKey.currentState.validate()) {
+                                    // Convert height into a total of inches for data base.
+                                    var ft1 = int.parse(_ft);
+                                    var in1 = int.parse(_in);
+                                    var h = (ft1 * 12) + in1;
+
+                                    height =
+                                        '$h'; //pretty sure we aren't even doing anything with this variable
+
+                                    tempUser.temp = 'false';
+                                    tempUser.phone_number = widget.phonenumber;
+                                    tempUser.legal = 'true';
+
+                                    try {
+                                      log.i('RemoteDatabaseHelper.addUser');
+                                      dynamic addUserResult =
+                                          await RemoteDatabaseHelper.instance
+                                              .addUser(tempUser);
+                                      log.d(
+                                          'addUserResult: ${addUserResult['status']}');
+                                      if (addUserResult['status'] == true) {
+                                        log.d(
+                                            'user_id: ${addUserResult['user_id']}');
+                                        var user_id =
+                                            addUserResult['user_id'].toString();
+                                        SharedPreferences profile =
+                                            await SharedPreferences
+                                                .getInstance();
+                                        log.i(
+                                            'SharedPreferences.setString: uid: $user_id first_name: ${tempUser.first_name}');
+                                        profile.setString('uid', user_id);
+                                        tempUser.uid = user_id;
+                                        profile.setString(
+                                            'first_name', tempUser.first_name);
+                                        log.i('userProvider.editUser');
+                                        _userProvider.editUser(tempUser);
+                                        log.i(
+                                            'CognitoService.addUserAttributes');
+                                        Map<String, Object> attributeUpdated =
+                                            await CognitoService.instance
+                                                .addUserAttributes(
+                                                    widget.cognitoUser,
+                                                    user_id);
+                                        log.d(
+                                            'attributeUpdates: ${attributeUpdated['status']}');
+                                        if (attributeUpdated['status'] ==
+                                            true) {
+                                          log.i('pushToMainPage');
+                                          Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    Walkthrough()),
+                                          );
+                                        } else {
+                                          throw AddUserAttributeException(
+                                              'Failed to add user attribute');
+                                        }
+                                      } else {
+                                        throw AddUserException(
+                                            'Failed to add the user');
+                                      }
+                                    } catch (e) {
+                                      log.e('Failed to add user profile');
+                                      log.e(e);
+                                      CustomToast.showDialog(
+                                          'Looks like we ran into an error. Please try again later! $somethingWentWrong',
+                                          context,
+                                          Toast.BOTTOM);
+                                    }
+                                  } else {
+                                    log.i(
+                                        'Waiting 2 seconds and allowing submit button press again');
+                                    await Future.delayed(Duration(seconds: 2),
+                                        () {
+                                      setState(() {
+                                        didPressSubmit = false;
+                                      });
+                                    });
                                   }
                                 }
                               },

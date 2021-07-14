@@ -1,11 +1,13 @@
 import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:share/share.dart';
 import 'package:snug/custom_widgets/CustomToast.dart';
 import 'package:snug/custom_widgets/customshowcase.dart';
 import 'package:snug/custom_widgets/topheader.dart';
 import 'package:snug/providers/ContactProvider.dart';
 import 'package:snug/providers/DateProvider.dart';
+import 'package:snug/providers/LogProvider.dart';
 import 'package:snug/providers/UserProvider.dart';
 import 'package:snug/screens/walkthrough/walkthrough.dart';
 import 'package:snug/screens/authenticate/authenticate.dart';
@@ -37,7 +39,6 @@ class _SettingState extends State<SettingScreen> with WidgetsBindingObserver {
   List themes = Constant.themes;
   SharedPreferences prefs;
   ThemeNotifier themeNotifier;
-  //final log = getLogger('Settings');
 
   @override
   void initState() {
@@ -95,6 +96,9 @@ class _SettingState extends State<SettingScreen> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    final logProvider = Provider.of<LogProvider>(context, listen: false);
+    final log = getLogger('Setting', logProvider.getLogPath);
     isDarkTheme = Theme.of(context).brightness == Brightness.dark;
     themeNotifier = Provider.of<ThemeNotifier>(context);
     return Scaffold(
@@ -178,11 +182,15 @@ class _SettingState extends State<SettingScreen> with WidgetsBindingObserver {
                       alignment: Alignment.centerLeft,
                       child: FlatButton(
                           color: Theme.of(context).colorScheme.secondaryVariant,
-                          onPressed: () async => showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return VerifyDelete();
-                              }),
+                          onPressed: () async {
+                            log.i(
+                                'Delete account, sending to Verify Delete popup confirmation');
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return VerifyDelete();
+                                });
+                          },
                           child: Container(
                               width: MediaQuery.of(context).size.width * .40,
                               padding: EdgeInsets.all(0),
@@ -221,11 +229,14 @@ class _SettingState extends State<SettingScreen> with WidgetsBindingObserver {
                       alignment: Alignment.centerLeft,
                       child: FlatButton(
                           color: Theme.of(context).colorScheme.secondaryVariant,
-                          onPressed: () async => Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => Walkthrough()),
-                              ),
+                          onPressed: () async {
+                            log.i('Sending to walkthrough page');
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Walkthrough()),
+                            );
+                          },
                           child: Container(
                               width: MediaQuery.of(context).size.width * .40,
                               padding: EdgeInsets.all(0),
@@ -265,15 +276,19 @@ class _SettingState extends State<SettingScreen> with WidgetsBindingObserver {
                       child: FlatButton(
                           color: Theme.of(context).colorScheme.secondaryVariant,
                           onPressed: () async {
+                            log.i('Donate coffee, launching url');
                             const buyCoffee =
                                 'https://www.buymeacoffee.com/upineapps';
                             try {
                               if (await canLaunch(buyCoffee)) {
                                 await launch(buyCoffee);
+                                log.d(
+                                    'Launched url: https://www.buymeacoffee.com/upineapps');
                               } else {
                                 throw 'Can\'t launch url';
                               }
                             } catch (e) {
+                              log.d(e);
                               CustomToast.showDialog('Failed to donate $sad',
                                   context, Toast.BOTTOM);
                             }
@@ -296,6 +311,7 @@ class _SettingState extends State<SettingScreen> with WidgetsBindingObserver {
                       child: FlatButton(
                           color: Theme.of(context).colorScheme.secondaryVariant,
                           onPressed: () {
+                            log.i('Share Snug');
                             final String shareText =
                                 'Snug is a great app to keep you safe no matter the situation! Find out more at https://upineapps.com';
                             Share.share(shareText,
@@ -317,25 +333,88 @@ class _SettingState extends State<SettingScreen> with WidgetsBindingObserver {
                   ],
                 ),
               ),
+              Padding(
+                padding: EdgeInsets.only(
+                    left: MediaQuery.of(context).size.width * .05,
+                    top: MediaQuery.of(context).size.height * .01),
+                child: Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.only(
+                          bottom: MediaQuery.of(context).size.height * .01),
+                      child: Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Analytics',
+                            style: TextStyle(
+                                color: Theme.of(context).hintColor,
+                                fontSize: 16),
+                          )),
+                    ),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: FlatButton(
+                          color: Theme.of(context).colorScheme.secondaryVariant,
+                          onPressed: () async {
+                            log.i('Sending logs to devs');
+                            final Email email = Email(
+                              body:
+                                  'Hey Upine devs!\n Im running into issues on the snug app. Here\'s my log files.',
+                              subject:
+                                  'Log Files from ${userProvider.getUser.first_name} ${userProvider.getUser.last_name}',
+                              recipients: ['upineapps@protonmail.com'],
+                              // cc: ['cc@.com'],
+                              // bcc: ['bcc@example.com'],
+                              attachmentPaths: [logProvider.getLogPath.path],
+                              isHTML: false,
+                            );
+                            try {
+                              await FlutterEmailSender.send(email);
+                              log.d('Sent log files to devs');
+                            } catch (e) {
+                              log.e(e);
+                            }
+                          },
+                          child: Container(
+                              width: MediaQuery.of(context).size.width * .40,
+                              padding: EdgeInsets.all(0),
+                              height: MediaQuery.of(context).size.height * .025,
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                'Send Log To Devs',
+                                style: TextStyle(
+                                    color: Theme.of(context).dividerColor,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold),
+                              ))),
+                    )
+                  ],
+                ),
+              ),
             ],
           )),
       floatingActionButton: FloatingActionButton(
           onPressed: () async {
+            log.i('Signing out');
             final contactProvider =
                 Provider.of<ContactProvider>(context, listen: false);
             final dateProvider =
                 Provider.of<DateProvider>(context, listen: false);
             if (dateProvider.getCurrentDates.length != null) {
+              log.d('Remove all dates: dateProvider.removeAllDates()');
               dateProvider.removeAllDates();
             }
             if (contactProvider.getContacts.length != null) {
+              log.d('Remove all contacts: contactProvider.removeAllContacts()');
               contactProvider.removeAllContacts();
             }
             final userProvider =
                 Provider.of<UserProvider>(context, listen: false);
             CognitoUser cognitoUser = userProvider.getCognitoUser;
+            log.d(
+                'Log user out from cognito: CognitoService.instance.logoutUser()');
             await CognitoService.instance.logoutUser(cognitoUser);
-
+            log.i('Pusing to Authenticate screen');
             Navigator.pushReplacement(context,
                 MaterialPageRoute(builder: (context) => Authenticate()));
           },

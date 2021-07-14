@@ -43,10 +43,9 @@ class _SignInState extends State<SignIn> {
   @override
   void initState() {
     super.initState();
+    getPath();
 
-    // autoLogin();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await getPath();
       await getInfo();
     });
     myFocusNode.addListener(() {
@@ -56,7 +55,6 @@ class _SignInState extends State<SignIn> {
 
   final TextEditingController _controller = TextEditingController();
   Future<void> getInfo() async {
-    //log.i('getInfo | null');
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final _savedPhoneNumber = prefs.getString('phonenumber');
 
@@ -74,7 +72,6 @@ class _SignInState extends State<SignIn> {
   }
 
   displayName() {
-    //log.i('displayName | $fname');
     if (fname != null) {
       return Text('Welcome Back, $fname!');
     } else {
@@ -162,7 +159,6 @@ class _SignInState extends State<SignIn> {
                                       }
                                     },
                                     onChanged: (val) {
-                                      //log.i('setPhoneNumber | $val');
                                       setState(() => phonenumber = val);
                                     },
                                   ),
@@ -182,7 +178,6 @@ class _SignInState extends State<SignIn> {
                                     ),
                                     obscureText: true,
                                     onChanged: (val) {
-                                      //log.i('setPassword | ****');
                                       setState(() => password = val);
                                     },
                                   ),
@@ -217,10 +212,9 @@ class _SignInState extends State<SignIn> {
                                                   color: Colors.white),
                                             ),
                                       onPressed: () async {
-                                        print(didPressLogin);
                                         if (didPressLogin == false) {
-                                          log.i('PRESSED');
-                                          //fix double tap issue
+                                          //fixes double tap issue
+                                          log.i('didPressLogin');
                                           setState(() {
                                             didPressLogin = true;
                                           });
@@ -230,40 +224,59 @@ class _SignInState extends State<SignIn> {
                                           if (_formKey.currentState
                                               .validate()) {
                                             try {
-                                              log.i(phonenumber);
-                                              log.i(password);
-                                              Map<String, Object> result =
+                                              log.i(
+                                                  'CognitoService.signInUser');
+                                              Map<String, Object>
+                                                  signInUserResult =
                                                   await CognitoService.instance
                                                       .signInUser(
                                                           '+1$phonenumber',
                                                           password);
-                                              if (result['status'] == true) {
+                                              log.d(
+                                                  'signInUserResult: ${signInUserResult['status']}');
+                                              if (signInUserResult['status'] ==
+                                                  true) {
+                                                log.d(
+                                                    'cognitoUser: ${signInUserResult['cognitoUser']}');
+                                                log.d(
+                                                    'cognitoSession: ${signInUserResult['cognitoSession']}');
                                                 //dont need OTP
                                                 CognitoUser confirmedUser =
-                                                    result['cognitoUser'];
+                                                    signInUserResult[
+                                                        'cognitoUser'];
                                                 CognitoUserSession userSession =
-                                                    result['cognitoSession'];
+                                                    signInUserResult[
+                                                        'cognitoSession'];
+                                                log.i(
+                                                    'userProvider.setCognitoUser');
                                                 _userProvider.setCognitoUser(
                                                     confirmedUser);
+                                                log.i(
+                                                    'userProvider.setUserSession');
                                                 _userProvider.setUserSession(
                                                     userSession);
                                                 try {
+                                                  log.i(
+                                                      'CognitoService.getUserAttributes');
                                                   Map<String, Object>
                                                       getAttributesResult =
                                                       await CognitoService
                                                           .instance
                                                           .getUserAttributes(
                                                               confirmedUser);
+                                                  log.d(
+                                                      'getAttributesResult: ${getAttributesResult['status']}');
                                                   if (getAttributesResult[
                                                           'status'] ==
                                                       true) {
                                                     String user_id =
                                                         getAttributesResult[
                                                             'data'];
+                                                    log.i(
+                                                        'SharedPreferences.setString: uid: ${user_id} phonenumber: ${phonenumber}');
                                                     SharedPreferences _profile =
                                                         await SharedPreferences
                                                             .getInstance();
-                                                    log.i('User id: $user_id');
                                                     _profile.setString(
                                                         'uid', user_id);
                                                     _profile.setString(
@@ -278,6 +291,9 @@ class _SignInState extends State<SignIn> {
                                                     );
                                                   }
                                                 } catch (e) {
+                                                  log.e(e);
+                                                  log.i(
+                                                      'pushToProfileCreation');
                                                   Navigator.pushReplacement(
                                                     context,
                                                     MaterialPageRoute(
@@ -292,17 +308,23 @@ class _SignInState extends State<SignIn> {
                                                 }
                                               } else {
                                                 log.e(
-                                                    'shouldnt have gotten here...');
+                                                    'signInUserResult[status] = false');
+                                                log.e(
+                                                    'Shouldn\'t have gotten here');
                                                 throw Error;
                                               }
                                             } on CognitoClientException catch (e) {
+                                              log.e(e);
                                               consoleLog.e(e);
                                               if (e.code ==
                                                   'UserNotConfirmedException') {
                                                 log.e('OTP needed');
+                                                log.i(
+                                                    'CognitoService.resendCode');
                                                 CognitoService.instance
                                                     .resendCode(
                                                         phonenumber, password);
+                                                log.i('pushToOTP');
                                                 Navigator.pushReplacement(
                                                   context,
                                                   MaterialPageRoute(
@@ -319,6 +341,8 @@ class _SignInState extends State<SignIn> {
                                                     'Incorrect phone number or password',
                                                     context,
                                                     Toast.BOTTOM);
+                                                log.i(
+                                                    'Waiting 2 seconds for Toast to disappear and allowing sign in button press again');
                                                 await Future.delayed(
                                                     Duration(seconds: 2), () {
                                                   setState(() {
@@ -328,9 +352,12 @@ class _SignInState extends State<SignIn> {
                                               }
                                             } on CognitoUserMfaRequiredException catch (e) {
                                               log.e('MFA Needed');
+                                              log.i(
+                                                  'CognitoService.resendCode');
                                               CognitoService.instance
                                                   .resendCode(
                                                       phonenumber, password);
+                                              log.i('pushToOTP');
                                               Navigator.pushReplacement(
                                                 context,
                                                 MaterialPageRoute(
@@ -342,7 +369,28 @@ class _SignInState extends State<SignIn> {
                                               );
                                             } catch (e) {
                                               log.e(e);
+                                              CustomToast.showDialog(
+                                                  'Something went wrong',
+                                                  context,
+                                                  Toast.BOTTOM);
+                                              log.i(
+                                                  'Waiting 2 seconds for Toast to disappear and allowing sign in button press again');
+                                              await Future.delayed(
+                                                  Duration(seconds: 2), () {
+                                                setState(() {
+                                                  didPressLogin = false;
+                                                });
+                                              });
                                             }
+                                          } else {
+                                            log.i(
+                                                'Waiting 2 seconds for Toast to disappear and allowing sign in button press again');
+                                            await Future.delayed(
+                                                Duration(seconds: 2), () {
+                                              setState(() {
+                                                didPressLogin = false;
+                                              });
+                                            });
                                           }
                                         }
                                       }),
@@ -362,6 +410,7 @@ class _SignInState extends State<SignIn> {
                                                     .secondaryVariant),
                                           ),
                                           onPressed: () {
+                                            log.i('pushToForgotPassword');
                                             Navigator.push(
                                               context,
                                               MaterialPageRoute(

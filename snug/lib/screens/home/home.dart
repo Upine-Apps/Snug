@@ -13,7 +13,7 @@ import 'package:snug/models/User.dart';
 import 'package:snug/models/Date.dart';
 import 'package:snug/providers/ContactProvider.dart';
 import 'package:snug/providers/DateProvider.dart';
-import 'package:snug/providers/LoggerProvider.dart';
+import 'package:snug/providers/LogProvider.dart';
 import 'package:snug/providers/MapProvider.dart';
 import 'package:snug/providers/UserProvider.dart';
 import 'package:snug/screens/authenticate/authenticate.dart';

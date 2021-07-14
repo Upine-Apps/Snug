@@ -12,6 +12,7 @@ import 'package:snug/custom_widgets/raised_rounded_gradient_button.dart';
 import 'package:snug/models/Date.dart';
 import 'package:snug/models/User.dart';
 import 'package:snug/providers/DateProvider.dart';
+import 'package:snug/providers/LogProvider.dart';
 import 'package:snug/services/remote_db_service.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_conditional_rendering/flutter_conditional_rendering.dart';
@@ -66,18 +67,22 @@ class _WhoState extends State<Who> {
     currentDate.who = new User();
   }
 
-  findUser(DateProvider dateProvider) async {
+  findUser(DateProvider dateProvider, LogProvider logProvider) async {
+    final log = getLogger('Who Section', logProvider.getLogPath);
     setState(() {
       triedToFindUser = true;
     });
 
     try {
+      log.d('RemoteDatabaseHelper.instance.getRegisteredUserByPhone');
       //only returning the registered user not a reported user
       dynamic result = await RemoteDatabaseHelper.instance
           .getRegisteredUserByPhone(phone_number);
+      log.d(result['status']);
 
       if (result['status'] == true) {
         User userResult = User.fromMap(result['data']);
+        log.d('User found (user id): ' + userResult.uid);
 
         //set widgets with user data
         _fNameController.text = userResult.first_name;
@@ -98,6 +103,8 @@ class _WhoState extends State<Who> {
 
         //set current user 2 info to user data
         currentDate.who = userResult;
+        log.d(
+            'set current user 2 info to user data -> dateProvider.setRecentDate');
         dateProvider.setRecentDate(currentDate);
 
         setState(() {
@@ -108,11 +115,13 @@ class _WhoState extends State<Who> {
             'Does the user info look right?', context, Toast.BOTTOM);
       } else {
         //user not found in database
+        log.d('User not found in database');
 
         CustomToast.showDialog('Couldn\'t find user', context, Toast.BOTTOM);
         _phoneController.text = phone_number;
       }
     } catch (e) {
+      log.e(e);
       CustomToast.showDialog('Error finding user. Please try later!', context,
           Toast.BOTTOM); //add emoji :'(
     }
@@ -124,6 +133,8 @@ class _WhoState extends State<Who> {
 
     final dateProvider = Provider.of<DateProvider>(context, listen: false);
     final userProvider = Provider.of<UserProvider>(context, listen: false);
+    final logProvider = Provider.of<LogProvider>(context, listen: false);
+    final log = getLogger('Who Section', logProvider.getLogPath);
 
     return Container(
         child: Conditional.single(
@@ -138,30 +149,32 @@ class _WhoState extends State<Who> {
                   child: Column(children: <Widget>[
                     Container(
                         child: TextFormField(
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp('[0-9]+')),
-                      ],
-                      validator: (String val) {
-                        if (val.length != 10) {
-                          return "Please enter a valid Phone Number";
-                        }
-                      },
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                          errorStyle: TextStyle(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .secondaryVariant),
-                          enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Theme.of(context).primaryColor)),
-                          labelText: 'Phone Number'),
-                      onChanged: (val) {
-                        setState(() {
-                          phone_number = val;
-                        });
-                      },
-                    )),
+                            inputFormatters: [
+                          FilteringTextInputFormatter.allow(RegExp('[0-9]+')),
+                        ],
+                            validator: (String val) {
+                              if (val.length != 10) {
+                                return "Please enter a valid Phone Number";
+                              }
+                            },
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                                errorStyle: TextStyle(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondaryVariant),
+                                enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Theme.of(context).primaryColor)),
+                                labelText: 'Phone Number'),
+                            onChanged: (val) {
+                              setState(() {
+                                phone_number = val;
+                              });
+                            },
+                            onTap: () {
+                              log.i('Pressed text field for phone number');
+                            })),
                     Padding(
                         padding: EdgeInsets.only(
                             top: MediaQuery.of(context).size.height * .05),
@@ -171,20 +184,22 @@ class _WhoState extends State<Who> {
                                     style: TextStyle(
                                         color: Theme.of(context).dividerColor)),
                                 onPressed: () async {
+                                  log.i('Pressed check for user button');
+
                                   FocusScope.of(context)
                                       .requestFocus(new FocusNode());
                                   if (_whoFormKey.currentState.validate()) {
                                     if (userProvider.getUser.phone_number ==
                                         phone_number) {
+                                      log.i('User entered their phone number');
                                       CustomToast.showDialog(
                                           "You going on a date with yourself?",
                                           context,
                                           Toast.BOTTOM);
                                     } else {
-                                      findUser(dateProvider);
+                                      log.d('findUser');
+                                      findUser(dateProvider, logProvider);
                                     }
-
-                                    //first thing is find user
                                   }
                                 }))),
                   ]),
@@ -263,6 +278,9 @@ class _WhoState extends State<Who> {
                                       _firstName = val;
                                     });
                                   },
+                                  onTap: () {
+                                    log.i('Pressed first name field');
+                                  },
                                 ),
                               )),
                           Container(
@@ -299,6 +317,9 @@ class _WhoState extends State<Who> {
                                     _lastName = val;
                                   });
                                 },
+                                onTap: () {
+                                  log.i('Pressed last name field');
+                                },
                               )),
                         ],
                       )),
@@ -319,6 +340,7 @@ class _WhoState extends State<Who> {
                                 }
                               },
                               onChanged: (String val) {
+                                log.i('Pressed sex field');
                                 setState(() {
                                   _sex = val;
                                 });
@@ -335,6 +357,7 @@ class _WhoState extends State<Who> {
                               }
                             },
                             onChanged: (String val) {
+                              log.i('Pressed race field');
                               setState(() {
                                 _race = val;
                               });
@@ -359,6 +382,7 @@ class _WhoState extends State<Who> {
                                     }
                                   },
                                   onChanged: (String val) {
+                                    log.i('Pressed eye field');
                                     setState(() {
                                       _eye = val;
                                     });
@@ -374,6 +398,7 @@ class _WhoState extends State<Who> {
                                 }
                               },
                               onChanged: (String val) {
+                                log.i('Pressed hair field');
                                 setState(() {
                                   _hair = val;
                                 });
@@ -399,6 +424,7 @@ class _WhoState extends State<Who> {
                                     }
                                   },
                                   onChanged: (String val) {
+                                    log.i('Pressed feet field');
                                     setState(() {
                                       _ft = val;
                                     });
@@ -414,6 +440,7 @@ class _WhoState extends State<Who> {
                                 }
                               },
                               onChanged: (String val) {
+                                log.i('Pressed inch field');
                                 setState(() {
                                   _in = val;
                                 });
@@ -432,6 +459,7 @@ class _WhoState extends State<Who> {
                               style: TextStyle(
                                   color: Theme.of(context).dividerColor)),
                           onPressed: () {
+                            log.i('Submit button for who section pressed');
                             FocusScope.of(context)
                                 .requestFocus(new FocusNode());
                             currentDate.who.phone_number = phone_number;
@@ -446,11 +474,14 @@ class _WhoState extends State<Who> {
                             currentDate.who.temp = 'true';
                             print('FIRST NAME');
                             print(currentDate.who.first_name);
+                            log.d('dateProvdier.setRecentDate');
                             dateProvider.setRecentDate(currentDate);
                             if (userFound = true) {
+                              log.d('Updated user');
                               CustomToast.showDialog(
                                   'Updated user', context, Toast.BOTTOM);
                             } else {
+                              log.d('Created user');
                               CustomToast.showDialog(
                                   'Created user', context, Toast.BOTTOM);
                             }

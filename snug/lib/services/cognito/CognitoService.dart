@@ -66,19 +66,16 @@ class CognitoService {
 
   Future<Map<String, Object>> registerUser(
       String username, String password) async {
-    //log.i('registerUser | username: $username password: *******');
     CognitoUserPoolData data;
     try {
       data = await userPool.signUp('+1$username', password);
-      //log.i(data);
+      if (data.user != null) {
+        return {'status': true};
+      } else {
+        throw 'Registration Failed';
+      }
     } catch (e) {
-      //log.e(e);
-      return {'status': false, 'message': 'ERROR', 'error': e};
-    }
-    if (data.user != null) {
-      return {'status': true};
-    } else {
-      return {'status': false, 'message': 'REGISTRATION_FAILED'};
+      rethrow;
     }
   }
 

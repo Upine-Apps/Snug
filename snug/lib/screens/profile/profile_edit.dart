@@ -15,6 +15,7 @@ import 'package:snug/custom_widgets/inch.dart';
 
 import 'package:snug/custom_widgets/raised_rounded_gradient_button.dart';
 import 'package:snug/models/User.dart';
+import 'package:snug/providers/LogProvider.dart';
 import 'package:snug/providers/UserProvider.dart';
 
 import 'package:snug/services/remote_db_service.dart';
@@ -48,8 +49,11 @@ class _ProfileEditState extends State<ProfileEdit> {
 
   @override
   Widget build(BuildContext context) {
+    final logProvider = Provider.of<LogProvider>(context, listen: false);
+    final log = getLogger('Profile Edit', logProvider.getLogPath);
     final _user = Provider.of<UserProvider>(context, listen: true);
     tempUser.uid = _user.getUser.uid;
+    bool didPressSave = false;
     return AlertDialog(
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(100))),
@@ -85,6 +89,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                                 width: MediaQuery.of(context).size.width * .3,
                                 child: Eye(
                                   onChanged: (String val) {
+                                    log.i('Tapped on eye field');
                                     tempUser.eye = val;
                                     setState(() {
                                       _eye = val;
@@ -96,6 +101,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                                 width: MediaQuery.of(context).size.width * .3,
                                 child: Hair(
                                     onChanged: (String val) {
+                                      log.i('Tapped on hair field');
                                       tempUser.hair = val;
                                       setState(() {
                                         _hair = val;
@@ -116,6 +122,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                                 width: MediaQuery.of(context).size.width * .3,
                                 child: Feet(
                                     onChanged: (String val) {
+                                      log.i('Tapped on feet field');
                                       tempUser.ft = val;
                                       setState(() {
                                         _ft = val;
@@ -126,6 +133,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                                 width: MediaQuery.of(context).size.width * .3,
                                 child: Inch(
                                     onChanged: (String val) {
+                                      log.i('Tapped on inch field');
                                       tempUser.inch = val;
                                       setState(() {
                                         _in = val;
@@ -169,6 +177,9 @@ class _ProfileEditState extends State<ProfileEdit> {
                                   onChanged: (val) {
                                     tempUser.zip = val;
                                   },
+                                  onTap: () {
+                                    log.i('Tapped on zip field');
+                                  },
                                 ),
                               ),
                             ])),
@@ -179,24 +190,40 @@ class _ProfileEditState extends State<ProfileEdit> {
                                 style: TextStyle(
                                     color: Theme.of(context).dividerColor)),
                             onPressed: () async {
+                              log.i('Save editid profile fields');
                               if (_profileEditKey.currentState.validate()) {
-                                _user.editUser(tempUser);
-                                try {
-                                  dynamic result = await RemoteDatabaseHelper
-                                      .instance
-                                      .updateUser(_user.getUser, tempUser.uid);
-                                  if (result['status'] == true) {
-                                    Navigator.pop(context);
-                                  } else {
-                                    throw UpdateUserException(
-                                        'Failed to update the user');
+                                log.d('_user.editUser()');
+                                if (didPressSave == false) {
+                                  log.i('didPressSave');
+                                  setState(() {
+                                    didPressSave = true;
+                                  });
+
+                                  _user.editUser(tempUser);
+                                  try {
+                                    log.d(
+                                        'RemoteDatebaseHelper.instance.updateUser()');
+                                    dynamic result = await RemoteDatabaseHelper
+                                        .instance
+                                        .updateUser(
+                                            _user.getUser, tempUser.uid);
+                                    if (result['status'] == true) {
+                                      log.d('Successfully updated user');
+                                      Navigator.pop(context);
+                                    } else {
+                                      throw UpdateUserException(
+                                          'Failed to update the user');
+                                    }
+                                  } catch (e) {
+                                    log.e('Failed to update user. Error: $e');
+                                    CustomToast.showDialog(
+                                        'Looks like we ran into an error. Please try again later! $somethingWentWrong',
+                                        context,
+                                        Toast.BOTTOM);
+                                    setState(() {
+                                      didPressSave = false;
+                                    });
                                   }
-                                } catch (e) {
-                                  //log.e('Failed to update user. Error: $e');
-                                  CustomToast.showDialog(
-                                      'Looks like we ran into an error. Please try again later! $somethingWentWrong',
-                                      context,
-                                      Toast.BOTTOM);
                                 }
                               }
                             })),

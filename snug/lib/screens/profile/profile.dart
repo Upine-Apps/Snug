@@ -9,6 +9,7 @@ import 'package:snug/custom_widgets/customshowcase.dart';
 import 'package:snug/custom_widgets/raise_gradient_circular_button.dart';
 import 'package:snug/custom_widgets/topheader.dart';
 import 'package:snug/models/User.dart';
+import 'package:snug/providers/LogProvider.dart';
 import 'package:snug/providers/UserProvider.dart';
 import 'package:snug/screens/authenticate/authenticate.dart';
 import 'package:snug/screens/profile/profile_edit.dart';
@@ -142,6 +143,8 @@ class MapScreenState extends State<ProfilePage>
 
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context, listen: true);
+    final logProvider = Provider.of<LogProvider>(context, listen: false);
+    final log = getLogger('Profile', logProvider.getLogPath);
     User currentUser = userProvider.getUser;
 
     File _image;
@@ -270,10 +273,10 @@ class MapScreenState extends State<ProfilePage>
                                           color: Colors.white,
                                         ),
                                         onPressed: () async {
+                                          log.i('Profile edit popup');
                                           SharedPreferences profile =
                                               await SharedPreferences
                                                   .getInstance();
-
                                           showDialog(
                                               context: context,
                                               builder: (BuildContext context) {
