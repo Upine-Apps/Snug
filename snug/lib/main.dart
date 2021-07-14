@@ -19,9 +19,10 @@ import 'package:logger/logger.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  Directory dir = await getExternalStorageDirectory();
   Future<SharedPreferences> prefs = SharedPreferences.getInstance();
   prefs.then((value) {
+    value.setString('path', dir.path);
     runApp(
       ChangeNotifierProvider<ThemeNotifier>(
         create: (BuildContext context) {

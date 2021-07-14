@@ -9,6 +9,7 @@ import 'package:snug/providers/ContactProvider.dart';
 import 'package:snug/providers/DateProvider.dart';
 import 'package:snug/providers/LogProvider.dart';
 import 'package:snug/providers/UserProvider.dart';
+import 'package:snug/screens/settings/privacyInfo.dart';
 import 'package:snug/screens/walkthrough/walkthrough.dart';
 import 'package:snug/screens/authenticate/authenticate.dart';
 import 'package:snug/screens/settings/verifydelete.dart';
@@ -323,7 +324,7 @@ class _SettingState extends State<SettingScreen> with WidgetsBindingObserver {
                               // height: MediaQuery.of(context).size.height * .025,
                               alignment: Alignment.centerLeft,
                               child: Text(
-                                'Share The App ${share}',
+                                'Share The App $share',
                                 style: TextStyle(
                                     color: Theme.of(context).dividerColor,
                                     fontSize: 16,
@@ -345,7 +346,7 @@ class _SettingState extends State<SettingScreen> with WidgetsBindingObserver {
                       child: Container(
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            'Analytics',
+                            'Help',
                             style: TextStyle(
                                 color: Theme.of(context).hintColor,
                                 fontSize: 16),
@@ -358,16 +359,20 @@ class _SettingState extends State<SettingScreen> with WidgetsBindingObserver {
                           onPressed: () async {
                             log.i('Sending logs to devs');
                             final Email email = Email(
-                              body:
-                                  'Hey Upine devs!\n Im running into issues on the snug app. Here\'s my log files.',
+                              body: "Hey Upine devs!\n\n"
+                                  "I'm running into issues on the Snug app. Here\'s my log file.\n\n"
+                                  "Thanks!",
                               subject:
                                   'Log Files from ${userProvider.getUser.first_name} ${userProvider.getUser.last_name}',
                               recipients: ['upineapps@protonmail.com'],
                               // cc: ['cc@.com'],
                               // bcc: ['bcc@example.com'],
-                              attachmentPaths: [logProvider.getLogPath.path],
+                              attachmentPaths: [
+                                logProvider.getLogPath + '/log.txt'
+                              ],
                               isHTML: false,
                             );
+                            print(logProvider.getLogPath + '/log.txt');
                             try {
                               await FlutterEmailSender.send(email);
                               log.d('Sent log files to devs');
@@ -381,7 +386,32 @@ class _SettingState extends State<SettingScreen> with WidgetsBindingObserver {
                               height: MediaQuery.of(context).size.height * .025,
                               alignment: Alignment.centerLeft,
                               child: Text(
-                                'Send Log To Devs',
+                                'Send Logs To Devs',
+                                style: TextStyle(
+                                    color: Theme.of(context).dividerColor,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold),
+                              ))),
+                    ),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: FlatButton(
+                          color: Theme.of(context).colorScheme.secondaryVariant,
+                          onPressed: () async {
+                            log.i('pushToPrivacyInfo');
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => PrivacyInfo()),
+                            );
+                          },
+                          child: Container(
+                              width: MediaQuery.of(context).size.width * .40,
+                              padding: EdgeInsets.all(0),
+                              height: MediaQuery.of(context).size.height * .025,
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                'Privacy Info',
                                 style: TextStyle(
                                     color: Theme.of(context).dividerColor,
                                     fontSize: 16,

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:snug/core/errors/OTPException.dart';
 import 'package:snug/core/logger.dart';
 import 'package:snug/custom_widgets/CustomToast.dart';
+import 'package:snug/providers/LogProvider.dart';
 import 'package:snug/providers/UserProvider.dart';
 import 'package:snug/screens/authenticate/authenticate.dart';
 import 'package:snug/screens/authenticate/profile.dart';
@@ -95,6 +96,8 @@ class _OtpState extends State<Otp> {
   Widget build(BuildContext context) {
     String text = '';
     final themeNotifier = Provider.of<ThemeNotifier>(context);
+    // final logProvider = Provider.of<LogProvider>(context, listen: false);
+    // final log = getLogger('OTP', logProvider.getLogPath);
     return WillPopScope(
       onWillPop: () async => false,
       child: MaterialApp(

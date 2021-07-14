@@ -3,11 +3,11 @@ import 'package:logger/src/outputs/file_output.dart';
 import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 
-Logger getLogger(String className, Directory logPath) {
-  print(logPath.path);
+Logger getLogger(String className, String logPath) {
+  print(logPath);
   return Logger(
       printer: FileLogPrinter(className),
-      output: FileOutput(file: File("${logPath.path}/log.txt")));
+      output: FileOutput(file: File("$logPath/log.txt")));
 }
 
 Logger getConsoleLogger(String className) {

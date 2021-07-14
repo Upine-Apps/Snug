@@ -28,8 +28,8 @@ class RemoteDatabaseHelper {
   }
 
   static final _hostUrl =
-      // 'http://3.142.239.183:3000'; //DotEnv().env['BACKEND_IP']
-      'https://snug-dev-api.upineapps.com:6969';
+      // 'http://snug-api.upineapps.com:6969'; //production
+      'https://snug-dev-api.upineapps.com:6969'; //beta
 
   //final log = getLogger('RemoteDatabaseHelper');
 

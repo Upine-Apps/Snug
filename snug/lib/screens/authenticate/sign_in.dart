@@ -43,10 +43,12 @@ class _SignInState extends State<SignIn> {
   @override
   void initState() {
     super.initState();
-    getPath();
+    // getPath().then((Directory val) {
+    //   print(val.path);
+    // });
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await getInfo();
+      await getInfo(context);
     });
     myFocusNode.addListener(() {
       print("Has focus: ${myFocusNode.hasFocus}");
@@ -54,8 +56,11 @@ class _SignInState extends State<SignIn> {
   }
 
   final TextEditingController _controller = TextEditingController();
-  Future<void> getInfo() async {
+  Future<void> getInfo(BuildContext context) async {
+    final logProvider = Provider.of<LogProvider>(context, listen: false);
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    final logPath = prefs.getString('path');
+    logProvider.setLogPath(logPath);
     final _savedPhoneNumber = prefs.getString('phonenumber');
 
     setState(() {
@@ -79,19 +84,20 @@ class _SignInState extends State<SignIn> {
     }
   }
 
-  getPath() async {
-    Directory dir = await getApplicationDocumentsDirectory();
-    setState(() {
-      directory = dir;
-    });
-    print('getPath Function');
-  }
+  // Future<Directory> getPath() async {
+  //   Directory dir = await getExternalStorageDirectory();
+  //   setState(() {
+  //     directory = dir;
+  //   });
+  //   print(dir);
+  //   return dir;
+  // }
 
   @override
   Widget build(BuildContext context) {
     final _userProvider = Provider.of<UserProvider>(context, listen: true);
     final logProvider = Provider.of<LogProvider>(context, listen: false);
-    logProvider.setLogPath(directory);
+    // logProvider.setLogPath(directory);
     final node = FocusScope.of(context);
     final log = getLogger('SignIn', logProvider.getLogPath);
     final consoleLog = getConsoleLogger('SignIn');
