@@ -112,25 +112,6 @@ class _PrivacyState extends State<PrivacyInfo> with WidgetsBindingObserver {
     final log = getLogger('PrivacyInfo', logProvider.getLogPath);
 
     return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        elevation: 0,
-        leading: new IconButton(
-          icon: Icon(Icons.arrow_back),
-          color: Theme.of(context).colorScheme.secondaryVariant,
-          onPressed: () {
-            log.i('pushToSignIn');
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => MainPage(
-                        fromPrivacyInfo: true,
-                      )),
-            );
-          },
-        ),
-        backgroundColor: Colors.transparent,
-      ),
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.light,
         child: Container(
@@ -143,13 +124,28 @@ class _PrivacyState extends State<PrivacyInfo> with WidgetsBindingObserver {
                 Theme.of(context).colorScheme.secondary,
               ])),
           child: Padding(
-              padding:
-                  EdgeInsets.only(top: MediaQuery.of(context).size.height * .1),
+              padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).size.height * .05),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
                   Container(
-                    height: MediaQuery.of(context).size.height * .8,
+                      padding: EdgeInsets.all(0),
+                      alignment: Alignment.centerLeft,
+                      child: IconButton(
+                        icon: Icon(Icons.arrow_back),
+                        color: Theme.of(context).colorScheme.secondaryVariant,
+                        onPressed: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    MainPage(fromPrivacyInfo: true)),
+                          );
+                        },
+                      )),
+                  Container(
+                    height: MediaQuery.of(context).size.height * .775,
                     child: PageView(
                       physics: ClampingScrollPhysics(),
                       controller: _pageController,
@@ -164,7 +160,7 @@ class _PrivacyState extends State<PrivacyInfo> with WidgetsBindingObserver {
                               left: MediaQuery.of(context).size.width * .05,
                               right: MediaQuery.of(context).size.width * .05),
                           child: PrivacyCard(
-                              title: 'What Snug Collect',
+                              title: 'What Snug Collects',
                               body:
                                   'Snug collects and stores your profile information and data submitted about your dates.\n\nThat\'s it.\n\nSnug isn\'t interested in tracking you and believes that your data belongs to you, not us.',
                               icon: Icon(
@@ -204,12 +200,15 @@ class _PrivacyState extends State<PrivacyInfo> with WidgetsBindingObserver {
                               color: Theme.of(context)
                                   .colorScheme
                                   .secondaryVariant,
-                              size: MediaQuery.of(context).size.width * .15,
+                              size: MediaQuery.of(context).size.width * .125,
                             ),
                           ),
                         )
                       ],
                     ),
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * .025,
                   ),
                   Container(
                     child: Row(
@@ -394,44 +393,3 @@ class _PrivacyState extends State<PrivacyInfo> with WidgetsBindingObserver {
 
 
 
-// Padding(
-//                   padding: EdgeInsets.only(
-//                       left: MediaQuery.of(context).size.width * .1),
-//                   child: PrivacyCard(
-//                       title: 'What We Collect',
-//                       body:
-//                           'We collect and store your profile information and data submitted about your dates.\n\nThat\'s all.\n\nWe aren\'t interested in tracking you and believe that your data belongs to you, not us.',
-//                       icon: Icon(
-//                         Icons.archive,
-//                         color: Theme.of(context).colorScheme.secondaryVariant,
-//                         size: MediaQuery.of(context).size.width * .15,
-//                       )),
-//                 ),
-//                 Padding(
-//                   padding: EdgeInsets.only(
-//                       left: MediaQuery.of(context).size.width * .05),
-//                   child: PrivacyCard(
-//                       title: 'How We Use Your Data',
-//                       body:
-//                           'Your information is only used for the functionality of Snug.\n\nBy providing your profile information, you are contributing to a safer dating experience by allowing others to search for you by your phone number.\n\nDon\'t worry, if someone hasn\'t created a profile with Snug, their data won\'t show up when searching.',
-//                       icon: Icon(
-//                         Icons.insights,
-//                         color: Theme.of(context).colorScheme.secondaryVariant,
-//                         size: MediaQuery.of(context).size.width * .15,
-//                       )),
-//                 ),
-//                 Padding(
-//                   padding: EdgeInsets.only(
-//                       left: MediaQuery.of(context).size.width * .05,
-//                       right: MediaQuery.of(context).size.width * .1),
-//                   child: PrivacyCard(
-//                     title: 'Delete Your Data',
-//                     body:
-//                         'Deleting your account under Account Management on the Settings screen will delete any dates you have created, along with your personal information.\n\nThis will not delete data that others might have entered about you when they add a date.',
-//                     icon: Icon(
-//                       Icons.delete,
-//                       color: Theme.of(context).colorScheme.secondaryVariant,
-//                       size: MediaQuery.of(context).size.width * .15,
-//                     ),
-//                   ),
-//                 )

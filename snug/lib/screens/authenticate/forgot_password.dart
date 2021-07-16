@@ -579,7 +579,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                               : Text(
                                                   'Update Password',
                                                   style: TextStyle(
-                                                      color: Colors.white),
+                                                      color: Theme.of(context)
+                                                          .dividerColor),
                                                 ),
                                         )
                                       ],

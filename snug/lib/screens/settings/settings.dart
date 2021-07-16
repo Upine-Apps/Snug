@@ -132,7 +132,7 @@ class _SettingState extends State<SettingScreen> with WidgetsBindingObserver {
                 Theme.of(context).colorScheme.primary,
                 Theme.of(context).colorScheme.secondary
               ])),
-          child: Column(
+          child: ListView(
             children: [
               Padding(
                 padding: EdgeInsets.only(
@@ -209,7 +209,6 @@ class _SettingState extends State<SettingScreen> with WidgetsBindingObserver {
                           child: Container(
                               width: MediaQuery.of(context).size.width * .40,
                               padding: EdgeInsets.all(0),
-                              height: MediaQuery.of(context).size.height * .025,
                               alignment: Alignment.centerLeft,
                               child: Text(
                                 'Delete Account',
@@ -231,14 +230,16 @@ class _SettingState extends State<SettingScreen> with WidgetsBindingObserver {
                     Padding(
                       padding: EdgeInsets.only(
                           bottom: MediaQuery.of(context).size.height * .01),
-                      child: Container(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Knowledge Base',
-                            style: TextStyle(
-                                color: Theme.of(context).hintColor,
-                                fontSize: 16),
-                          )),
+                      child: Expanded(
+                        child: Container(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'Knowledge Base',
+                              style: TextStyle(
+                                  color: Theme.of(context).hintColor,
+                                  fontSize: 16),
+                            )),
+                      ),
                     ),
                     Container(
                       alignment: Alignment.centerLeft,
@@ -255,7 +256,6 @@ class _SettingState extends State<SettingScreen> with WidgetsBindingObserver {
                           child: Container(
                               width: MediaQuery.of(context).size.width * .40,
                               padding: EdgeInsets.all(0),
-                              height: MediaQuery.of(context).size.height * .025,
                               alignment: Alignment.centerLeft,
                               child: Text(
                                 'Snug Walkthrough',
@@ -280,7 +280,6 @@ class _SettingState extends State<SettingScreen> with WidgetsBindingObserver {
                           child: Container(
                               width: MediaQuery.of(context).size.width * .40,
                               padding: EdgeInsets.all(0),
-                              height: MediaQuery.of(context).size.height * .025,
                               alignment: Alignment.centerLeft,
                               child: Text(
                                 'Privacy Info',
@@ -336,7 +335,6 @@ class _SettingState extends State<SettingScreen> with WidgetsBindingObserver {
                           child: Container(
                               width: MediaQuery.of(context).size.width * .40,
                               padding: EdgeInsets.all(0),
-                              // height: MediaQuery.of(context).size.height * .025,
                               alignment: Alignment.centerLeft,
                               child: Text(
                                 'Buy Us Some ${coffee}',
@@ -360,7 +358,6 @@ class _SettingState extends State<SettingScreen> with WidgetsBindingObserver {
                           child: Container(
                               width: MediaQuery.of(context).size.width * .40,
                               padding: EdgeInsets.all(0),
-                              // height: MediaQuery.of(context).size.height * .025,
                               alignment: Alignment.centerLeft,
                               child: Text(
                                 'Share The App $share',
@@ -422,7 +419,6 @@ class _SettingState extends State<SettingScreen> with WidgetsBindingObserver {
                           child: Container(
                               width: MediaQuery.of(context).size.width * .40,
                               padding: EdgeInsets.all(0),
-                              height: MediaQuery.of(context).size.height * .025,
                               alignment: Alignment.centerLeft,
                               child: Text(
                                 'Send Logs To Devs',

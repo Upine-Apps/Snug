@@ -184,23 +184,27 @@ class _AddDateState extends State<AddDate> {
                                         bottom:
                                             MediaQuery.of(context).size.height *
                                                 .02),
-                                    alignment: Alignment.centerRight,
-                                    height: MediaQuery.of(context).size.height *
-                                        .05,
-                                    child: IconButton(
-                                        icon: Icon(Icons.arrow_forward,
+                                    child: Container(
+                                      alignment: Alignment.centerRight,
+                                      child: IconButton(
+                                          icon: Icon(
+                                            Icons.arrow_forward,
                                             color: Theme.of(context)
                                                 .colorScheme
-                                                .secondaryVariant),
-                                        onPressed: () {
-                                          log.i(
-                                              'Pressed next button on who page');
-                                          scrollController.animateTo(
-                                              MediaQuery.of(context).size.width,
-                                              duration:
-                                                  Duration(milliseconds: 500),
-                                              curve: Curves.ease);
-                                        }),
+                                                .secondaryVariant,
+                                          ),
+                                          onPressed: () {
+                                            log.i(
+                                                'Pressed next button on who page');
+                                            scrollController.animateTo(
+                                                MediaQuery.of(context)
+                                                    .size
+                                                    .width,
+                                                duration:
+                                                    Duration(milliseconds: 500),
+                                                curve: Curves.ease);
+                                          }),
+                                    ),
                                   ),
                                 ],
                               )),
@@ -284,80 +288,79 @@ class _AddDateState extends State<AddDate> {
                                               .65,
                                       child: Where()),
                                   Container(
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              .05,
                                       child:
                                           // BELOW WIDGET IS FOR THE TWO FORWARD AND BACKWARD ARROWS TO NAVIGATE
 
                                           Row(children: <Widget>[
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                              right: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  .7,
-                                              bottom: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  .02,
-                                              left: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  .05),
-                                          child: Container(
-                                            padding: EdgeInsets.all(0),
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                          right: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              .7,
+                                          bottom: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              .02,
+                                          left: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              .05),
+                                      child: Container(
+                                        padding: EdgeInsets.all(0),
+                                        width:
+                                            MediaQuery.of(context).size.width *
                                                 .1,
-                                            child: IconButton(
-                                                icon: Icon(Icons.arrow_back,
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .secondaryVariant),
-                                                onPressed: () {
-                                                  log.i(
-                                                      'Pressed back button on where screen');
-                                                  scrollController.animateTo(0,
-                                                      duration: Duration(
-                                                          milliseconds: 500),
-                                                      curve: Curves.ease);
-                                                }),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                              right: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  .05),
-                                          child: Container(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
+                                        child: IconButton(
+                                            icon: Icon(Icons.arrow_back,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .secondaryVariant),
+                                            onPressed: () {
+                                              log.i(
+                                                  'Pressed back button on where screen');
+                                              scrollController.animateTo(0,
+                                                  duration: Duration(
+                                                      milliseconds: 500),
+                                                  curve: Curves.ease);
+                                            }),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                          bottom: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              .02,
+                                          right: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              .05),
+                                      child: Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
                                                 .1,
-                                            child: IconButton(
-                                              icon: Icon(Icons.arrow_forward,
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .secondaryVariant),
-                                              onPressed: () {
-                                                log.i(
-                                                    'Pressed forward button on where button');
-                                                scrollController.animateTo(
-                                                    MediaQuery.of(context)
-                                                            .size
-                                                            .width *
-                                                        2,
-                                                    duration: Duration(
-                                                        milliseconds: 500),
-                                                    curve: Curves.ease);
-                                              },
-                                            ),
-                                          ),
+                                        child: IconButton(
+                                          icon: Icon(Icons.arrow_forward,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .secondaryVariant),
+                                          onPressed: () {
+                                            log.i(
+                                                'Pressed forward button on where button');
+                                            scrollController.animateTo(
+                                                MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    2,
+                                                duration:
+                                                    Duration(milliseconds: 500),
+                                                curve: Curves.ease);
+                                          },
                                         ),
-                                      ]))
+                                      ),
+                                    ),
+                                  ]))
                                 ])))),
                         //***********END OF WHERE SECTION ****************
 
@@ -445,83 +448,80 @@ class _AddDateState extends State<AddDate> {
                                       //Insert where widget
                                     ),
                                     Container(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                .05,
                                         child: Row(children: <Widget>[
-                                          Padding(
-                                              padding: EdgeInsets.only(
-                                                right: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    .7,
-                                                left: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    .05,
-                                                bottom: MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    .02,
-                                              ),
-                                              child: Container(
-                                                  padding: EdgeInsets.all(0),
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
-                                                      .1,
-                                                  child: IconButton(
-                                                      icon: Icon(
-                                                          Icons.arrow_back,
-                                                          color: Theme.of(
-                                                                  context)
-                                                              .colorScheme
-                                                              .secondaryVariant),
-                                                      onPressed: () {
-                                                        log.i(
-                                                            'Pressed back button on phone');
-                                                        scrollController.animateTo(
-                                                            MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width,
-                                                            duration: Duration(
-                                                                milliseconds:
-                                                                    500),
-                                                            curve: Curves.ease);
-                                                      }))),
-                                          Padding(
-                                            padding: EdgeInsets.only(
-                                                right: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    .05),
-                                            child: Container(
+                                      Padding(
+                                          padding: EdgeInsets.only(
+                                            right: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                .7,
+                                            left: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                .05,
+                                            bottom: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                .02,
+                                          ),
+                                          child: Container(
+                                              padding: EdgeInsets.all(0),
                                               width: MediaQuery.of(context)
                                                       .size
                                                       .width *
                                                   .1,
                                               child: IconButton(
-                                                icon: Icon(Icons.arrow_forward,
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .secondaryVariant),
-                                                onPressed: () {
-                                                  log.i(
-                                                      'Pressed forward button on where section');
-                                                  scrollController.animateTo(
-                                                      MediaQuery.of(context)
-                                                              .size
-                                                              .width *
-                                                          3,
-                                                      duration: Duration(
-                                                          milliseconds: 500),
-                                                      curve: Curves.ease);
-                                                },
-                                              ),
-                                            ),
-                                          )
-                                        ]))
+                                                  icon: Icon(Icons.arrow_back,
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .secondaryVariant),
+                                                  onPressed: () {
+                                                    log.i(
+                                                        'Pressed back button on phone');
+                                                    scrollController.animateTo(
+                                                        MediaQuery.of(context)
+                                                            .size
+                                                            .width,
+                                                        duration: Duration(
+                                                            milliseconds: 500),
+                                                        curve: Curves.ease);
+                                                  }))),
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            bottom: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                .02,
+                                            right: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                .05),
+                                        child: Container(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              .1,
+                                          child: IconButton(
+                                            icon: Icon(Icons.arrow_forward,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .secondaryVariant),
+                                            onPressed: () {
+                                              log.i(
+                                                  'Pressed forward button on where section');
+                                              scrollController.animateTo(
+                                                  MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      3,
+                                                  duration: Duration(
+                                                      milliseconds: 500),
+                                                  curve: Curves.ease);
+                                            },
+                                          ),
+                                        ),
+                                      )
+                                    ]))
                                   ],
                                 )))),
                         //**********************END OF WHEN SECTION**********************
@@ -607,8 +607,6 @@ class _AddDateState extends State<AddDate> {
                                       //INSERT CONTACTS TO CHOOSE FROM
                                       ),
                                   Container(
-                                    height: MediaQuery.of(context).size.height *
-                                        .05,
                                     child: Row(
                                       children: <Widget>[
                                         Padding(
@@ -652,6 +650,10 @@ class _AddDateState extends State<AddDate> {
                                                 ))),
                                         Padding(
                                           padding: EdgeInsets.only(
+                                              bottom: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  .02,
                                               right: MediaQuery.of(context)
                                                       .size
                                                       .width *

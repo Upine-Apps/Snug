@@ -47,7 +47,6 @@ class _CreateContactState extends State<CreateContact> {
         backgroundColor: Colors.transparent,
         content: Container(
             width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height * .375,
             decoration: BoxDecoration(
                 image: DecorationImage(
                     image: AssetImage(
@@ -83,7 +82,10 @@ class _CreateContactState extends State<CreateContact> {
                                         color: Theme.of(context)
                                             .colorScheme
                                             .secondaryVariant),
-                                    icon: Icon(Icons.person),
+                                    icon: Icon(Icons.person,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondaryVariant),
                                     labelText: 'Name'),
                                 inputFormatters: <TextInputFormatter>[
                                   FilteringTextInputFormatter.allow(
@@ -113,7 +115,10 @@ class _CreateContactState extends State<CreateContact> {
                                           color: Theme.of(context)
                                               .colorScheme
                                               .secondaryVariant),
-                                      icon: Icon(Icons.phone),
+                                      icon: Icon(Icons.phone,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .secondaryVariant),
                                       labelText: 'Phone Number'),
                                   validator: (String val) {
                                     if (val.length != 10) {

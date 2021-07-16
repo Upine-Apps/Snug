@@ -19,7 +19,7 @@ import 'package:logger/logger.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Directory dir = await getExternalStorageDirectory();
+  Directory dir = await getApplicationSupportDirectory();
   Future<SharedPreferences> prefs = SharedPreferences.getInstance();
   prefs.then((value) {
     value.setString('path', dir.path);
