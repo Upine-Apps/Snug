@@ -13,6 +13,7 @@ import 'package:snug/models/User.dart';
 import 'package:snug/models/Date.dart';
 import 'package:snug/providers/ContactProvider.dart';
 import 'package:snug/providers/DateProvider.dart';
+import 'package:snug/providers/LogProvider.dart';
 import 'package:snug/providers/MapProvider.dart';
 import 'package:snug/providers/UserProvider.dart';
 import 'package:snug/screens/authenticate/authenticate.dart';
@@ -41,6 +42,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   String _date = "Not set";
   String _time = "Not set";
   String _who;
+  LocationPermission locationPermission;
 
   void checkPermissions(MapProvider mp) async {
     Position p = await mp.determinePosition();
@@ -49,8 +51,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
   @override
   void initState() {
-    WidgetsBinding.instance.addObserver(this);
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
@@ -61,25 +63,39 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
-    // I think this will successfully refresh the user session
-    log.i("APP_STATE: $state");
+    //refreshes user auth token for backend verification through cognito
 
     if (state == AppLifecycleState.resumed) {
       // user returned to our app
       final prefs = await SharedPreferences.getInstance();
-      log.i('Current user auth token: ${prefs.getString('accessToken')}');
+      final log = getLogger('refreshAuth', prefs.getString('path'));
+      final consoleLog = getConsoleLogger('refreshAuth');
+      consoleLog.i('refresh from Home');
+      log.i('AppState: $state');
+      log.d('Current user auth token: ${prefs.getString('accessToken')}');
+      consoleLog.i('AppState: $state');
+      consoleLog
+          .d('Current user auth token: ${prefs.getString('accessToken')}');
       final _userProvider = Provider.of<UserProvider>(context, listen: false);
+      log.i('CognitoService.refreshAuth');
+      consoleLog.i('CognitoService.refreshAuth');
       Map<String, dynamic> refreshResponse = await CognitoService.instance
           .refreshAuth(
               _userProvider.getCognitoUser, prefs.getString('refreshToken'));
+      log.d('refreshResponse: ${refreshResponse['status']}');
+      consoleLog.d('refreshResponse: ${refreshResponse['status']}');
       if (refreshResponse['status'] == true) {
         final prefs = await SharedPreferences.getInstance();
         log.i('Successfully refreshed user session');
+        consoleLog.i('Successfully refreshed user session');
         CognitoUserSession userSession = refreshResponse['data'];
         _userProvider.setUserSession(userSession);
-        log.i('New user auth token: ${prefs.getString('accessToken')}');
+        log.d('New user auth token: ${prefs.getString('accessToken')}');
+        consoleLog.d('New user auth token: ${prefs.getString('accessToken')}');
       } else {
         log.e('Failed to refresh user session. Returning to home screen');
+        consoleLog
+            .e('Failed to refresh user session. Returning to home screen');
         CustomToast.showDialog(
             'Failed to refresh your session. Please sign in again',
             context,
@@ -107,7 +123,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   final TextEditingController lnameCtrl = new TextEditingController();
 
   final bool centerTitle = true;
-  final log = getLogger('Home');
+  //final log = getLogger('Home');
 
   _convertDateTime(String dateTime) {
     String period;
@@ -116,8 +132,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
     DateTime realDateTime = DateTime.parse(dateTime);
     DateTime actualDateTime = realDateTime.toLocal();
-    log.i('utc time | ${realDateTime}');
-    log.i('local time | ${actualDateTime} ');
+    //log.i('utc time | ${realDateTime}');
+    //log.i('local time | ${actualDateTime} ');
     actualDateTime.hour >= 12 ? period = "PM" : period = "AM";
     actualDateTime.hour > 12
         ? hour = (actualDateTime.hour - 12).toString()
@@ -165,6 +181,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     final dateProvider = Provider.of<DateProvider>(context, listen: true);
     final userProvider = Provider.of<UserProvider>(context, listen: true);
     final contactProvider = Provider.of<ContactProvider>(context, listen: true);
+    final logProvider = Provider.of<LogProvider>(context, listen: false);
+    final log = getLogger('Home', logProvider.getLogPath);
     // checkPermissions(mapProvider);
 
     if (dateProvider.getCurrentDates.length == 0 ||
@@ -173,6 +191,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     }
     User _tempUser = userProvider.getUser;
     _userId = _tempUser.uid;
+    log.i('In home screen');
 
     return Scaffold(
       appBar: PreferredSize(
@@ -251,7 +270,6 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                       padding: EdgeInsets.only(
                           top: MediaQuery.of(context).size.height * .02),
                       child: Container(
-                        height: MediaQuery.of(context).size.height * .05,
                         child: Header(
                             child: Image.asset(
                           'assets/image/logo1.png',
@@ -260,9 +278,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                         )),
                       ),
                     ),
-                    SingleChildScrollView(
+                    Flexible(
                       child: Container(
-                        height: MediaQuery.of(context).size.height * .75,
                         child: ListView.builder(
                           itemCount: dateProvider.getCurrentDates.length,
                           itemBuilder: (context, index) {
@@ -276,6 +293,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
                             return GestureDetector(
                                 onTap: () {
+                                  log.i(
+                                      'Clicked on date ${dateProvider.getCurrentDates[index].who.first_name}, userID: ${dateProvider.getCurrentDates[index].who.uid}');
                                   int someIndex = _getIndexValue();
 
                                   Navigator.pushReplacement(
@@ -317,19 +336,17 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                                                         .width *
                                                     .25,
                                                 decoration: new BoxDecoration(
-                                                    image: new DecorationImage(
-                                                        fit: BoxFit.fitHeight,
-                                                        alignment:
-                                                            FractionalOffset
-                                                                .topCenter,
-                                                        image: new NetworkImage(
-                                                          'https://maps.googleapis.com/maps/api/place/photo?maxwidth=1920&photoreference=${dateProvider.getCurrentDates[index].photoReference}&key=AIzaSyBQgN0iD8Wo5zNt_FSu_YLreNK9zfwjeKQ',
-                                                        ))),
+                                                  image: new DecorationImage(
+                                                    fit: BoxFit.fitHeight,
+                                                    alignment: FractionalOffset
+                                                        .topCenter,
+                                                    image: new NetworkImage(
+                                                      'https://maps.googleapis.com/maps/api/place/photo?maxwidth=1920&photoreference=${dateProvider.getCurrentDates[index].photoReference}&key=AIzaSyBQgN0iD8Wo5zNt_FSu_YLreNK9zfwjeKQ',
+                                                    ),
+                                                  ),
+                                                ),
                                               ))),
                                       Container(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                .25,
                                         alignment: Alignment.topLeft,
                                         width:
                                             MediaQuery.of(context).size.width *
@@ -358,59 +375,51 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                                                           .size
                                                           .height *
                                                       .005),
-                                              child: Align(
-                                                  alignment:
-                                                      Alignment.centerLeft,
-                                                  child: Row(
-                                                    children: <Widget>[
-                                                      Padding(
-                                                          padding: EdgeInsets.only(
-                                                              right: MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .width *
-                                                                  .025),
-                                                          child: Icon(
-                                                            Icons.phone,
-                                                            color: Theme.of(
-                                                                    context)
-                                                                .colorScheme
-                                                                .secondary,
-                                                          )),
-                                                      Text(
-                                                        "(" +
-                                                            dateProvider
-                                                                .getCurrentDates[
-                                                                    index]
-                                                                .who
-                                                                .phone_number
-                                                                .substring(
-                                                                    0, 3) +
-                                                            ") - " +
-                                                            dateProvider
-                                                                .getCurrentDates[
-                                                                    index]
-                                                                .who
-                                                                .phone_number
-                                                                .substring(
-                                                                    3, 6) +
-                                                            " - " +
-                                                            dateProvider
-                                                                .getCurrentDates[
-                                                                    index]
-                                                                .who
-                                                                .phone_number
-                                                                .substring(
-                                                                    6, 10),
-                                                        style: TextStyle(
-                                                          color:
-                                                              Theme.of(context)
-                                                                  .dividerColor,
-                                                          fontSize: 16,
-                                                        ),
-                                                      )
-                                                    ],
-                                                  )),
+                                              child: Row(
+                                                children: <Widget>[
+                                                  Padding(
+                                                      padding: EdgeInsets.only(
+                                                          right: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .width *
+                                                              .025),
+                                                      child: Icon(
+                                                        Icons.phone,
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .secondary,
+                                                      )),
+                                                  Text(
+                                                    "(" +
+                                                        dateProvider
+                                                            .getCurrentDates[
+                                                                index]
+                                                            .who
+                                                            .phone_number
+                                                            .substring(0, 3) +
+                                                        ") - " +
+                                                        dateProvider
+                                                            .getCurrentDates[
+                                                                index]
+                                                            .who
+                                                            .phone_number
+                                                            .substring(3, 6) +
+                                                        " - " +
+                                                        dateProvider
+                                                            .getCurrentDates[
+                                                                index]
+                                                            .who
+                                                            .phone_number
+                                                            .substring(6, 10),
+                                                    style: TextStyle(
+                                                      color: Theme.of(context)
+                                                          .dividerColor,
+                                                      fontSize: 16,
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
                                             ),
                                             Padding(
                                               padding: EdgeInsets.only(
@@ -566,8 +575,10 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
             ),
           ),
           onPressed: () async {
+            log.i('Tapped on create a date button');
             if (contactProvider.getContacts.length == 0) {
-              log.d('User needs to add a contact before creating a date');
+              log.i('Did not have at least one contact');
+              //log.d('User needs to add a contact before creating a date');
 
               CustomToast.showDialog(
                   'Please add at least one contact before creating a date',
@@ -575,20 +586,21 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                   Toast.BOTTOM);
             } else {
               try {
-                LocationPermission locationPermission =
-                    await mapProvider.checkPermissions();
-                log.i(locationPermission);
-                if (locationPermission == LocationPermission.denied ||
-                    locationPermission == LocationPermission.deniedForever) {
-                  CustomToast.showDialog(
-                      'You need to enable location', context, Toast.BOTTOM);
-                } else {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => AddDate()));
-                }
+                locationPermission = await mapProvider.checkPermissions();
               } catch (e) {
                 log.e(e);
                 CustomToast.showDialog(e.toString(), context, Toast.BOTTOM);
+              }
+              if (locationPermission != LocationPermission.always &&
+                      locationPermission != LocationPermission.whileInUse ||
+                  locationPermission == null) {
+                log.i('Location not enabled');
+                CustomToast.showDialog(
+                    'You need to enable location', context, Toast.BOTTOM);
+              } else {
+                log.i('Moving to Add Date screen');
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => AddDate()));
               }
             }
           }),

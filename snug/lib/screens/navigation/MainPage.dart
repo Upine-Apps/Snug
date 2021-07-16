@@ -17,7 +17,8 @@ import 'package:emojis/emoji.dart';
 class MainPage extends StatefulWidget {
   bool firstContact;
   bool fromAddDate;
-  MainPage({this.firstContact, this.fromAddDate});
+  bool fromPrivacyInfo;
+  MainPage({this.firstContact, this.fromAddDate, this.fromPrivacyInfo});
   @override
   _MainPageState createState() => _MainPageState();
 }
@@ -37,12 +38,12 @@ class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
 
   Emoji heart = Emoji.byChar(Emojis.redHeart);
-  final log = getLogger('MainPage');
+  //final log = getLogger('MainPage');
 
   @override
   void initState() {
     super.initState();
-    log.i('OnMainPage');
+    //log.i('OnMainPage');
     pageController = PageController();
 
     setProfilePic();
@@ -52,6 +53,7 @@ class _MainPageState extends State<MainPage> {
             'Glad you\'re safe! $heart', context, Toast.BOTTOM);
       });
     }
+    print('From Privacy Info ${widget.fromPrivacyInfo}');
   }
 
   moveToContactScreen() {}
@@ -91,6 +93,14 @@ class _MainPageState extends State<MainPage> {
         if (pageController.hasClients) {
           pageController.jumpToPage(1);
           widget.firstContact = false;
+        }
+      });
+    } else if (widget.fromPrivacyInfo == true) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        print(pageController.hasClients);
+        if (pageController.hasClients) {
+          pageController.jumpToPage(2);
+          widget.fromPrivacyInfo = false;
         }
       });
     }

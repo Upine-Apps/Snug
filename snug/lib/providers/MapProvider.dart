@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:provider/provider.dart';
 import 'package:snug/core/errors/LocationPermissionException.dart';
 import 'package:snug/core/logger.dart';
 import 'package:snug/custom_widgets/CustomToast.dart';
@@ -10,10 +11,11 @@ import 'package:snug/models/place.dart';
 import 'package:snug/screens/home/geolocator_shit/geolocator_service.dart';
 import 'package:snug/services/places_services.dart';
 
+import 'LogProvider.dart';
+
 class MapProvider with ChangeNotifier {
   final geoLocatorService = GeolocatorService();
   final placesService = PlacesService();
-  final log = getLogger('mapProvider');
   //Variables
   Position currentLocation;
   List<PlaceSearch> searchResults;
@@ -78,7 +80,7 @@ class MapProvider with ChangeNotifier {
         throw LocationPermissionException('Error getting permissions');
       }
     } catch (e) {
-      log.e(e);
+      rethrow;
     }
   }
 
