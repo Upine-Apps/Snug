@@ -144,6 +144,11 @@ class _ProfileState extends State<Profile> {
                               height: MediaQuery.of(context).size.height * .075,
                             ),
                             TextFormField(
+                              inputFormatters: <TextInputFormatter>[
+                                FilteringTextInputFormatter.allow(
+                                    RegExp(r"[a-zA-Z\-\ ]")),
+                              ], // Only numbers can be entered
+
                               textCapitalization: TextCapitalization.sentences,
                               validator: (String val) {
                                 if (val.length > 30) {
@@ -176,6 +181,10 @@ class _ProfileState extends State<Profile> {
                               height: 10.0,
                             ),
                             TextFormField(
+                              inputFormatters: <TextInputFormatter>[
+                                FilteringTextInputFormatter.allow(
+                                    RegExp(r"[a-zA-Z\-\ ]")),
+                              ],
                               textCapitalization: TextCapitalization.sentences,
                               validator: (String val) {
                                 if (val.length > 30) {

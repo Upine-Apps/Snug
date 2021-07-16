@@ -148,17 +148,17 @@ class _AddDateState extends State<AddDate> {
                                       height:
                                           MediaQuery.of(context).size.height *
                                               .05),
-                                  Container(
-                                    width:
-                                        MediaQuery.of(context).size.width / 2,
-                                    height: MediaQuery.of(context).size.height *
-                                        .15,
-                                    child: Text(
-                                      'Tell us a little bit about your date!',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(fontSize: 26),
-                                    ),
-                                  ),
+                                  // Container(
+                                  //   width:
+                                  //       MediaQuery.of(context).size.width / 2,
+                                  //   height: MediaQuery.of(context).size.height *
+                                  //       .15,
+                                  //   child: Text(
+                                  //     'Tell us a little bit about your date!',
+                                  //     textAlign: TextAlign.center,
+                                  //     style: TextStyle(fontSize: 26),
+                                  //   ),
+                                  // ),
                                   // SizedBox(
                                   //     height:
                                   //         MediaQuery.of(context).size.height *
@@ -172,8 +172,8 @@ class _AddDateState extends State<AddDate> {
                                             MediaQuery.of(context).size.width *
                                                 .05),
                                     width: MediaQuery.of(context).size.width,
-                                    height: MediaQuery.of(context).size.height *
-                                        .65,
+                                    height:
+                                        MediaQuery.of(context).size.height * .8,
                                     child: Who(),
                                   ),
                                   Container(
@@ -796,8 +796,9 @@ class _AddDateState extends State<AddDate> {
                                                         context,
                                                         Toast.BOTTOM);
                                                   } else if (currentDate
-                                                          .trusted ==
-                                                      null) {
+                                                          .trusted.isEmpty ||
+                                                      currentDate.trusted ==
+                                                          null) {
                                                     log.i(
                                                         'No contacts chosen for date');
                                                     CustomToast.showDialog(

@@ -56,6 +56,7 @@ class _SignInState extends State<SignIn> {
   }
 
   final TextEditingController _controller = TextEditingController();
+
   Future<void> getInfo(BuildContext context) async {
     final logProvider = Provider.of<LogProvider>(context, listen: false);
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -215,7 +216,8 @@ class _SignInState extends State<SignIn> {
                                           : Text(
                                               'Login',
                                               style: TextStyle(
-                                                  color: Colors.white),
+                                                  color: Theme.of(context)
+                                                      .dividerColor),
                                             ),
                                       onPressed: () async {
                                         if (didPressLogin == false) {

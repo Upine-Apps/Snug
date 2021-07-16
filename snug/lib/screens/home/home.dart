@@ -42,6 +42,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   String _date = "Not set";
   String _time = "Not set";
   String _who;
+  LocationPermission locationPermission;
 
   void checkPermissions(MapProvider mp) async {
     Position p = await mp.determinePosition();
@@ -50,8 +51,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
   @override
   void initState() {
-    WidgetsBinding.instance.addObserver(this);
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
@@ -62,25 +63,39 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
-    // I think this will successfully refresh the user session
-    //log.i("APP_STATE: $state");
+    //refreshes user auth token for backend verification through cognito
 
     if (state == AppLifecycleState.resumed) {
       // user returned to our app
       final prefs = await SharedPreferences.getInstance();
-      //log.i('Current user auth token: ${prefs.getString('accessToken')}');
+      final log = getLogger('refreshAuth', prefs.getString('path'));
+      final consoleLog = getConsoleLogger('refreshAuth');
+      consoleLog.i('refresh from Home');
+      log.i('AppState: $state');
+      log.d('Current user auth token: ${prefs.getString('accessToken')}');
+      consoleLog.i('AppState: $state');
+      consoleLog
+          .d('Current user auth token: ${prefs.getString('accessToken')}');
       final _userProvider = Provider.of<UserProvider>(context, listen: false);
+      log.i('CognitoService.refreshAuth');
+      consoleLog.i('CognitoService.refreshAuth');
       Map<String, dynamic> refreshResponse = await CognitoService.instance
           .refreshAuth(
               _userProvider.getCognitoUser, prefs.getString('refreshToken'));
+      log.d('refreshResponse: ${refreshResponse['status']}');
+      consoleLog.d('refreshResponse: ${refreshResponse['status']}');
       if (refreshResponse['status'] == true) {
         final prefs = await SharedPreferences.getInstance();
-        //log.i('Successfully refreshed user session');
+        log.i('Successfully refreshed user session');
+        consoleLog.i('Successfully refreshed user session');
         CognitoUserSession userSession = refreshResponse['data'];
         _userProvider.setUserSession(userSession);
-        //log.i('New user auth token: ${prefs.getString('accessToken')}');
+        log.d('New user auth token: ${prefs.getString('accessToken')}');
+        consoleLog.d('New user auth token: ${prefs.getString('accessToken')}');
       } else {
-        //log.e('Failed to refresh user session. Returning to home screen');
+        log.e('Failed to refresh user session. Returning to home screen');
+        consoleLog
+            .e('Failed to refresh user session. Returning to home screen');
         CustomToast.showDialog(
             'Failed to refresh your session. Please sign in again',
             context,
@@ -565,7 +580,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
           onPressed: () async {
             log.i('Tapped on create a date button');
             if (contactProvider.getContacts.length == 0) {
-              log.i('Did not have atleast one contact');
+              log.i('Did not have at least one contact');
               //log.d('User needs to add a contact before creating a date');
 
               CustomToast.showDialog(
@@ -574,23 +589,21 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                   Toast.BOTTOM);
             } else {
               try {
-                LocationPermission locationPermission =
-                    await mapProvider.checkPermissions();
-                //log.i(locationPermission);
-                if (locationPermission == LocationPermission.denied ||
-                    locationPermission == LocationPermission.deniedForever) {
-                  log.i('Location not enabled');
-                  CustomToast.showDialog(
-                      'You need to enable location', context, Toast.BOTTOM);
-                } else {
-                  log.i('Moving to Add Date screen');
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => AddDate()));
-                }
+                locationPermission = await mapProvider.checkPermissions();
               } catch (e) {
-                //log.e(e);
-                log.i('Unknown error: $e');
+                log.e(e);
                 CustomToast.showDialog(e.toString(), context, Toast.BOTTOM);
+              }
+              if (locationPermission != LocationPermission.always &&
+                      locationPermission != LocationPermission.whileInUse ||
+                  locationPermission == null) {
+                log.i('Location not enabled');
+                CustomToast.showDialog(
+                    'You need to enable location', context, Toast.BOTTOM);
+              } else {
+                log.i('Moving to Add Date screen');
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => AddDate()));
               }
             }
           }),

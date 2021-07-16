@@ -26,8 +26,7 @@ class _WhenState extends State<When> {
     currentDate = dateProvider.getRecentDate;
     currentDate.dateStart = "";
     currentDate.dateEnd = "";
-    print('printing date info');
-    // print(super dateInfo)
+
     pickedDate = DateTime.now();
     time = TimeOfDay.now();
     endTime = TimeOfDay.now();

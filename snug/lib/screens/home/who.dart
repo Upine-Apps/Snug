@@ -148,6 +148,17 @@ class _WhoState extends State<Who> {
                   key: _whoFormKey,
                   child: Column(children: <Widget>[
                     Container(
+                      width: MediaQuery.of(context).size.width / 2,
+                      child: Text(
+                        'Tell us a little bit about your date!',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 26),
+                      ),
+                    ),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * .07,
+                    ),
+                    Container(
                         child: TextFormField(
                             inputFormatters: [
                           FilteringTextInputFormatter.allow(RegExp('[0-9]+')),
@@ -175,9 +186,20 @@ class _WhoState extends State<Who> {
                             onTap: () {
                               log.i('Pressed text field for phone number');
                             })),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * .03,
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width * .8,
+                      child: Text(
+                        'Don\'t worry we won\'t contact your date.\n It\'s just for your safety!',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 14),
+                      ),
+                    ),
                     Padding(
                         padding: EdgeInsets.only(
-                            top: MediaQuery.of(context).size.height * .05),
+                            top: MediaQuery.of(context).size.height * .03),
                         child: Container(
                             child: RaisedRoundedGradientButton(
                                 child: Text('Check for user',
@@ -211,6 +233,15 @@ class _WhoState extends State<Who> {
                   child: Form(
                 key: _whoFormKey1,
                 child: Column(children: <Widget>[
+                  Container(
+                    width: MediaQuery.of(context).size.width / 2,
+                    height: MediaQuery.of(context).size.height * .15,
+                    child: Text(
+                      'Tell us a little bit about your date!',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 26),
+                    ),
+                  ),
                   Container(
                       height: MediaQuery.of(context).size.height * .083,
                       child: TextFormField(
@@ -250,6 +281,10 @@ class _WhoState extends State<Who> {
                                           .requestFocus(lastNameFocusNode),
                                   textCapitalization:
                                       TextCapitalization.sentences,
+                                  inputFormatters: <TextInputFormatter>[
+                                    FilteringTextInputFormatter.allow(
+                                        RegExp(r"[a-zA-Z\-\ ]")),
+                                  ],
                                   validator: (String val) {
                                     if (val.length > 30) {
                                       return "They got a shorter first name?";

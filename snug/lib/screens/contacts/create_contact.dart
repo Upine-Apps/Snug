@@ -126,82 +126,82 @@ class _CreateContactState extends State<CreateContact> {
                                   onTap: () {
                                     log.i('Tapped on phone field');
                                   }),
-                              Padding(
-                                  padding: EdgeInsets.only(
-                                      top: MediaQuery.of(context).size.height *
-                                          .0125),
-                                  child: Container(
-                                      width: MediaQuery.of(context).size.width *
-                                          .25,
-                                      child: RaisedRoundedGradientButton(
-                                        child: Text('Save',
-                                            style: TextStyle(
-                                                color: Theme.of(context)
-                                                    .dividerColor)),
-                                        onPressed: () {
-                                          log.i('Saving contact');
-                                          FocusScope.of(context)
-                                              .requestFocus(new FocusNode());
+                              SizedBox(
+                                  height: MediaQuery.of(context).size.height *
+                                      .015),
+                              Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * .25,
+                                  child: RaisedRoundedGradientButton(
+                                    child: Text('Save',
+                                        style: TextStyle(
+                                            color: Theme.of(context)
+                                                .dividerColor)),
+                                    onPressed: () {
+                                      log.i('Saving contact');
+                                      FocusScope.of(context)
+                                          .requestFocus(new FocusNode());
 
-                                          if (_formKey.currentState
-                                              .validate()) {
-                                            for (var checkContacts
-                                                in contactList.getContacts) {
-                                              if (checkContacts.phoneNumber ==
-                                                  _phone) {
-                                                setState(() {
-                                                  contactExist = true;
-                                                });
-                                              }
-                                            }
-                                            if (contactExist == true) {
-                                              log.i('Contact exist');
-                                              CustomToast.showDialog(
-                                                  "This contact already exists",
-                                                  context,
-                                                  Toast.BOTTOM);
-                                            } else if (_name == null) {
-                                              log.i(
-                                                  'Contact name not provided');
-                                              CustomToast.showDialog(
-                                                  "Does this contact have a name?",
-                                                  context,
-                                                  Toast.BOTTOM);
-                                            } else if (profileUser
-                                                    .getUser.phone_number ==
-                                                _phone) {
-                                              log.i(
-                                                  'User user their own phone number');
-                                              CustomToast.showDialog(
-                                                  'You\'re your own contact? ',
-                                                  context,
-                                                  Toast.BOTTOM);
-                                            } else {
-                                              log.i('Added contact');
-                                              log.d('contactList.addContact()');
-                                              contactList.addContact(
-                                                  _name, _phone, _userId);
-
-                                              log.d('Back to contact screen');
-
-                                              if (contactList
-                                                      .getContacts.length ==
-                                                  1) {
-                                                Navigator.pushReplacement(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          MainPage(
-                                                            firstContact: true,
-                                                          )),
-                                                );
-                                              } else {
-                                                Navigator.pop(context);
-                                              }
-                                            }
+                                      if (_formKey.currentState.validate()) {
+                                        for (var checkContacts
+                                            in contactList.getContacts) {
+                                          if (checkContacts.phoneNumber ==
+                                              _phone) {
+                                            setState(() {
+                                              contactExist = true;
+                                            });
+                                          } else {
+                                            setState(() {
+                                              contactExist = false;
+                                            });
                                           }
-                                        },
-                                      )))
+                                        }
+                                        if (contactExist == true) {
+                                          log.i('Contact exist');
+                                          CustomToast.showDialog(
+                                              "This contact already exists",
+                                              context,
+                                              Toast.BOTTOM);
+                                        } else if (_name == null) {
+                                          log.i('Contact name not provided');
+                                          CustomToast.showDialog(
+                                              "Does this contact have a name?",
+                                              context,
+                                              Toast.BOTTOM);
+                                        } else if (profileUser
+                                                .getUser.phone_number ==
+                                            _phone) {
+                                          log.i(
+                                              'User user their own phone number');
+                                          CustomToast.showDialog(
+                                              'You\'re your own contact? ',
+                                              context,
+                                              Toast.BOTTOM);
+                                        } else {
+                                          log.i('Added contact');
+                                          log.d('contactList.addContact()');
+                                          contactList.addContact(
+                                              _name, _phone, _userId);
+
+                                          log.d('Back to contact screen');
+
+                                          if (contactList.getContacts.length ==
+                                              1) {
+                                            Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      MainPage(
+                                                        firstContact: true,
+                                                      )),
+                                            );
+                                          } else {
+                                            Navigator.pop(context);
+                                          }
+                                        }
+                                      }
+                                    },
+                                  ))
                             ],
                           ),
                         )))

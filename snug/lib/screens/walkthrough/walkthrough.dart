@@ -28,7 +28,9 @@ class _WalkthroughState extends State<Walkthrough> {
       height: 8.0,
       width: isActive ? 24 : 16,
       decoration: BoxDecoration(
-          color: isActive ? Colors.white : Color(0xFF7B51D3),
+          color: isActive
+              ? Colors.white
+              : Theme.of(context).colorScheme.secondaryVariant,
           borderRadius: BorderRadius.all(Radius.circular(12))),
     );
   }
@@ -36,391 +38,390 @@ class _WalkthroughState extends State<Walkthrough> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: AnnotatedRegion<SystemUiOverlayStyle>(
-          value: SystemUiOverlayStyle.light,
-          child: Container(
-            decoration: BoxDecoration(
-                gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                  Theme.of(context).colorScheme.primary,
-                  Theme.of(context).colorScheme.secondary,
-                ])),
-            child: Padding(
-                padding: EdgeInsets.only(
-                    top: MediaQuery.of(context).size.height * .05),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    Container(
-                      padding: EdgeInsets.all(0),
-                      alignment: Alignment.centerRight,
-                      child: FlatButton(
-                        onPressed: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(builder: (context) => MainPage()),
-                          );
-                        },
-                        child: Text(
-                          'Skip',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                          ),
+      body: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.light,
+        child: Container(
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                Theme.of(context).colorScheme.primary,
+                Theme.of(context).colorScheme.secondary,
+              ])),
+          child: Padding(
+              padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).size.height * .05),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.all(0),
+                    alignment: Alignment.centerRight,
+                    child: FlatButton(
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => MainPage()),
+                        );
+                      },
+                      child: Text(
+                        'Skip',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
                         ),
                       ),
                     ),
-                    Container(
-                      height: MediaQuery.of(context).size.height * .7,
-                      child: PageView(
-                        physics: ClampingScrollPhysics(),
-                        controller: _pageController,
-                        onPageChanged: (int page) {
-                          setState(() {
-                            _currentPage = page;
-                          });
-                        },
-                        children: <Widget>[
-                          Center(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Center(
-                                    child: Image(
-                                  image: AssetImage('assets/image/logo1.png'),
-                                  height:
-                                      MediaQuery.of(context).size.height * .3,
-                                  width:
-                                      MediaQuery.of(context).size.height * .3,
-                                )),
-                                SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height * .025,
-                                ),
-                                Center(
-                                  child: Container(
-                                    width:
-                                        MediaQuery.of(context).size.width * .9,
-                                    child: Text(
-                                      'Thanks For Choosing Snug!',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 26.0,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height * .025,
-                                ),
-                                Center(
-                                  child: Container(
-                                    width:
-                                        MediaQuery.of(context).size.width * .9,
-                                    child: Text(
-                                      'Before starting let us show you some of our unique features! Our goal is to make sure that you can date freely!',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 18,
-                                      ),
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                          Center(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Center(
-                                  child: ClipOval(
-                                      child: Material(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .secondaryVariant,
-                                          child: InkWell(
-                                            splashColor: Theme.of(context)
-                                                .colorScheme
-                                                .primaryVariant,
-                                            child: SizedBox(
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  .3,
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  .3,
-                                              child: Icon(
-                                                Icons.favorite,
-                                                size: MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    .15,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                            onTap: () {},
-                                          ))),
-                                ),
-                                SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height * .025,
-                                ),
-                                Center(
-                                  child: Container(
-                                    width:
-                                        MediaQuery.of(context).size.width * .9,
-                                    child: Text(
-                                      'Create A Date!',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 26.0,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height * .025,
-                                ),
-                                Center(
-                                  child: Container(
-                                    width:
-                                        MediaQuery.of(context).size.width * .9,
-                                    child: Text(
-                                      'The above button is displayed on the home screen. Use it to create a date! Once the date is finished, we will check in with you via text message if you haven\'t marked yourself safe. If we don\'t hear back after 20 minutes, we\'ll let your contact know.',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 18,
-                                      ),
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                          Center(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Center(
-                                  child: ClipOval(
-                                      child: Material(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .secondaryVariant,
-                                          child: InkWell(
-                                            splashColor: Theme.of(context)
-                                                .colorScheme
-                                                .primaryVariant,
-                                            child: SizedBox(
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  .3,
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  .3,
-                                              child: Icon(
-                                                Icons.person_add,
-                                                size: MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    .15,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                            onTap: () {},
-                                          ))),
-                                ),
-                                SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height * .025,
-                                ),
-                                Center(
-                                  child: Container(
-                                    width:
-                                        MediaQuery.of(context).size.width * .9,
-                                    child: Text(
-                                      'Create A Contact!',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 26.0,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height * .025,
-                                ),
-                                Center(
-                                  child: Container(
-                                    width:
-                                        MediaQuery.of(context).size.width * .9,
-                                    child: Text(
-                                      'This button is displayed on the contact screen. Use it to create your contacts! These are the people that got your back if anything happens.',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 18,
-                                      ),
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                          Center(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Center(
-                                  child: ClipOval(
-                                      child: Material(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .secondaryVariant,
-                                          child: InkWell(
-                                            splashColor: Theme.of(context)
-                                                .colorScheme
-                                                .primaryVariant,
-                                            child: SizedBox(
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  .35,
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  .35,
-                                              child: Icon(
-                                                Icons.edit,
-                                                size: MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    .15,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                            onTap: () {},
-                                          ))),
-                                ),
-                                SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height * .025,
-                                ),
-                                Center(
-                                  child: Container(
-                                    width:
-                                        MediaQuery.of(context).size.width * .9,
-                                    child: Text(
-                                      'Edit Your Profile!',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 26.0,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height * .025,
-                                ),
-                                Center(
-                                  child: Container(
-                                    width:
-                                        MediaQuery.of(context).size.width * .9,
-                                    child: Text(
-                                      'Changed your hair color? Look for this button on the profile screen to edit your profile!',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 18,
-                                      ),
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                    Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: _buildPageIndicator(),
-                      ),
-                    ),
-                    _currentPage != _numPages - 1
-                        ? Padding(
-                            padding: EdgeInsets.only(
-                                top: MediaQuery.of(context).size.height * .075),
-                            child: Align(
-                              alignment: FractionalOffset.bottomRight,
-                              child: FlatButton(
-                                onPressed: () {
-                                  _pageController.nextPage(
-                                      duration: Duration(milliseconds: 500),
-                                      curve: Curves.ease);
-                                },
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    Text('Next',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 22.0,
-                                        )),
-                                    SizedBox(
-                                      width: MediaQuery.of(context).size.width *
-                                          .05,
-                                    ),
-                                    Icon(
-                                      Icons.arrow_forward,
+                  ),
+                  Container(
+                    height: MediaQuery.of(context).size.height * .7,
+                    child: PageView(
+                      physics: ClampingScrollPhysics(),
+                      controller: _pageController,
+                      onPageChanged: (int page) {
+                        setState(() {
+                          _currentPage = page;
+                        });
+                      },
+                      children: <Widget>[
+                        Center(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Center(
+                                  child: Image(
+                                image: AssetImage('assets/image/logo1.png'),
+                                height: MediaQuery.of(context).size.height * .3,
+                                width: MediaQuery.of(context).size.height * .3,
+                              )),
+                              SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * .025,
+                              ),
+                              Center(
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width * .9,
+                                  child: Text(
+                                    'Thanks For Choosing Snug',
+                                    style: TextStyle(
                                       color: Colors.white,
-                                      size: MediaQuery.of(context).size.width *
-                                          .075,
-                                    )
-                                  ],
+                                      fontSize: 26.0,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
                                 ),
                               ),
-                            ),
-                          )
-                        : Text(''),
-                  ],
-                )),
-          ),
-        ),
-        bottomSheet: _currentPage == _numPages - 1
-            ? Container(
-                height: MediaQuery.of(context).size.height * .125,
-                width: double.infinity,
-                color: Colors.white,
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => MainPage()),
-                    );
-                  },
-                  child: Center(
-                    child: Text(
-                      'Get Started!',
-                      style: TextStyle(
-                          color: Theme.of(context).colorScheme.primary,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold),
+                              SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * .025,
+                              ),
+                              Center(
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width * .9,
+                                  child: Text(
+                                    'Before starting, let us show you some of Snug\'s unique features! Our goal is to help you feel safe when you\'re dating.',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        Center(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Center(
+                                child: ClipOval(
+                                    child: Material(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondaryVariant,
+                                        child: InkWell(
+                                          splashColor: Theme.of(context)
+                                              .colorScheme
+                                              .primaryVariant,
+                                          child: SizedBox(
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                .3,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                .3,
+                                            child: Icon(
+                                              Icons.favorite,
+                                              size: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  .15,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                          onTap: () {},
+                                        ))),
+                              ),
+                              SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * .025,
+                              ),
+                              Center(
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width * .9,
+                                  child: Text(
+                                    'Create A Date',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 26.0,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * .025,
+                              ),
+                              Center(
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width * .9,
+                                  child: Text(
+                                    'The heart button is displayed on the home screen. Use it to create a date. Once the date is finished, Snug will check in with you via text message. If you haven\'t marked yourself safe after 20 minutes, Snug will send the information about your date to your trusted contacts.',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        Center(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Center(
+                                child: ClipOval(
+                                    child: Material(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondaryVariant,
+                                        child: InkWell(
+                                          splashColor: Theme.of(context)
+                                              .colorScheme
+                                              .primaryVariant,
+                                          child: SizedBox(
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                .3,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                .3,
+                                            child: Icon(
+                                              Icons.person_add,
+                                              size: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  .15,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                          onTap: () {},
+                                        ))),
+                              ),
+                              SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * .025,
+                              ),
+                              Center(
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width * .9,
+                                  child: Text(
+                                    'Create Trusted Contacts',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 26.0,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * .025,
+                              ),
+                              Center(
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width * .9,
+                                  child: Text(
+                                    'This button is displayed on the contact screen. Use it to create your contacts! Trusted contacts are people who will have your back if anything happens.',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        Center(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Center(
+                                child: ClipOval(
+                                    child: Material(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondaryVariant,
+                                        child: InkWell(
+                                          splashColor: Theme.of(context)
+                                              .colorScheme
+                                              .primaryVariant,
+                                          child: SizedBox(
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                .3,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                .3,
+                                            child: Icon(
+                                              Icons.edit,
+                                              size: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  .15,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                          onTap: () {},
+                                        ))),
+                              ),
+                              SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * .025,
+                              ),
+                              Center(
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width * .9,
+                                  child: Text(
+                                    'Edit Your Profile',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 26.0,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * .025,
+                              ),
+                              Center(
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width * .9,
+                                  child: Text(
+                                    'Changed your hair color? Look for this button on the profile screen to edit your profile!',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        )
+                      ],
                     ),
                   ),
+                  Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: _buildPageIndicator(),
+                    ),
+                  ),
+                  _currentPage != _numPages - 1
+                      ? Padding(
+                          padding: EdgeInsets.only(
+                              top: MediaQuery.of(context).size.height * .075),
+                          child: Align(
+                            alignment: FractionalOffset.bottomRight,
+                            child: FlatButton(
+                              onPressed: () {
+                                _pageController.nextPage(
+                                    duration: Duration(milliseconds: 500),
+                                    curve: Curves.ease);
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  Text('Next',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 22.0,
+                                      )),
+                                  SizedBox(
+                                    width:
+                                        MediaQuery.of(context).size.width * .05,
+                                  ),
+                                  Icon(
+                                    Icons.arrow_forward,
+                                    color: Colors.white,
+                                    size: MediaQuery.of(context).size.width *
+                                        .075,
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        )
+                      : Text(''),
+                ],
+              )),
+        ),
+      ),
+      bottomSheet: _currentPage == _numPages - 1
+          ? Container(
+              height: MediaQuery.of(context).size.height * .125,
+              width: double.infinity,
+              color: Colors.white,
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => MainPage()),
+                  );
+                },
+                child: Center(
+                  child: Text(
+                    'Get Started!',
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.primary,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold),
+                  ),
                 ),
-              )
-            : Text(''));
+              ),
+            )
+          : Text(''),
+    );
   }
 }

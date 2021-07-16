@@ -25,19 +25,17 @@ class Contact extends StatefulWidget {
   _ContactState createState() => _ContactState();
 }
 
-class _ContactState extends State<Contact>
-    with AutomaticKeepAliveClientMixin, WidgetsBindingObserver {
-  @override
-  bool get wantKeepAlive => true; //somehow makes it work
+class _ContactState extends State<Contact> with WidgetsBindingObserver {
   String _phone = '';
   String _name = '';
   String _userId = '';
   final GlobalKey<FormState> _contactFormStateKey = GlobalKey<FormState>();
   final TextEditingController nameCtrl = new TextEditingController();
   final TextEditingController phoneCtrl = new TextEditingController();
+
   void initState() {
-    WidgetsBinding.instance.addObserver(this);
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
@@ -51,25 +49,39 @@ class _ContactState extends State<Contact>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
-    // I think this will successfully refresh the user session
-    //log.i("APP_STATE: $state");
+    //refreshes user auth token for backend verification through cognito
 
     if (state == AppLifecycleState.resumed) {
       // user returned to our app
       final prefs = await SharedPreferences.getInstance();
-      //log.i('Current user auth token: ${prefs.getString('accessToken')}');
+      final log = getLogger('refreshAuth', prefs.getString('path'));
+      final consoleLog = getConsoleLogger('refreshAuth');
+      log.i('AppState: $state');
+      consoleLog.i('refresh from Contact');
+      log.d('Current user auth token: ${prefs.getString('accessToken')}');
+      consoleLog.i('AppState: $state');
+      consoleLog
+          .d('Current user auth token: ${prefs.getString('accessToken')}');
       final _userProvider = Provider.of<UserProvider>(context, listen: false);
+      log.i('CognitoService.refreshAuth');
+      consoleLog.i('CognitoService.refreshAuth');
       Map<String, dynamic> refreshResponse = await CognitoService.instance
           .refreshAuth(
               _userProvider.getCognitoUser, prefs.getString('refreshToken'));
+      log.d('refreshResponse: ${refreshResponse['status']}');
+      consoleLog.d('refreshResponse: ${refreshResponse['status']}');
       if (refreshResponse['status'] == true) {
         final prefs = await SharedPreferences.getInstance();
-        //log.i('Successfully refreshed user session');
+        log.i('Successfully refreshed user session');
+        consoleLog.i('Successfully refreshed user session');
         CognitoUserSession userSession = refreshResponse['data'];
         _userProvider.setUserSession(userSession);
-        //log.i('New user auth token: ${prefs.getString('accessToken')}');
+        log.d('New user auth token: ${prefs.getString('accessToken')}');
+        consoleLog.d('New user auth token: ${prefs.getString('accessToken')}');
       } else {
-        //log.e('Failed to refresh user session. Returning to home screen');
+        log.e('Failed to refresh user session. Returning to home screen');
+        consoleLog
+            .e('Failed to refresh user session. Returning to home screen');
         CustomToast.showDialog(
             'Failed to refresh your session. Please sign in again',
             context,
@@ -94,7 +106,6 @@ class _ContactState extends State<Contact>
       userHasContact = false;
     }
 
-    super.build(context); //what does this do
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(0),

@@ -43,6 +43,19 @@ class _RegisterState extends State<Register> {
   bool checkPrivacyPolicy = false;
   bool checkEULA = false;
   //final log = getLogger('Register');
+
+  @override
+  void initState() {
+    super.initState();
+    // WidgetsBinding.instance.addObserver(this);
+  }
+
+  // @override
+  // void didChangeAppLifecycleState(AppLifecycleState state) async {
+  //   // I think this will successfully refresh the user session
+  //   print('haha');
+  // }
+
   @override
   Widget build(BuildContext context) {
     final node = FocusScope.of(context);
@@ -409,12 +422,37 @@ class _RegisterState extends State<Register> {
                                                     });
                                                   }
                                                 } else {
+                                                  // log.e(
+                                                  //     'Incorrect phone number or password');
+                                                  // CustomToast.showDialog(
+                                                  //     'Incorrect phone number or password',
+                                                  //     context,
+                                                  //     Toast.BOTTOM);
+                                                  // log.i(
+                                                  //     'Waiting 2 seconds for Toast to disappear and allowing sign in button press again');
+                                                  // await Future.delayed(
+                                                  //     Duration(seconds: 2), () {
+                                                  //   setState(() {
+                                                  //     didPressRegister = false;
+                                                  //   });
+                                                  // });
+
                                                   log.i(
                                                       'Didn\'t accept privacy and/or EULA');
                                                   CustomToast.showDialog(
                                                       'You must accept the privacy policy and the EULA to use the Snug app',
                                                       context,
                                                       Toast.BOTTOM);
+                                                  log.i(
+                                                      'Waiting 2 seconds for Toast to disappear and allowing register button press again');
+                                                  print(didPressRegister);
+                                                  await Future.delayed(
+                                                      Duration(seconds: 2), () {
+                                                    setState(() {
+                                                      didPressRegister = false;
+                                                    });
+                                                  });
+                                                  print(didPressRegister);
                                                 }
                                               } else {
                                                 log.i(

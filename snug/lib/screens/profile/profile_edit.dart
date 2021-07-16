@@ -37,9 +37,8 @@ class _ProfileEditState extends State<ProfileEdit> {
   String _in;
   String _state;
   Emoji somethingWentWrong = Emoji.byChar(Emojis.flushedFace);
-  //final log = getLogger('EditProfile');
   var _profileEditKey = GlobalKey<FormState>();
-
+  bool didPressSave = false;
   User tempUser = new User();
 
   @override
@@ -51,9 +50,10 @@ class _ProfileEditState extends State<ProfileEdit> {
   Widget build(BuildContext context) {
     final logProvider = Provider.of<LogProvider>(context, listen: false);
     final log = getLogger('Profile Edit', logProvider.getLogPath);
+    final consoleLog = getConsoleLogger('Profile Edit');
     final _user = Provider.of<UserProvider>(context, listen: true);
     tempUser.uid = _user.getUser.uid;
-    bool didPressSave = false;
+
     return AlertDialog(
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(100))),
@@ -186,23 +186,37 @@ class _ProfileEditState extends State<ProfileEdit> {
                     Padding(
                         padding: EdgeInsets.only(top: 10, bottom: 10),
                         child: RaisedRoundedGradientButton(
-                            child: Text("Save",
-                                style: TextStyle(
-                                    color: Theme.of(context).dividerColor)),
+                            child: didPressSave == true
+                                ? SizedBox(
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                          Theme.of(context)
+                                              .colorScheme
+                                              .secondary),
+                                    ),
+                                    height: MediaQuery.of(context).size.height *
+                                        .025,
+                                    width:
+                                        MediaQuery.of(context).size.width * .05)
+                                : Text(
+                                    'Save',
+                                    style: TextStyle(
+                                        color: Theme.of(context).dividerColor),
+                                  ),
                             onPressed: () async {
-                              log.i('Save editid profile fields');
-                              if (_profileEditKey.currentState.validate()) {
-                                log.d('_user.editUser()');
-                                if (didPressSave == false) {
-                                  log.i('didPressSave');
-                                  setState(() {
-                                    didPressSave = true;
-                                  });
-
+                              log.i('Save Profile Edit fields');
+                              if (didPressSave == false) {
+                                log.i('didPressSave');
+                                consoleLog.i('didPressSave');
+                                setState(() {
+                                  didPressSave = true;
+                                });
+                                if (_profileEditKey.currentState.validate()) {
                                   _user.editUser(tempUser);
                                   try {
-                                    log.d(
-                                        'RemoteDatebaseHelper.instance.updateUser()');
+                                    log.i(
+                                        'RemoteDatebaseHelper.instance.updateUser');
                                     dynamic result = await RemoteDatabaseHelper
                                         .instance
                                         .updateUser(
@@ -217,13 +231,27 @@ class _ProfileEditState extends State<ProfileEdit> {
                                   } catch (e) {
                                     log.e('Failed to update user. Error: $e');
                                     CustomToast.showDialog(
-                                        'Looks like we ran into an error. Please try again later! $somethingWentWrong',
+                                        'Failed to update profile! Please try again later $somethingWentWrong',
                                         context,
                                         Toast.BOTTOM);
+                                    log.d(
+                                        'Waiting 2 seconds for Toast to disappear and allowing save button again');
+                                    await Future.delayed(Duration(seconds: 2),
+                                        () {
+                                      setState(() {
+                                        didPressSave = false;
+                                      });
+                                    });
+                                  }
+                                } else {
+                                  log.d(
+                                      'Waiting 2 seconds and allowing save button again');
+                                  await Future.delayed(Duration(seconds: 2),
+                                      () {
                                     setState(() {
                                       didPressSave = false;
                                     });
-                                  }
+                                  });
                                 }
                               }
                             })),

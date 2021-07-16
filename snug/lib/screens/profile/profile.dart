@@ -27,8 +27,7 @@ class ProfilePage extends StatefulWidget {
   MapScreenState createState() => MapScreenState();
 }
 
-class MapScreenState extends State<ProfilePage>
-    with AutomaticKeepAliveClientMixin, WidgetsBindingObserver {
+class MapScreenState extends State<ProfilePage> with WidgetsBindingObserver {
   String picture;
   List<String> profilePics = [
     'assets/image/pug.jpg',
@@ -48,6 +47,7 @@ class MapScreenState extends State<ProfilePage>
 
   @override
   void initState() {
+    super.initState();
     WidgetsBinding.instance.addObserver(this);
     _controller = new TextEditingController();
 
@@ -76,31 +76,43 @@ class MapScreenState extends State<ProfilePage>
     super.dispose();
   }
 
-  @override
-  bool get wantKeepAlive => true;
   //final log = getLogger('Profile');
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
-    // I think this will successfully refresh the user session
-    //log.i("APP_STATE: $state");
+    //refreshes user auth token for backend verification through cognito
 
     if (state == AppLifecycleState.resumed) {
       // user returned to our app
       final prefs = await SharedPreferences.getInstance();
-      //log.i('Current user auth token: ${prefs.getString('accessToken')}');
+      final log = getLogger('refreshAuth', prefs.getString('path'));
+      final consoleLog = getConsoleLogger('refreshAuth');
+      consoleLog.i('refresh from Profile');
+      log.i('AppState: $state');
+      log.d('Current user auth token: ${prefs.getString('accessToken')}');
+      consoleLog.i('AppState: $state');
+      consoleLog
+          .d('Current user auth token: ${prefs.getString('accessToken')}');
       final _userProvider = Provider.of<UserProvider>(context, listen: false);
+      log.i('CognitoService.refreshAuth');
+      consoleLog.i('CognitoService.refreshAuth');
       Map<String, dynamic> refreshResponse = await CognitoService.instance
           .refreshAuth(
               _userProvider.getCognitoUser, prefs.getString('refreshToken'));
+      log.d('refreshResponse: ${refreshResponse['status']}');
+      consoleLog.d('refreshResponse: ${refreshResponse['status']}');
       if (refreshResponse['status'] == true) {
         final prefs = await SharedPreferences.getInstance();
-        //log.i('Successfully refreshed user session');
+        log.i('Successfully refreshed user session');
+        consoleLog.i('Successfully refreshed user session');
         CognitoUserSession userSession = refreshResponse['data'];
         _userProvider.setUserSession(userSession);
-        //log.i('New user auth token: ${prefs.getString('accessToken')}');
+        log.d('New user auth token: ${prefs.getString('accessToken')}');
+        consoleLog.d('New user auth token: ${prefs.getString('accessToken')}');
       } else {
-        //log.e('Failed to refresh user session. Returning to home screen');
+        log.e('Failed to refresh user session. Returning to home screen');
+        consoleLog
+            .e('Failed to refresh user session. Returning to home screen');
         CustomToast.showDialog(
             'Failed to refresh your session. Please sign in again',
             context,
@@ -150,7 +162,6 @@ class MapScreenState extends State<ProfilePage>
     File _image;
 
     final _formKey = GlobalKey<FormState>();
-    super.build(context);
     return new Scaffold(
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(0),
@@ -268,6 +279,7 @@ class MapScreenState extends State<ProfilePage>
                                     width:
                                         MediaQuery.of(context).size.width / 8,
                                     child: RaisedCircularGradientButton(
+                                        elevation: 2,
                                         child: Icon(
                                           Icons.edit,
                                           color: Colors.white,

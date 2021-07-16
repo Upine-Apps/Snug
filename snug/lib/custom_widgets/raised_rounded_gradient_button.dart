@@ -21,11 +21,9 @@ class RaisedRoundedGradientButton extends StatelessWidget {
         width: MediaQuery.of(context).size.width * .5,
         height: MediaQuery.of(context).size.width * .1,
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(20)),
-            gradient: LinearGradient(colors: [
-              Theme.of(context).colorScheme.primaryVariant,
-              Theme.of(context).colorScheme.secondaryVariant
-            ])),
+          borderRadius: BorderRadius.all(Radius.circular(20)),
+          color: Theme.of(context).colorScheme.secondaryVariant,
+        ),
         child: Material(
             color: Colors.transparent,
             child: InkWell(onTap: onPressed, child: Center(child: child))));

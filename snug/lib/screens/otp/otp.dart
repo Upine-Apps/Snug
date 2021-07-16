@@ -34,8 +34,10 @@ class _OtpState extends State<Otp> {
   Future<String> validateOtp(String confirmationCode) async {
     print('Pressed button to validate');
     final _userProvider = Provider.of<UserProvider>(context, listen: false);
-
+    final logProvider = Provider.of<LogProvider>(context, listen: false);
+    final log = getLogger('Register OTP', logProvider.getLogPath);
     try {
+      log.i('CognitoService.confirmUser');
       Map<String, Object> confirmationResult = await CognitoService.instance
           .confirmUser('+1${widget.phonenumber}', confirmationCode);
       if (confirmationResult['status'] == true) {
