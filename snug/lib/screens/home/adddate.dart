@@ -690,7 +690,7 @@ class _AddDateState extends State<AddDate> {
                                                             milliseconds: 500),
                                                         curve: Curves.ease);
                                                     CustomToast.showDialog(
-                                                        'Please enter a end time',
+                                                        'Please enter an end time',
                                                         context,
                                                         Toast.BOTTOM);
                                                   } else if (currentDate

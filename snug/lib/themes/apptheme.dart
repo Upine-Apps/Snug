@@ -9,6 +9,7 @@ class AppTheme {
           fontSize: 36,
           fontWeight: FontWeight.bold,
         )),
+
         dividerColor: Color(0xFF565656), //use this for text
         primaryColor: Color(0xFFe8b5c0),
         colorScheme: ColorScheme.dark(

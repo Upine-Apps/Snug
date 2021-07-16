@@ -41,8 +41,8 @@ class _ContactDateState extends State<ContactDate> {
                   child: Column(
                     children: <Widget>[
                       new CheckboxListTile(
-                        activeColor:
-                            Theme.of(context).colorScheme.primaryVariant,
+                        checkColor: Theme.of(context).dividerColor,
+                        activeColor: Theme.of(context).hintColor,
                         dense: true,
                         title: new Text(contactList[index].name,
                             style: TextStyle(
@@ -89,7 +89,9 @@ class CheckBoxListTileModel {
 
   static List<CheckBoxListTileModel> getUsers() {
     return <CheckBoxListTileModel>[
-      CheckBoxListTileModel(isCheck: false),
+      CheckBoxListTileModel(
+        isCheck: false,
+      ),
       CheckBoxListTileModel(isCheck: false),
       CheckBoxListTileModel(isCheck: false),
       CheckBoxListTileModel(isCheck: false),
