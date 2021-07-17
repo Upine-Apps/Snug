@@ -124,315 +124,280 @@ class _SettingState extends State<SettingScreen> with WidgetsBindingObserver {
         ),
       ),
       body: Container(
-          decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                Theme.of(context).colorScheme.primary,
-                Theme.of(context).colorScheme.secondary
-              ])),
-          child: ListView(
-            children: [
-              Padding(
-                padding: EdgeInsets.only(
-                    top: MediaQuery.of(context).size.height * .02),
-                child: Container(
-                  height: MediaQuery.of(context).size.height * .05,
-                  child: Header(
-                      child: Text(
-                    'Settings',
-                    style: TextStyle(
-                        color: Theme.of(context).colorScheme.secondaryVariant,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 22),
-                  )),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                    left: MediaQuery.of(context).size.width * .05,
-                    top: MediaQuery.of(context).size.height * .01),
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                        alignment: Alignment.centerLeft,
+        height: MediaQuery.of(context).size.height * 1,
+        decoration: BoxDecoration(
+            gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+              Theme.of(context).colorScheme.primary,
+              Theme.of(context).colorScheme.secondary
+            ])),
+        child: Padding(
+          padding: EdgeInsets.only(
+              left: MediaQuery.of(context).size.width * .05,
+              top: MediaQuery.of(context).size.height * .01),
+          child: new SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(
+                      top: MediaQuery.of(context).size.height * .02),
+                  child: Container(
+                    height: MediaQuery.of(context).size.height * .05,
+                    child: Header(
                         child: Text(
-                          'Themes',
-                          style: TextStyle(
-                              color: Theme.of(context).hintColor, fontSize: 16),
-                        )),
-                    Container(
-                      height: MediaQuery.of(context).size.height * .125,
-                      child: ListView.builder(
-                        itemBuilder: (context, position) {
-                          return _createList(
-                              context, themes[position], position);
-                        },
-                        itemCount: themes.length,
-                      ),
-                    ),
-                  ],
+                      'Settings',
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.secondaryVariant,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 22),
+                    )),
+                  ),
                 ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                    left: MediaQuery.of(context).size.width * .05,
-                    top: MediaQuery.of(context).size.height * .01),
-                child: Column(
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.only(
-                          bottom: MediaQuery.of(context).size.height * .01),
+                Padding(
+                  padding: EdgeInsets.only(
+                      bottom: MediaQuery.of(context).size.height * .01),
+                  child: Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Themes',
+                        style: TextStyle(
+                            color: Theme.of(context).hintColor, fontSize: 16),
+                      )),
+                ),
+                Container(
+                  height: MediaQuery.of(context).size.height * .125,
+                  child: ListView.builder(
+                    physics: NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, position) {
+                      return _createList(context, themes[position], position);
+                    },
+                    itemCount: themes.length,
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                      top: MediaQuery.of(context).size.height * .025),
+                  child: Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Account Management',
+                        style: TextStyle(
+                            color: Theme.of(context).hintColor, fontSize: 16),
+                      )),
+                ),
+                Container(
+                  alignment: Alignment.centerLeft,
+                  child: FlatButton(
+                      color: Theme.of(context).colorScheme.secondaryVariant,
+                      onPressed: () async {
+                        log.i(
+                            'Delete account, sending to Verify Delete popup confirmation');
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return VerifyDelete();
+                            });
+                      },
                       child: Container(
+                          width: MediaQuery.of(context).size.width * .40,
+                          padding: EdgeInsets.all(0),
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            'Account Management',
+                            'Delete Account',
                             style: TextStyle(
-                                color: Theme.of(context).hintColor,
-                                fontSize: 16),
-                          )),
-                    ),
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      child: FlatButton(
-                          color: Theme.of(context).colorScheme.secondaryVariant,
-                          onPressed: () async {
-                            log.i(
-                                'Delete account, sending to Verify Delete popup confirmation');
-                            showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return VerifyDelete();
-                                });
-                          },
-                          child: Container(
-                              width: MediaQuery.of(context).size.width * .40,
-                              padding: EdgeInsets.all(0),
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                'Delete Account',
-                                style: TextStyle(
-                                    color: Theme.of(context).dividerColor,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold),
-                              ))),
-                    )
-                  ],
+                                color: Theme.of(context).dividerColor,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold),
+                          ))),
                 ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                    left: MediaQuery.of(context).size.width * .05,
-                    top: MediaQuery.of(context).size.height * .01),
-                child: Column(
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.only(
-                          bottom: MediaQuery.of(context).size.height * .01),
-                      child: Expanded(
+                Padding(
+                  padding: EdgeInsets.only(
+                      top: MediaQuery.of(context).size.height * .025),
+                  child: Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Knowledge Base',
+                        style: TextStyle(
+                            color: Theme.of(context).hintColor, fontSize: 16),
+                      )),
+                ),
+                Container(
+                  alignment: Alignment.centerLeft,
+                  child: FlatButton(
+                      color: Theme.of(context).colorScheme.secondaryVariant,
+                      onPressed: () async {
+                        log.i('Sending to walkthrough page');
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Walkthrough()),
+                        );
+                      },
+                      child: Container(
+                          width: MediaQuery.of(context).size.width * .40,
+                          padding: EdgeInsets.all(0),
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Snug Walkthrough',
+                            style: TextStyle(
+                                color: Theme.of(context).dividerColor,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold),
+                          ))),
+                ),
+                Container(
+                  alignment: Alignment.centerLeft,
+                  child: FlatButton(
+                      color: Theme.of(context).colorScheme.secondaryVariant,
+                      onPressed: () async {
+                        log.i('pushToPrivacyInfo');
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => PrivacyInfo()),
+                        );
+                      },
+                      child: Container(
+                          width: MediaQuery.of(context).size.width * .40,
+                          padding: EdgeInsets.all(0),
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Privacy Info',
+                            style: TextStyle(
+                                color: Theme.of(context).dividerColor,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold),
+                          ))),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                      top: MediaQuery.of(context).size.height * .025),
+                  child: Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Support Us',
+                        style: TextStyle(
+                            color: Theme.of(context).hintColor, fontSize: 16),
+                      )),
+                ),
+                Container(
+                  alignment: Alignment.centerLeft,
+                  child: FlatButton(
+                      color: Theme.of(context).colorScheme.secondaryVariant,
+                      onPressed: () async {
+                        log.i('Donate coffee, launching url');
+                        const buyCoffee =
+                            'https://www.buymeacoffee.com/upineapps';
+                        try {
+                          if (await canLaunch(buyCoffee)) {
+                            await launch(buyCoffee);
+                            log.d(
+                                'Launched url: https://www.buymeacoffee.com/upineapps');
+                          } else {
+                            throw 'Can\'t launch url';
+                          }
+                        } catch (e) {
+                          log.d(e);
+                          CustomToast.showDialog(
+                              'Failed to donate $sad', context, Toast.BOTTOM);
+                        }
+                      },
+                      child: Container(
+                          width: MediaQuery.of(context).size.width * .40,
+                          padding: EdgeInsets.all(0),
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Buy Us Some ${coffee}',
+                            style: TextStyle(
+                                color: Theme.of(context).dividerColor,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold),
+                          ))),
+                ),
+                Container(
+                  alignment: Alignment.centerLeft,
+                  child: FlatButton(
+                      color: Theme.of(context).colorScheme.secondaryVariant,
+                      onPressed: () {
+                        log.i('Share Snug');
+                        final String shareText =
+                            'Snug is a great app to keep you safe no matter the situation! Find out more at https://upineapps.com';
+                        Share.share(shareText, subject: 'Snug, Safer Dating');
+                      },
+                      child: Container(
+                          width: MediaQuery.of(context).size.width * .40,
+                          padding: EdgeInsets.all(0),
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Share The App $share',
+                            style: TextStyle(
+                                color: Theme.of(context).dividerColor,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold),
+                          ))),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                      top: MediaQuery.of(context).size.height * .025),
+                  child: Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Help',
+                        style: TextStyle(
+                            color: Theme.of(context).hintColor, fontSize: 16),
+                      )),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                      bottom: MediaQuery.of(context).size.height * .025),
+                  child: Container(
+                    alignment: Alignment.centerLeft,
+                    child: FlatButton(
+                        color: Theme.of(context).colorScheme.secondaryVariant,
+                        onPressed: () async {
+                          log.i('Sending logs to devs');
+                          final Email email = Email(
+                            body: "Hey Upine devs!\n\n"
+                                "I'm running into issues on the Snug app. Here\'s my log file.\n\n"
+                                "Thanks!",
+                            subject:
+                                'Log Files from ${userProvider.getUser.first_name} ${userProvider.getUser.last_name}',
+                            recipients: ['upineapps@protonmail.com'],
+                            // cc: ['cc@.com'],
+                            // bcc: ['bcc@example.com'],
+                            attachmentPaths: [
+                              logProvider.getLogPath + '/log.txt'
+                            ],
+                            isHTML: false,
+                          );
+                          print(logProvider.getLogPath + '/log.txt');
+                          try {
+                            await FlutterEmailSender.send(email);
+                            log.d('Sent log files to devs');
+                          } catch (e) {
+                            log.e(e);
+                          }
+                        },
                         child: Container(
+                            width: MediaQuery.of(context).size.width * .40,
+                            padding: EdgeInsets.all(0),
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              'Knowledge Base',
+                              'Send Logs To Devs',
                               style: TextStyle(
-                                  color: Theme.of(context).hintColor,
-                                  fontSize: 16),
-                            )),
-                      ),
-                    ),
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      child: FlatButton(
-                          color: Theme.of(context).colorScheme.secondaryVariant,
-                          onPressed: () async {
-                            log.i('Sending to walkthrough page');
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => Walkthrough()),
-                            );
-                          },
-                          child: Container(
-                              width: MediaQuery.of(context).size.width * .40,
-                              padding: EdgeInsets.all(0),
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                'Snug Walkthrough',
-                                style: TextStyle(
-                                    color: Theme.of(context).dividerColor,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold),
-                              ))),
-                    ),
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      child: FlatButton(
-                          color: Theme.of(context).colorScheme.secondaryVariant,
-                          onPressed: () async {
-                            log.i('pushToPrivacyInfo');
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => PrivacyInfo()),
-                            );
-                          },
-                          child: Container(
-                              width: MediaQuery.of(context).size.width * .40,
-                              padding: EdgeInsets.all(0),
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                'Privacy Info',
-                                style: TextStyle(
-                                    color: Theme.of(context).dividerColor,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold),
-                              ))),
-                    )
-                  ],
+                                  color: Theme.of(context).dividerColor,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold),
+                            ))),
+                  ),
                 ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                    left: MediaQuery.of(context).size.width * .05,
-                    top: MediaQuery.of(context).size.height * .01),
-                child: Column(
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.only(
-                          bottom: MediaQuery.of(context).size.height * .01),
-                      child: Container(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Support Us',
-                            style: TextStyle(
-                                color: Theme.of(context).hintColor,
-                                fontSize: 16),
-                          )),
-                    ),
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      child: FlatButton(
-                          color: Theme.of(context).colorScheme.secondaryVariant,
-                          onPressed: () async {
-                            log.i('Donate coffee, launching url');
-                            const buyCoffee =
-                                'https://www.buymeacoffee.com/upineapps';
-                            try {
-                              if (await canLaunch(buyCoffee)) {
-                                await launch(buyCoffee);
-                                log.d(
-                                    'Launched url: https://www.buymeacoffee.com/upineapps');
-                              } else {
-                                throw 'Can\'t launch url';
-                              }
-                            } catch (e) {
-                              log.d(e);
-                              CustomToast.showDialog('Failed to donate $sad',
-                                  context, Toast.BOTTOM);
-                            }
-                          },
-                          child: Container(
-                              width: MediaQuery.of(context).size.width * .40,
-                              padding: EdgeInsets.all(0),
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                'Buy Us Some ${coffee}',
-                                style: TextStyle(
-                                    color: Theme.of(context).dividerColor,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold),
-                              ))),
-                    ),
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      child: FlatButton(
-                          color: Theme.of(context).colorScheme.secondaryVariant,
-                          onPressed: () {
-                            log.i('Share Snug');
-                            final String shareText =
-                                'Snug is a great app to keep you safe no matter the situation! Find out more at https://upineapps.com';
-                            Share.share(shareText,
-                                subject: 'Snug, Safer Dating');
-                          },
-                          child: Container(
-                              width: MediaQuery.of(context).size.width * .40,
-                              padding: EdgeInsets.all(0),
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                'Share The App $share',
-                                style: TextStyle(
-                                    color: Theme.of(context).dividerColor,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold),
-                              ))),
-                    )
-                  ],
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                    left: MediaQuery.of(context).size.width * .05,
-                    top: MediaQuery.of(context).size.height * .01),
-                child: Column(
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.only(
-                          bottom: MediaQuery.of(context).size.height * .01),
-                      child: Container(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Help',
-                            style: TextStyle(
-                                color: Theme.of(context).hintColor,
-                                fontSize: 16),
-                          )),
-                    ),
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      child: FlatButton(
-                          color: Theme.of(context).colorScheme.secondaryVariant,
-                          onPressed: () async {
-                            log.i('Sending logs to devs');
-                            final Email email = Email(
-                              body: "Hey Upine devs!\n\n"
-                                  "I'm running into issues on the Snug app. Here\'s my log file.\n\n"
-                                  "Thanks!",
-                              subject:
-                                  'Log Files from ${userProvider.getUser.first_name} ${userProvider.getUser.last_name}',
-                              recipients: ['upineapps@protonmail.com'],
-                              // cc: ['cc@.com'],
-                              // bcc: ['bcc@example.com'],
-                              attachmentPaths: [
-                                logProvider.getLogPath + '/log.txt'
-                              ],
-                              isHTML: false,
-                            );
-                            print(logProvider.getLogPath + '/log.txt');
-                            try {
-                              await FlutterEmailSender.send(email);
-                              log.d('Sent log files to devs');
-                            } catch (e) {
-                              log.e(e);
-                            }
-                          },
-                          child: Container(
-                              width: MediaQuery.of(context).size.width * .40,
-                              padding: EdgeInsets.all(0),
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                'Send Logs To Devs',
-                                style: TextStyle(
-                                    color: Theme.of(context).dividerColor,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold),
-                              ))),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          )),
+              ],
+            ),
+          ),
+        ),
+      ),
       floatingActionButton: FloatingActionButton(
           onPressed: () async {
             log.i('Signing out');
