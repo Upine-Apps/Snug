@@ -19,7 +19,7 @@ class SyncScreen extends StatefulWidget {
 
 class _SyncScreenState extends State<SyncScreen> {
   String _loadingMessage = '';
-  final log = getLogger('SyncScreen');
+  //final log = getLogger('SyncScreen');
   bool failedASync = false;
   Emoji somethingWentWrong = Emoji.byChar(Emojis.flushedFace);
 
@@ -39,10 +39,10 @@ class _SyncScreenState extends State<SyncScreen> {
 
     var userResponse = await syncUser(_userId, context);
     if (userResponse['status'] == true) {
-      log.i('Successfully synced user');
+      //log.i('Successfully synced user');
     } else {
       //toast user that we couldn't sync their data
-      log.w('Failed to sync user. Try again');
+      //log.w('Failed to sync user. Try again');
       failedASync = true;
     }
     setState(() {
@@ -52,10 +52,10 @@ class _SyncScreenState extends State<SyncScreen> {
       var contactResponse =
           await syncContact(userResponse['trusted_contacts'], context);
       if (contactResponse['status'] == true) {
-        log.i('Successfully synced trusted contacts');
+        //log.i('Successfully synced trusted contacts');
       } else {
         //toast user that we couldn't sync their contacts
-        log.w('Failed to sync trusted contacts. Try again');
+        //log.w('Failed to sync trusted contacts. Try again');
         failedASync = true;
 
         //SHOULD WE TELL THE USER THAT THEY CAN JUST REMAKE THEIR CONTACTS???
@@ -66,11 +66,11 @@ class _SyncScreenState extends State<SyncScreen> {
     });
     var datesResponse = await syncDates(_userId, context);
     if (datesResponse['status'] == true) {
-      log.i('Successfully synced dates');
+      //log.i('Successfully synced dates');
     } else {
       //toast user that we couldn't sync their dates
       //MAYBE MAKE A COOL LOADING ANIMATION WITH CHECKS AND Xes
-      log.w('Failed to sync dates. Try again.');
+      //log.w('Failed to sync dates. Try again.');
       failedASync = true;
     }
     if (failedASync == false) {

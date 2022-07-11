@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:snug/core/logger.dart';
 import 'package:snug/custom_widgets/CustomToast.dart';
 
 import 'package:snug/custom_widgets/raised_rounded_gradient_button.dart';
+import 'package:snug/providers/LogProvider.dart';
 
 import 'package:snug/screens/authenticate/sign_in.dart';
 import 'package:snug/screens/otp/otp.dart';
@@ -31,6 +33,8 @@ class _RegisterState extends State<Register> {
   final TextEditingController _passOne = TextEditingController();
   final TextEditingController _passTwo = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  bool didPressRegister = false;
+
   //text field state
   String phonenumber = '';
   String password1 = '';
@@ -38,10 +42,26 @@ class _RegisterState extends State<Register> {
   String error = '';
   bool checkPrivacyPolicy = false;
   bool checkEULA = false;
-  final log = getLogger('Register');
+  //final log = getLogger('Register');
+
+  @override
+  void initState() {
+    super.initState();
+    // WidgetsBinding.instance.addObserver(this);
+  }
+
+  // @override
+  // void didChangeAppLifecycleState(AppLifecycleState state) async {
+  //   // I think this will successfully refresh the user session
+  //   print('haha');
+  // }
+
   @override
   Widget build(BuildContext context) {
     final node = FocusScope.of(context);
+    final logProvider = Provider.of<LogProvider>(context, listen: false);
+    final log = getLogger('Register', logProvider.getLogPath);
+    final consoleLog = getConsoleLogger('Register');
 
     return WillPopScope(
       onWillPop: () => Navigator.pushReplacement(
@@ -108,7 +128,12 @@ class _RegisterState extends State<Register> {
                                                 color: Theme.of(context)
                                                     .colorScheme
                                                     .secondaryVariant),
-                                            icon: Icon(Icons.phone),
+                                            icon: Icon(
+                                              Icons.phone,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .secondaryVariant,
+                                            ),
                                             labelText: 'Phone Number'),
                                         validator: (String val) {
                                           if (val.length != 10) {
@@ -116,7 +141,6 @@ class _RegisterState extends State<Register> {
                                           }
                                         },
                                         onChanged: (val) {
-                                          log.i('setPhoneNumber | $val');
                                           setState(() => phonenumber = val);
                                         },
                                       ),
@@ -132,14 +156,18 @@ class _RegisterState extends State<Register> {
                                                 color: Theme.of(context)
                                                     .colorScheme
                                                     .secondaryVariant),
-                                            icon: Icon(Icons.security),
+                                            icon: Icon(
+                                              Icons.security,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .secondaryVariant,
+                                            ),
                                             labelText: 'Password'),
                                         validator: (val) => val.length < 6
                                             ? 'Enter a password 6+ char long'
                                             : null,
                                         obscureText: true,
                                         onChanged: (val) {
-                                          log.i('setPassword | ****');
                                           setState(() => password1 = val);
                                         },
                                       ),
@@ -153,7 +181,12 @@ class _RegisterState extends State<Register> {
                                                 color: Theme.of(context)
                                                     .colorScheme
                                                     .secondaryVariant),
-                                            icon: Icon(Icons.security),
+                                            icon: Icon(
+                                              Icons.security,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .secondaryVariant,
+                                            ),
                                             labelText: 'Confirm Password'),
                                         validator: (String val) {
                                           if (val != _passOne.text) {
@@ -200,18 +233,21 @@ class _RegisterState extends State<Register> {
                                                           .colorScheme
                                                           .secondaryVariant),
                                                   onTap: (url) async {
-                                                    log.i('openPrivacyPolicy');
+                                                    //log.i('openPrivacyPolicy');
                                                     const privacyPolicyUrl =
                                                         "https://upineapps.com/snug-privacy-policy";
                                                     try {
                                                       if (await canLaunch(
                                                           privacyPolicyUrl)) {
+                                                        log.i(
+                                                            'didLaunchPrivacyPolicy');
                                                         await launch(
                                                             privacyPolicyUrl);
                                                       } else {
                                                         throw "Can't launch url";
                                                       }
                                                     } catch (e) {
+                                                      log.e(e);
                                                       CustomToast.showDialog(
                                                           'Failed to open privacy policy. Please try again later.',
                                                           context,
@@ -257,17 +293,19 @@ class _RegisterState extends State<Register> {
                                                           .colorScheme
                                                           .secondaryVariant),
                                                   onTap: (url) async {
-                                                    log.i('openEULA');
+                                                    //log.i('openEULA');
                                                     const eulaUrl =
                                                         "https://upineapps.com/snug-eula";
                                                     try {
                                                       if (await canLaunch(
                                                           eulaUrl)) {
+                                                        log.i('didLaunchEULA');
                                                         await launch(eulaUrl);
                                                       } else {
                                                         throw "Can't launch url";
                                                       }
                                                     } catch (e) {
+                                                      log.e(e);
                                                       CustomToast.showDialog(
                                                           'Failed to open EULA. Please try again later.',
                                                           context,
@@ -283,75 +321,148 @@ class _RegisterState extends State<Register> {
                                       ),
                                       Container(
                                         child: RaisedRoundedGradientButton(
-                                          child: Text(
-                                            'Register',
-                                            style: TextStyle(
-                                                color: Theme.of(context)
-                                                    .dividerColor),
-                                          ),
+                                          child: didPressRegister == true
+                                              ? SizedBox(
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                    strokeWidth: 2,
+                                                    valueColor:
+                                                        AlwaysStoppedAnimation<
+                                                                Color>(
+                                                            Theme.of(context)
+                                                                .colorScheme
+                                                                .secondary),
+                                                  ),
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .height *
+                                                      .025,
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      .05)
+                                              : Text(
+                                                  'Register',
+                                                  style: TextStyle(
+                                                      color: Colors.white),
+                                                ),
                                           onPressed: () async {
-                                            if (_formKey.currentState
-                                                .validate()) {
-                                              if (this.checkEULA == true &&
-                                                  this.checkPrivacyPolicy ==
-                                                      true) {
-                                                try {
-                                                  Map<String, Object> result =
-                                                      await CognitoService
-                                                          .instance
-                                                          .registerUser(
-                                                              phonenumber,
-                                                              password2);
-                                                  if (result['status'] ==
-                                                      false) {
-                                                    if (result['message'] ==
-                                                        'ERROR') {
-                                                      CustomToast.showDialog(
-                                                          'Something went wrong, please try again. $somethingWentWrong',
-                                                          context,
-                                                          Toast.BOTTOM);
-                                                    } else if (result[
-                                                            'message'] ==
-                                                        'REGISTRATION_FAILED') {
-                                                      CustomToast.showDialog(
-                                                          'Registration failed, please try again later. $somethingWentWrong',
-                                                          context,
-                                                          Toast.BOTTOM);
-                                                      //toast to say registration failed and give reason
-                                                      //LOOK INTO THE POSSIBLE REASONS AND RETURN FROM THE COGNITO SERVICE CLASS
+                                            if (didPressRegister == false) {
+                                              //fixes double tap issue
+                                              log.i('didPressRegister');
+                                              setState(() {
+                                                didPressRegister = true;
+                                              });
+                                              if (_formKey.currentState
+                                                  .validate()) {
+                                                if (this.checkEULA == true &&
+                                                    this.checkPrivacyPolicy ==
+                                                        true) {
+                                                  try {
+                                                    log.i(
+                                                        'CognitoService.registerUser');
+                                                    Map<String, Object>
+                                                        registerUserResult =
+                                                        await CognitoService
+                                                            .instance
+                                                            .registerUser(
+                                                                phonenumber,
+                                                                password2);
+                                                    log.d(
+                                                        'registerUserResult: ${registerUserResult['status']}');
+                                                    if (registerUserResult[
+                                                            'status'] ==
+                                                        true) {
+                                                      log.i(
+                                                          'SharedPreferences.setString: phonenumber: $phonenumber');
+                                                      SharedPreferences
+                                                          _profile =
+                                                          await SharedPreferences
+                                                              .getInstance();
+                                                      _profile.setString(
+                                                          'phonenumber',
+                                                          phonenumber);
+                                                      log.i('pushToOTP');
+                                                      Navigator.pushReplacement(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder:
+                                                                (context) =>
+                                                                    Otp(
+                                                                      phonenumber:
+                                                                          phonenumber,
+                                                                      password:
+                                                                          password2,
+                                                                    )),
+                                                      );
+                                                    } else {
+                                                      log.e(
+                                                          'registerUserResult[status] = false');
+                                                      log.e(
+                                                          'Shouldn\'t have gotten here');
+                                                      throw Error;
                                                     }
-                                                  } else if (result['status'] ==
-                                                      true) {
-                                                    SharedPreferences _profile =
-                                                        await SharedPreferences
-                                                            .getInstance();
-                                                    _profile.setString(
-                                                        'phonenumber',
-                                                        phonenumber);
-
-                                                    Navigator.pushReplacement(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              Otp(
-                                                                phonenumber:
-                                                                    phonenumber,
-                                                                password:
-                                                                    password2,
-                                                                fromSignIn:
-                                                                    false,
-                                                              )),
-                                                    );
+                                                  } catch (e) {
+                                                    log.e(
+                                                        'Registration failed');
+                                                    log.e(e);
+                                                    CustomToast.showDialog(
+                                                        'Registration failed. Do you already have an account?',
+                                                        context,
+                                                        Toast.BOTTOM);
+                                                    log.i(
+                                                        'Waiting 2 seconds for Toast to disappear and allowing register button press again');
+                                                    await Future.delayed(
+                                                        Duration(seconds: 2),
+                                                        () {
+                                                      setState(() {
+                                                        didPressRegister =
+                                                            false;
+                                                      });
+                                                    });
                                                   }
-                                                } catch (e) {
-                                                  log.d('registration error');
-                                                  log.e(e);
+                                                } else {
+                                                  // log.e(
+                                                  //     'Incorrect phone number or password');
+                                                  // CustomToast.showDialog(
+                                                  //     'Incorrect phone number or password',
+                                                  //     context,
+                                                  //     Toast.BOTTOM);
+                                                  // log.i(
+                                                  //     'Waiting 2 seconds for Toast to disappear and allowing sign in button press again');
+                                                  // await Future.delayed(
+                                                  //     Duration(seconds: 2), () {
+                                                  //   setState(() {
+                                                  //     didPressRegister = false;
+                                                  //   });
+                                                  // });
+
+                                                  log.i(
+                                                      'Didn\'t accept privacy and/or EULA');
+                                                  CustomToast.showDialog(
+                                                      'You must accept the privacy policy and the EULA to use the Snug app',
+                                                      context,
+                                                      Toast.BOTTOM);
+                                                  log.i(
+                                                      'Waiting 2 seconds for Toast to disappear and allowing register button press again');
+                                                  print(didPressRegister);
+                                                  await Future.delayed(
+                                                      Duration(seconds: 2), () {
+                                                    setState(() {
+                                                      didPressRegister = false;
+                                                    });
+                                                  });
+                                                  print(didPressRegister);
                                                 }
                                               } else {
-                                                CustomToast.showDialog(
-                                                    'You must accept the privacy policy and the EULA to use the Snug app',
-                                                    context,
-                                                    Toast.BOTTOM);
+                                                log.i(
+                                                    'Waiting 2 seconds and allowing register button press again');
+                                                await Future.delayed(
+                                                    Duration(seconds: 2), () {
+                                                  setState(() {
+                                                    didPressRegister = false;
+                                                  });
+                                                });
                                               }
                                             }
                                           },

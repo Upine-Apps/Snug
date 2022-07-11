@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:snug/core/logger.dart';
 import 'package:snug/models/Date.dart';
 import 'package:snug/providers/DateProvider.dart';
 import 'package:provider/provider.dart';
+import 'package:snug/providers/LogProvider.dart';
 
 class When extends StatefulWidget {
   @override
@@ -24,8 +26,7 @@ class _WhenState extends State<When> {
     currentDate = dateProvider.getRecentDate;
     currentDate.dateStart = "";
     currentDate.dateEnd = "";
-    print('printing date info');
-    // print(super dateInfo)
+
     pickedDate = DateTime.now();
     time = TimeOfDay.now();
     endTime = TimeOfDay.now();
@@ -62,6 +63,8 @@ class _WhenState extends State<When> {
 
   @override
   Widget build(BuildContext context) {
+    final logProvider = Provider.of<LogProvider>(context, listen: false);
+    final log = getLogger('When Section', logProvider.getLogPath);
     return SingleChildScrollView(
         child: Column(
       children: <Widget>[
@@ -79,7 +82,11 @@ class _WhenState extends State<When> {
                     "Day:\t${pickedDate.month}/${pickedDate.day}/${pickedDate.year}"),
                 trailing: Icon(Icons.keyboard_arrow_down,
                     color: Theme.of(context).primaryColor),
-                onTap: _pickedDate,
+                onTap: () {
+                  log.i('Choosing start date');
+                  log.d('_pickedDate');
+                  _pickedDate();
+                },
               )),
           Container(
             padding: EdgeInsets.all(0),
@@ -90,7 +97,12 @@ class _WhenState extends State<When> {
                   title: Text("Time: $intHour:$intMinute $period"),
                   trailing: Icon(Icons.keyboard_arrow_down,
                       color: Theme.of(context).primaryColor),
-                  onTap: _pickedTime,
+                  onTap: () {
+                    log.i('Chossing start time');
+                    log.d('_pickedTime');
+
+                    _pickedTime();
+                  },
                 )),
           ),
         ]),
@@ -109,7 +121,11 @@ class _WhenState extends State<When> {
                     "Day:\t${endDate.month}/${endDate.day}/${endDate.year}"),
                 trailing: Icon(Icons.keyboard_arrow_down,
                     color: Theme.of(context).primaryColor),
-                onTap: _pickedEndDate,
+                onTap: () {
+                  log.i('Choosing end date');
+                  log.d('_pickedEndDate');
+                  _pickedEndDate();
+                },
               )),
           Container(
               width: MediaQuery.of(context).size.width * .45,
@@ -117,7 +133,11 @@ class _WhenState extends State<When> {
                 title: Text("Time: $endHour:$endMinute $endPeriod"),
                 trailing: Icon(Icons.keyboard_arrow_down,
                     color: Theme.of(context).primaryColor),
-                onTap: _pickedEndTime,
+                onTap: () {
+                  log.i('Choosing end time');
+                  log.d('_pickedEndTime');
+                  _pickedEndTime();
+                },
               ))
         ])
       ],

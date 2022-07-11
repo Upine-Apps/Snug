@@ -15,8 +15,9 @@ import 'package:snug/custom_widgets/race.dart';
 import 'package:snug/custom_widgets/raised_rounded_gradient_button.dart';
 import 'package:snug/custom_widgets/topheader.dart';
 import 'package:snug/models/User.dart';
+import 'package:snug/providers/LogProvider.dart';
 import 'package:snug/providers/UserProvider.dart';
-import 'package:snug/providers/walkthrough/walkthrough.dart';
+import 'package:snug/screens/walkthrough/walkthrough.dart';
 
 import 'package:snug/screens/sync/sync.dart';
 import 'package:snug/services/cognito/CognitoService.dart';
@@ -32,6 +33,7 @@ class Profile extends StatefulWidget {
   final Function toggleView;
   final String phonenumber;
   final CognitoUser cognitoUser;
+
   Profile({Key key, this.toggleView, this.phonenumber, this.cognitoUser})
       : super(key: key);
 
@@ -42,6 +44,7 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   Emoji somethingWentWrong = Emoji.byChar(Emojis.flushedFace);
   User tempUser = new User();
+  bool didPressSubmit = false;
 
   @override
   void initState() {
@@ -73,12 +76,31 @@ class _ProfileState extends State<Profile> {
   String _dob = 'Date of Birth';
   String _zip;
 
-  final log = getLogger('CreateProfile');
+  //final log = getLogger('CreateProfile');
+
+  String fixDate(date) {
+    String month;
+    String day;
+    if (date.month < 10) {
+      month = '0${date.month}';
+    } else {
+      month = date.month.toString();
+    }
+    if (date.day < 10) {
+      day = '0${date.day}';
+    } else {
+      day = date.day.toString();
+    }
+    return '${date.year}-${month}-${day}';
+  }
 
   @override
   Widget build(BuildContext context) {
     final node = FocusScope.of(context);
     final _userProvider = Provider.of<UserProvider>(context, listen: true);
+    final logProvider = Provider.of<LogProvider>(context, listen: false);
+    final log = getLogger('ForgotPassword', logProvider.getLogPath);
+    final consoleLog = getConsoleLogger('ForgotPassword');
     return WillPopScope(
       onWillPop: () async => false,
       child: GestureDetector(
@@ -122,6 +144,12 @@ class _ProfileState extends State<Profile> {
                               height: MediaQuery.of(context).size.height * .075,
                             ),
                             TextFormField(
+                              inputFormatters: <TextInputFormatter>[
+                                FilteringTextInputFormatter.allow(
+                                    RegExp(r"[a-zA-Z\-\ ]")),
+                              ], // Only numbers can be entered
+
+                              textCapitalization: TextCapitalization.sentences,
                               validator: (String val) {
                                 if (val.length > 30) {
                                   return "Ya got a shorter first name?";
@@ -144,7 +172,7 @@ class _ProfileState extends State<Profile> {
                                               Theme.of(context).primaryColor)),
                                   labelText: 'First Name'),
                               onChanged: (val) {
-                                log.i('setFirstName | $val');
+                                // log.i('setFirstName | $val');
                                 tempUser.first_name = val;
                                 setState(() => first_name = val);
                               },
@@ -153,6 +181,11 @@ class _ProfileState extends State<Profile> {
                               height: 10.0,
                             ),
                             TextFormField(
+                              inputFormatters: <TextInputFormatter>[
+                                FilteringTextInputFormatter.allow(
+                                    RegExp(r"[a-zA-Z\-\ ]")),
+                              ],
+                              textCapitalization: TextCapitalization.sentences,
                               validator: (String val) {
                                 if (val.length > 30) {
                                   return "Ya got a shorter last name?";
@@ -174,7 +207,7 @@ class _ProfileState extends State<Profile> {
                                               Theme.of(context).primaryColor)),
                                   labelText: 'Last Name'),
                               onChanged: (val) {
-                                log.i('setLastName | $val');
+                                // log.i('setLastName | $val');
                                 tempUser.last_name = val;
                                 setState(() => last_name = val);
                               },
@@ -199,7 +232,8 @@ class _ProfileState extends State<Profile> {
                                 _dob = date == null
                                     ? 'Date of Birth'
                                     : '${date.month}/${date.day}/${date.year}';
-                                tempUser.dob = _dob;
+
+                                tempUser.dob = fixDate(date);
                               },
                               child: Row(
                                 mainAxisAlignment:
@@ -237,7 +271,7 @@ class _ProfileState extends State<Profile> {
                               onChanged: (val) {
                                 FocusScope.of(context)
                                     .requestFocus(new FocusNode());
-                                log.i('setSex | $val');
+                                // log.i('setSex | $val');
                                 tempUser.sex = val;
                                 setState(() {
                                   _sex = val;
@@ -254,7 +288,7 @@ class _ProfileState extends State<Profile> {
                               onChanged: (val) {
                                 FocusScope.of(context)
                                     .requestFocus(new FocusNode());
-                                log.i('setRace | $val');
+                                // log.i('setRace | $val');
                                 tempUser.race = val;
                                 setState(() {
                                   _race = val;
@@ -271,7 +305,7 @@ class _ProfileState extends State<Profile> {
                               onChanged: (val) {
                                 FocusScope.of(context)
                                     .requestFocus(new FocusNode());
-                                log.i('setEye | $val');
+                                // log.i('setEye | $val');
                                 tempUser.eye = val;
                                 setState(() {
                                   _eye = val;
@@ -288,7 +322,7 @@ class _ProfileState extends State<Profile> {
                               onChanged: (val) {
                                 FocusScope.of(context)
                                     .requestFocus(new FocusNode());
-                                log.i('setHair | $val');
+                                // log.i('setHair | $val');
                                 tempUser.hair = val;
                                 setState(() {
                                   _hair = val;
@@ -322,7 +356,7 @@ class _ProfileState extends State<Profile> {
                                       onChanged: (val) {
                                         FocusScope.of(context)
                                             .requestFocus(new FocusNode());
-                                        log.i('setFt | $val');
+                                        //log.i('setFt | $val');
                                         tempUser.ft = val;
                                         setState(() {
                                           _ft = val;
@@ -342,7 +376,7 @@ class _ProfileState extends State<Profile> {
                                       onChanged: (val) {
                                         FocusScope.of(context)
                                             .requestFocus(new FocusNode());
-                                        log.i('setInches | $val');
+                                        //log.i('setInches | $val');
                                         tempUser.inch = val;
                                         setState(() {
                                           _in = val;
@@ -389,7 +423,7 @@ class _ProfileState extends State<Profile> {
                                                       .primaryColor)),
                                           labelText: 'Zip Code'),
                                       onChanged: (val) {
-                                        log.i('setZip | $val');
+                                        //log.i('setZip | $val');
                                         tempUser.zip = val;
                                         setState(() => _zip = val);
                                       },
@@ -401,80 +435,120 @@ class _ProfileState extends State<Profile> {
                             ),
                             RaisedRoundedGradientButton(
                               //check size of button
-                              child: Text(
-                                'Register',
-                                style: TextStyle(
-                                    color: Theme.of(context).dividerColor),
-                              ),
+                              child: didPressSubmit == true
+                                  ? SizedBox(
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                                Theme.of(context)
+                                                    .colorScheme
+                                                    .secondary),
+                                      ),
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              .025,
+                                      width: MediaQuery.of(context).size.width *
+                                          .05)
+                                  : Text(
+                                      'Submit Profile',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
                               onPressed: () async {
-                                FocusScope.of(context)
-                                    .requestFocus(new FocusNode());
-                                // print(height);
-//DO ERROR HANDLING HERE
-//NEED TO CHECK IF ALL THE THINGS HAVE BEEN FILLED OUT
+                                if (didPressSubmit == false) {
+                                  //fixes double tap issue
+                                  log.i('didPressSubmit');
+                                  setState(() {
+                                    didPressSubmit = true;
+                                  });
 
-                                if (_dob == 'Date of Birth') {
-                                  CustomToast.showDialog(
-                                      'Please enter your date of birth',
-                                      context,
-                                      Toast.BOTTOM);
-                                } else if (_formKey.currentState.validate()) {
-                                  log.i('convertHeight | _ft: $_ft _in: $_in');
-                                  // Convert height into a total of inches for data base.
-                                  var ft1 = int.parse(_ft);
-                                  var in1 = int.parse(_in);
-                                  var h = (ft1 * 12) + in1;
-                                  // Convert height into a total of inches for data base.
-                                  log.d('Height: $h');
-                                  height =
-                                      '$h'; //pretty sure we aren't even doing anything with this variable
-                                  // tempUser.phone_number = '1111111111';
-                                  tempUser.temp = 'false';
-                                  tempUser.phone_number = widget.phonenumber;
-                                  tempUser.legal = 'true';
-                                  //UNCOMMENT THIS WHEN DONE TESTING ^^^^^
-                                  try {
-                                    dynamic result = await RemoteDatabaseHelper
-                                        .instance
-                                        .addUser(tempUser);
-                                    if (result['status'] == true) {
-                                      var user_id =
-                                          result['user_id'].toString();
-                                      SharedPreferences profile =
-                                          await SharedPreferences.getInstance();
+                                  FocusScope.of(context)
+                                      .requestFocus(new FocusNode());
 
-                                      profile.setString('uid', user_id);
-                                      profile.setString(
-                                          'first_name', tempUser.first_name);
-                                      _userProvider.editUser(tempUser);
-                                      Map<String, Object> attributeUpdated =
-                                          await CognitoService.instance
-                                              .addUserAttributes(
-                                                  widget.cognitoUser, user_id);
-                                      if (attributeUpdated['status'] == true) {
-                                        log.i('pushToMainPage');
-                                        Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => Walkthrough(
-                                                    isFirst: true,
-                                                  )),
-                                        );
-                                      } else {
-                                        throw AddUserAttributeException(
-                                            'Failed to add user attribute');
-                                      }
-                                    } else {
-                                      throw AddUserException(
-                                          'Failed to add the user');
-                                    }
-                                  } catch (e) {
-                                    log.e(
-                                        'Failed to add user profile. Error: $e');
+                                  if (_dob == 'Date of Birth') {
                                     CustomToast.showDialog(
-                                        'Looks like we ran into an error. Please try again later! $somethingWentWrong',
+                                        'Please enter your date of birth',
                                         context,
                                         Toast.BOTTOM);
+                                  } else if (_formKey.currentState.validate()) {
+                                    // Convert height into a total of inches for data base.
+                                    var ft1 = int.parse(_ft);
+                                    var in1 = int.parse(_in);
+                                    var h = (ft1 * 12) + in1;
+
+                                    height =
+                                        '$h'; //pretty sure we aren't even doing anything with this variable
+
+                                    tempUser.temp = 'false';
+                                    tempUser.phone_number = widget.phonenumber;
+                                    tempUser.legal = 'true';
+
+                                    try {
+                                      log.i('RemoteDatabaseHelper.addUser');
+                                      dynamic addUserResult =
+                                          await RemoteDatabaseHelper.instance
+                                              .addUser(tempUser);
+                                      log.d(
+                                          'addUserResult: ${addUserResult['status']}');
+                                      if (addUserResult['status'] == true) {
+                                        log.d(
+                                            'user_id: ${addUserResult['user_id']}');
+                                        var user_id =
+                                            addUserResult['user_id'].toString();
+                                        SharedPreferences profile =
+                                            await SharedPreferences
+                                                .getInstance();
+                                        log.i(
+                                            'SharedPreferences.setString: uid: $user_id first_name: ${tempUser.first_name}');
+                                        profile.setString('uid', user_id);
+                                        tempUser.uid = user_id;
+                                        profile.setString(
+                                            'first_name', tempUser.first_name);
+                                        log.i('userProvider.editUser');
+                                        _userProvider.editUser(tempUser);
+                                        log.i(
+                                            'CognitoService.addUserAttributes');
+                                        Map<String, Object> attributeUpdated =
+                                            await CognitoService.instance
+                                                .addUserAttributes(
+                                                    widget.cognitoUser,
+                                                    user_id);
+                                        log.d(
+                                            'attributeUpdates: ${attributeUpdated['status']}');
+                                        if (attributeUpdated['status'] ==
+                                            true) {
+                                          log.i('pushToMainPage');
+                                          Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    Walkthrough()),
+                                          );
+                                        } else {
+                                          throw AddUserAttributeException(
+                                              'Failed to add user attribute');
+                                        }
+                                      } else {
+                                        throw AddUserException(
+                                            'Failed to add the user');
+                                      }
+                                    } catch (e) {
+                                      log.e('Failed to add user profile');
+                                      log.e(e);
+                                      CustomToast.showDialog(
+                                          'Looks like we ran into an error. Please try again later! $somethingWentWrong',
+                                          context,
+                                          Toast.BOTTOM);
+                                    }
+                                  } else {
+                                    log.i(
+                                        'Waiting 2 seconds and allowing submit button press again');
+                                    await Future.delayed(Duration(seconds: 2),
+                                        () {
+                                      setState(() {
+                                        didPressSubmit = false;
+                                      });
+                                    });
                                   }
                                 }
                               },

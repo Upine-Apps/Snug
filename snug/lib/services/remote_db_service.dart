@@ -28,10 +28,10 @@ class RemoteDatabaseHelper {
   }
 
   static final _hostUrl =
-      // 'http://3.142.239.183:3000'; //DotEnv().env['BACKEND_IP']
-      'https://snug-dev-api.upineapps.com:6969';
+      // 'http://snug-api.upineapps.com:6969'; //production
+      'https://snug-dev-api.upineapps.com:6969'; //beta
 
-  final log = getLogger('RemoteDatabaseHelper');
+  //final log = getLogger('RemoteDatabaseHelper');
 
   RemoteDatabaseHelper._privateConstructor();
   static final RemoteDatabaseHelper instance =
@@ -40,13 +40,13 @@ class RemoteDatabaseHelper {
   Get user data from remote and return for updating local yuser profile shared preferences
 */
   Future getUser(String userId) async {
-    // log.i('Host URl: ${_hostUrl}');
+    // //log.i('Host URl: ${_hostUrl}');
     //testing purposes
     // userId = '1';
 
     final urlProfile = '$_hostUrl/users/$userId';
-    log.i(urlProfile);
-    log.i('getUser | userId: $userId');
+    //log.i(urlProfile);
+    //log.i('getUser | userId: $userId');
     try {
       var _headers = await getHeaders();
       var responseUser = await http.get(urlProfile, headers: _headers);
@@ -60,13 +60,13 @@ class RemoteDatabaseHelper {
         if (extractData['dob'] != null) {
           extractData['dob'] = extractData['dob'].toString().substring(0, 10);
         }
-        log.i('getUser succeeded!');
+        //log.i('getUser succeeded!');
         return {'status': true, 'data': extractData};
       } else {
         throw new GetUserException('Error getting the user profile');
       }
     } catch (e) {
-      log.e('Failed to get user. Caught exception $e');
+      //log.e('Failed to get user. Caught exception $e');
       return {'status': false, 'data': null};
     }
     //update user shared preferences here
@@ -74,7 +74,7 @@ class RemoteDatabaseHelper {
 
   Future getRegisteredUserByPhone(String phone_number) async {
     final urlProfile = '$_hostUrl/users/registered/phonenumber/$phone_number';
-    log.i('getRegisteredUserByPhone | phone_number: $phone_number');
+    //log.i('getRegisteredUserByPhone | phone_number: $phone_number');
     var _headers = await getHeaders();
     try {
       var responseUser = await http.get(urlProfile, headers: _headers);
@@ -84,21 +84,21 @@ class RemoteDatabaseHelper {
         extractData['ft'] = extractData['height'] ~/ 12;
         extractData['inch'] = extractData['height'] % 12;
         extractData['dob'] = extractData['dob'].toString().substring(0, 10);
-        log.d(extractData['in']);
-        log.i('getRegisteredUserByPhone succeeded!');
+        //log.d(extractData['in']);
+        //log.i('getRegisteredUserByPhone succeeded!');
         return {'status': true, 'data': extractData};
       } else {
         throw new GetUserException('Error getting the user profile');
       }
     } catch (e) {
-      log.e('Failed to get user. Caught exception $e');
+      //log.e('Failed to get user. Caught exception $e');
       return {'status': false, 'data': null};
     }
     //update user shared preferences here
   }
 
   Future addUser(User _user) async {
-    log.i('addUser | _user: $_user');
+    //log.i('addUser | _user: $_user');
     final urlAddUser = '$_hostUrl/users';
     var _headers = await getHeaders();
     Map<String, dynamic> _tempUser = _user.toMapWithoutId();
@@ -108,7 +108,7 @@ class RemoteDatabaseHelper {
     }
     _tempUser.remove('ft');
     _tempUser.remove('inch');
-    log.d('keys: ${_tempUser.keys}');
+    //log.d('keys: ${_tempUser.keys}');
     _tempUser.removeWhere((key, value) => key == null || value == null);
     try {
       print('before http');
@@ -117,20 +117,20 @@ class RemoteDatabaseHelper {
       print('after http');
       var extractData = json.decode(responseAddUser.body);
       if (extractData['status'] == true) {
-        log.i('addUser succeeded!');
+        //log.i('addUser succeeded!');
 
         return {'status': true, 'user_id': extractData['data']};
       } else {
         throw AddUserException('Error adding user.');
       }
     } catch (e) {
-      log.e('Failed to add user. Caught exception $e');
+      //log.e('Failed to add user. Caught exception $e');
       return {'status': false};
     }
   }
 
   Future updateUser(User _user, String userId) async {
-    log.i('updateUser | _user: $_user');
+    //log.i('updateUser | _user: $_user');
     final urlAddUser = '$_hostUrl/users/$userId';
     var _headers = await getHeaders();
     Map<String, dynamic> _tempUser = _user.toMapWithId();
@@ -143,20 +143,20 @@ class RemoteDatabaseHelper {
           headers: _headers, body: _tempUser);
       var extractData = json.decode(responseAddUser.body);
       if (extractData['status'] == true) {
-        log.i('addUser succeeded!');
+        //log.i('addUser succeeded!');
 
         return {'status': true, 'user_id': extractData['data']};
       } else {
         throw AddUserException('Error adding user.');
       }
     } catch (e) {
-      log.e('Failed to update user. Caught exception $e');
+      //log.e('Failed to update user. Caught exception $e');
       return {'status': false};
     }
   }
 
   Future deleteUserDates(String userId) async {
-    log.i('deleteUserDates | userId: $userId');
+    //log.i('deleteUserDates | userId: $userId');
     final urlDeleteDates = '$_hostUrl/dates/$userId';
     var _headers = await getHeaders();
     try {
@@ -164,20 +164,20 @@ class RemoteDatabaseHelper {
           await http.delete(Uri.encodeFull(urlDeleteDates), headers: _headers);
       var extractData = json.decode(responseDeleteUserDates.body);
       if (extractData['status'] == true) {
-        log.i('deleteUserDates succeeded!');
+        //log.i('deleteUserDates succeeded!');
 
         return {'status': true};
       } else {
         throw DeleteUserDatesException('Error deleting user dates.');
       }
     } catch (e) {
-      log.e('Failed to delete user dates. Caught exception $e');
+      //log.e('Failed to delete user dates. Caught exception $e');
       rethrow;
     }
   }
 
   Future deleteUser(String userId) async {
-    log.i('deleteUser | userId: $userId');
+    //log.i('deleteUser | userId: $userId');
     final urlDeleteUser = '$_hostUrl/users/$userId';
     var _headers = await getHeaders();
     try {
@@ -185,13 +185,13 @@ class RemoteDatabaseHelper {
           await http.delete(Uri.encodeFull(urlDeleteUser), headers: _headers);
       var extractData = json.decode(responseDeleteUser.body);
       if (extractData['status'] == true) {
-        log.i('deleteUser succeeded!');
+        //log.i('deleteUser succeeded!');
         return {'status': true};
       } else {
         throw DeleteUserException('Error deleting user.');
       }
     } catch (e) {
-      log.e('Failed to delete user. Caught exception $e');
+      //log.e('Failed to delete user. Caught exception $e');
       rethrow;
     }
   }
@@ -203,7 +203,7 @@ This is only to be used when they first download the application
   Future getContacts(List<String> trustedContacts) async {
     List<String> phoneNumbersToReturn = [];
     final urlContacts = '$_hostUrl/api/get-contact-by-id';
-    log.i('getContacts | trustedContacts: $trustedContacts');
+    //log.i('getContacts | trustedContacts: $trustedContacts');
     var _headers = await getHeaders();
     try {
       for (var contact_id in trustedContacts) {
@@ -217,18 +217,18 @@ This is only to be used when they first download the application
           throw ContactException('Error getting contact info.');
         }
       }
-      log.i('getContacts succeeded!');
+      //log.i('getContacts succeeded!');
       return {'status': true, 'data': phoneNumbersToReturn};
     } catch (e) {
-      log.e('Failed to get contact. Caught exception $e');
+      //log.e('Failed to get contact. Caught exception $e');
       return {'status': false, 'data': null};
     }
   }
 
   Future addTrustedContacts(
       List<Contact> trustedContacts, String userId) async {
-    log.i(
-        'addTrustedContacts | trustedContacts: $trustedContacts userId: $userId');
+    //log.i(
+    // 'addTrustedContacts | trustedContacts: $trustedContacts userId: $userId');
     final urlAddContacts = '$_hostUrl/users/$userId/trusted';
     var _headers = await getHeaders();
     Map<String, dynamic> dataToSend = {};
@@ -241,13 +241,13 @@ This is only to be used when they first download the application
           body: {'trusted_contacts': json.encode(dataToSend)});
       var extractData = json.decode(responseAddTrusted.body);
       if (extractData['status'] == true) {
-        log.i('addTrustedContacts succeeded!');
+        //log.i('addTrustedContacts succeeded!');
         return {'status': true};
       } else {
         throw AddContactException('Error adding trusted contact.');
       }
     } catch (e) {
-      log.e('Failed to add contacts. Caught exception $e');
+      //log.e('Failed to add contacts. Caught exception $e');
       return {'status': false};
     }
   }
@@ -266,7 +266,7 @@ This is only to be used when they first download the application
         throw DatesNotFoundException('Error getting dates.');
       }
     } catch (e) {
-      log.e('Failed to get dates. Caught exception $e');
+      //log.e('Failed to get dates. Caught exception $e');
       return {'status': false, 'data': null};
     }
   }
@@ -281,13 +281,13 @@ This is only to be used when they first download the application
       var fullUser = extractData['data'];
       return {'status': true, 'data': fullUser};
     } catch (e) {
-      log.e('Failed to get second user. Caught exception $e');
+      //log.e('Failed to get second user. Caught exception $e');
       return {'status': false, 'data': null};
     }
   }
 
   Future addDate(Date currentDate, String userId) async {
-    log.i('addDate | currentDate: $currentDate userId: $userId');
+    //log.i('addDate | currentDate: $currentDate userId: $userId');
     var _headers = await getHeaders();
     final urlAddDate = '$_hostUrl/dates';
     Map<String, dynamic> dateToSend = currentDate.toMapWithoutId();
@@ -300,19 +300,19 @@ This is only to be used when they first download the application
           headers: _headers, body: {'new_date': json.encode(dateToSend)});
       var extractData = json.decode(responseAddDate.body);
       if (extractData['status'] == true) {
-        log.i('addDate succeeded!');
+        //log.i('addDate succeeded!');
         return {'status': true, 'data': extractData['data'].toString()};
       } else {
         throw AddDateException('Error adding date.');
       }
     } catch (e) {
-      log.e('Failed to add date. Caught exception $e');
+      //log.e('Failed to add date. Caught exception $e');
       return {'status': false};
     }
   }
 
   Future cancelDate(String dateId) async {
-    log.i('cancelDate | dateId: $dateId');
+    //log.i('cancelDate | dateId: $dateId');
     final urlCancelDate = '$_hostUrl/dates/cancel/$dateId';
     var _headers = await getHeaders();
     try {
@@ -320,19 +320,19 @@ This is only to be used when they first download the application
           await http.put(Uri.encodeFull(urlCancelDate), headers: _headers);
       var extractData = json.decode(responseCancelDate.body);
       if (extractData['status'] == true) {
-        log.i('cancelDate succeeded!');
+        //log.i('cancelDate succeeded!');
         return {'status': true};
       } else {
         throw DateNotFoundException("Couldn't find date.");
       }
     } catch (e) {
-      log.e('Failed to cancel date. Caught exception $e');
+      //log.e('Failed to cancel date. Caught exception $e');
       return {'status': false};
     }
   }
 
   Future markDateSafe(String dateId) async {
-    log.i('markDateSafe | dateId: $dateId');
+    //log.i('markDateSafe | dateId: $dateId');
     final urlMarkSafe = '$_hostUrl/dates/safe/$dateId';
     var _headers = await getHeaders();
     try {
@@ -340,13 +340,13 @@ This is only to be used when they first download the application
           await http.put(Uri.encodeFull(urlMarkSafe), headers: _headers);
       var extractData = json.decode(responseMarkSafe.body);
       if (extractData['status'] == true) {
-        log.i('markDateSafe succeeded!');
+        //log.i('markDateSafe succeeded!');
         return {'status': true};
       } else {
         throw DateNotFoundException("Couldn't find date.");
       }
     } catch (e) {
-      log.e('Failed to mark date safe. Caught exception $e');
+      //log.e('Failed to mark date safe. Caught exception $e');
       return {'status': false};
     }
   }

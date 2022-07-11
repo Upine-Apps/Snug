@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:snug/core/errors/OTPException.dart';
 import 'package:snug/core/logger.dart';
 import 'package:snug/custom_widgets/CustomToast.dart';
+import 'package:snug/providers/LogProvider.dart';
+import 'package:snug/providers/UserProvider.dart';
 import 'package:snug/screens/authenticate/authenticate.dart';
 import 'package:snug/screens/authenticate/profile.dart';
 import 'package:snug/screens/sync/sync.dart';
@@ -18,44 +20,47 @@ class Otp extends StatefulWidget {
   final String phonenumber;
   final Function toggleView;
   final String password;
-  final bool fromSignIn;
 
-  Otp(
-      {this.toggleView,
-      @required this.phonenumber,
-      @required this.password,
-      @required this.fromSignIn});
+  Otp({this.toggleView, @required this.phonenumber, @required this.password});
   @override
   _OtpState createState() => _OtpState();
 }
 
 class _OtpState extends State<Otp> {
-  final log = getLogger('Otp');
+  //final log = getLogger('Otp');
   CognitoUser cognitoUser;
   bool returnToSignIn = false;
 
   Future<String> validateOtp(String confirmationCode) async {
     print('Pressed button to validate');
+    final _userProvider = Provider.of<UserProvider>(context, listen: false);
+    final logProvider = Provider.of<LogProvider>(context, listen: false);
+    final log = getLogger('Register OTP', logProvider.getLogPath);
     try {
+      log.i('CognitoService.confirmUser');
       Map<String, Object> confirmationResult = await CognitoService.instance
           .confirmUser('+1${widget.phonenumber}', confirmationCode);
       if (confirmationResult['status'] == true) {
         Map<String, Object> signInResult = await CognitoService.instance
             .signInUser('+1${widget.phonenumber}', widget.password);
         if (signInResult['status'] == true) {
+          CognitoUser confirmedUser = signInResult['cognitoUser'];
+          CognitoUserSession userSession = signInResult['cognitoSession'];
+          _userProvider.setCognitoUser(confirmedUser);
+          _userProvider.setUserSession(userSession);
           setState(() {
             cognitoUser = signInResult['cognitoUser'];
           });
-          log.i('pushToProfileCreation');
+          //log.i('pushToProfileCreation');
           return null;
         } else {
-          log.e('ERROR: ${signInResult['message']} | ${signInResult['error']}');
-          log.i('pushToAuthenticate');
+          //log.e('ERROR: ${signInResult['message']} | ${signInResult['error']}');
+          //log.i('pushToAuthenticate');
           throw Error;
         }
       }
     } on OTPException catch (e) {
-      log.e(e);
+      //log.e(e);
       return ('Incorrect OTP code');
     } catch (e) {
       await Future.delayed(Duration(seconds: 2), () {
@@ -73,12 +78,12 @@ class _OtpState extends State<Otp> {
 
   void moveToNextScreen(context) {
     if (returnToSignIn == true) {
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => Authenticate()),
       );
     } else {
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
             builder: (context) => Profile(
@@ -93,6 +98,8 @@ class _OtpState extends State<Otp> {
   Widget build(BuildContext context) {
     String text = '';
     final themeNotifier = Provider.of<ThemeNotifier>(context);
+    // final logProvider = Provider.of<LogProvider>(context, listen: false);
+    // final log = getLogger('OTP', logProvider.getLogPath);
     return WillPopScope(
       onWillPop: () async => false,
       child: MaterialApp(

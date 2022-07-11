@@ -1,0 +1,28 @@
+Patch Notes for Snug 1.0.6
+
+1) Fixed account deletion bug
+    -- This bug only showed if you created a new account and immediately went to delete it without signing out and signing into the app.
+    -- Nobody probably would've noticed this.
+    -- It aint much, but it's honest work.
+    
+
+2) Fixed issue where autofill for searched location was failing
+    -- The autofill dropdown when searching for a location would not show. 
+    -- Why did nobody tell us this?
+
+3) Fixed bug where a second back button would display in the forgot password screen
+    -- If you found this bug, gold star for you.
+    -- Only occurred if you created a date, signed out, then clicked forgot password.
+    
+4) There is now one space between first and last name in the profile page
+    -- Weird, it’s like the devs don’t know coding.
+
+5) Fixed bug where the name of the date was cut out on the detailed date page
+    -- Do not know how it got there buts fixed
+
+6) The first character of every text field is now auto capitalized
+    -- One of our best features :)
+
+7) Zip code now limits to 5 digits everywhere
+
+

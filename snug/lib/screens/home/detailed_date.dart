@@ -16,6 +16,7 @@ import 'package:snug/models/Contact.dart';
 import 'package:snug/models/Date.dart';
 import 'package:snug/providers/ContactProvider.dart';
 import 'package:snug/providers/DateProvider.dart';
+import 'package:snug/providers/LogProvider.dart';
 import 'package:snug/screens/navigation/MainPage.dart';
 import 'package:snug/services/conversion.dart';
 import 'package:snug/services/remote_db_service.dart';
@@ -36,7 +37,7 @@ class _DetailDateState extends State<DetailDate> {
   List<Contact> trusted;
   List<Marker> _markers = <Marker>[];
   final Conversion _conversion = Conversion();
-  final log = getLogger('DetailDate');
+  //final log = getLogger('DetailDate');
   String _endStatus;
   Emoji somethingWentWrong = Emoji.byChar(Emojis.flushedFace);
 
@@ -95,6 +96,8 @@ class _DetailDateState extends State<DetailDate> {
   Widget build(BuildContext context) {
     final dateProvider = Provider.of<DateProvider>(context, listen: true);
     final contactProvider = Provider.of<ContactProvider>(context, listen: true);
+    final logProvider = Provider.of<LogProvider>(context, listen: false);
+    final log = getLogger('Detailed Date', logProvider.getLogPath);
     int someIndex = widget.someIndex;
     Date _currentDate = dateProvider.getCurrentDates[someIndex];
     // ADDING A MARKER TO GOOGLE MAPS
@@ -149,6 +152,8 @@ class _DetailDateState extends State<DetailDate> {
                                           .02),
                                   child: HeaderWithBackButton(
                                       onPressed: () {
+                                        log.i(
+                                            'Back button pressed, back to MainPage');
                                         Navigator.pushReplacement(
                                             context,
                                             MaterialPageRoute(
@@ -169,8 +174,6 @@ class _DetailDateState extends State<DetailDate> {
                                     MediaQuery.of(context).size.width * .025),
                             child: Container(
                                 width: MediaQuery.of(context).size.width * .95,
-                                height:
-                                    MediaQuery.of(context).size.height * .075,
                                 child: Card(
                                     shape: RoundedRectangleBorder(
                                         borderRadius:
@@ -180,6 +183,7 @@ class _DetailDateState extends State<DetailDate> {
                                         .secondaryVariant,
                                     elevation: 10.0,
                                     child: Container(
+
                                         //Container for everything that is going in the who card
                                         decoration: BoxDecoration(
                                             borderRadius: BorderRadius.all(
@@ -416,6 +420,8 @@ class _DetailDateState extends State<DetailDate> {
                                         (.45),
                                     child: GestureDetector(
                                       onTap: () {
+                                        log.i(
+                                            'Launching date\'s phone number on calling app');
                                         launch(
                                             "tel:${_currentDate.who.phone_number}");
                                       },
@@ -781,6 +787,13 @@ class _DetailDateState extends State<DetailDate> {
                                             onTap: () {
                                               var trustedIndex =
                                                   "trusted_$index";
+                                              log.d(
+                                                  'Launch contact phone number: ' +
+                                                      dateProvider
+                                                          .getCurrentDates[
+                                                              someIndex]
+                                                          .trusted[trustedIndex]
+                                                          .phone_number);
                                               launch(
                                                   "tel:${dateProvider.getCurrentDates[someIndex].trusted[trustedIndex].phone_number}");
                                             },
@@ -864,12 +877,18 @@ class _DetailDateState extends State<DetailDate> {
                                   ),
                                   onPressed: () async {
                                     if (_endStatus == 'Cancel Date') {
+                                      log.i('Cancel date');
                                       try {
+                                        log.d(
+                                            'RemoteDataBaseHelper.instance.cancelDate()');
                                         Map<String, dynamic> cancelResponse =
                                             await RemoteDatabaseHelper.instance
                                                 .cancelDate(
                                                     _currentDate.dateId);
+                                        log.d(cancelResponse['status']);
                                         if (cancelResponse['status'] == true) {
+                                          log.d(
+                                              'Date cancelled, pushing to Loading Screen');
                                           Navigator.pushReplacement(
                                               context,
                                               MaterialPageRoute(
@@ -891,12 +910,18 @@ class _DetailDateState extends State<DetailDate> {
                                       }
                                     } else {
                                       try {
+                                        log.i('Mark date as safe');
+                                        log.d(
+                                            'RemoteDatebaseHelper.instance.markDateSafe()');
                                         Map<String, dynamic> markSafeResponse =
                                             await RemoteDatabaseHelper.instance
                                                 .markDateSafe(
                                                     _currentDate.dateId);
+                                        log.d(markSafeResponse['status']);
                                         if (markSafeResponse['status'] ==
                                             true) {
+                                          log.d(
+                                              'Successfully marked date as safe, pushing to Loading Screen');
                                           Navigator.pushReplacement(
                                               context,
                                               MaterialPageRoute(
@@ -955,7 +980,11 @@ class _LoadingScreenState extends State<LoadingScreen> {
       await Future.delayed(Duration(seconds: 1), () {
         dateProvider.removeDate(widget.someIndex);
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => MainPage()));
+            context,
+            MaterialPageRoute(
+                builder: (context) => MainPage(
+                      fromAddDate: true,
+                    )));
       });
     });
     return LoaderOverlay(

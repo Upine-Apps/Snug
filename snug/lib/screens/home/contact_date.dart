@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:snug/core/logger.dart';
 import 'package:snug/models/Date.dart';
 import 'package:snug/providers/ContactProvider.dart';
 import 'package:snug/providers/DateProvider.dart';
 import 'package:provider/provider.dart';
+import 'package:snug/providers/LogProvider.dart';
 
 class ContactDate extends StatefulWidget {
   @override
@@ -25,6 +27,8 @@ class _ContactDateState extends State<ContactDate> {
   Widget build(BuildContext context) {
     final contactProvider =
         Provider.of<ContactProvider>(context, listen: false);
+    final logProvider = Provider.of<LogProvider>(context, listen: false);
+    final log = getLogger('Contact Date Section', logProvider.getLogPath);
 
     final contactList = contactProvider.getContacts;
     return ListView.builder(
@@ -37,14 +41,15 @@ class _ContactDateState extends State<ContactDate> {
                   child: Column(
                     children: <Widget>[
                       new CheckboxListTile(
-                        activeColor:
-                            Theme.of(context).colorScheme.primaryVariant,
+                        checkColor: Theme.of(context).dividerColor,
+                        activeColor: Theme.of(context).hintColor,
                         dense: true,
                         title: new Text(contactList[index].name,
                             style: TextStyle(
                                 color: Theme.of(context).dividerColor)),
                         value: checkBoxListTileModel[index].isCheck,
                         onChanged: (bool val) {
+                          log.i('Choosing contact');
                           itemChange(val, index);
 
                           //take values that were selected from the checklist
@@ -84,7 +89,9 @@ class CheckBoxListTileModel {
 
   static List<CheckBoxListTileModel> getUsers() {
     return <CheckBoxListTileModel>[
-      CheckBoxListTileModel(isCheck: false),
+      CheckBoxListTileModel(
+        isCheck: false,
+      ),
       CheckBoxListTileModel(isCheck: false),
       CheckBoxListTileModel(isCheck: false),
       CheckBoxListTileModel(isCheck: false),

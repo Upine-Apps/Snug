@@ -1,11 +1,10 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
-
 import 'package:snug/models/PlaceSearch.dart';
 import 'package:snug/models/place.dart';
 
 class PlacesService {
-  final key = 'AIzaSyDMT-oJtKYtCTGHQmlIS7vNk7scGSGgSVw';
+  final key = 'AIzaSyBQgN0iD8Wo5zNt_FSu_YLreNK9zfwjeKQ';
   Future<List<PlaceSearch>> getAutocomplete(String search) async {
     print(search);
     var url =

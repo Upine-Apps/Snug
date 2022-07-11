@@ -14,7 +14,7 @@ class CognitoService {
   static String clientId =
       '26gd072a3jrqsjubrmaj0r4nr3'; //DotEnv().env['COGNITO_CLIENT_ID'];
 
-  final log = getLogger('CognitoService');
+  //final log = getLogger('CognitoService');
   final userPool = CognitoUserPool(userPoolId, clientId);
   CognitoUserSession userSession;
   // final _userProvider = Provider.of<UserProvider>(context, listen: true);
@@ -46,7 +46,7 @@ class CognitoService {
   }
 
   Future<Map<String, Object>> deleteUser(CognitoUser cognitoUser) async {
-    log.i('deleteUser | cognitoUser: $cognitoUser');
+    //log.i('deleteUser | cognitoUser: $cognitoUser');
     bool userDeleted = false;
     try {
       userDeleted = await cognitoUser.deleteUser();
@@ -59,35 +59,33 @@ class CognitoService {
         throw Error;
       }
     } catch (e) {
-      log.e(e);
+      //log.e(e);
       return {'status': false, 'data': e};
     }
   }
 
   Future<Map<String, Object>> registerUser(
       String username, String password) async {
-    log.i('registerUser | username: $username password: *******');
     CognitoUserPoolData data;
     try {
       data = await userPool.signUp('+1$username', password);
+      if (data.user != null) {
+        return {'status': true};
+      } else {
+        throw 'Registration Failed';
+      }
     } catch (e) {
-      log.e(e);
-      return {'status': false, 'message': 'ERROR', 'error': e};
-    }
-    if (data.user != null) {
-      return {'status': true};
-    } else {
-      return {'status': false, 'message': 'REGISTRATION_FAILED'};
+      rethrow;
     }
   }
 
   Future<Map<String, Object>> forgotPassword(String username) async {
-    log.i('forgotPassword | username: $username');
+    //log.i('forgotPassword | username: $username');
     final cognitoUser = CognitoUser(username, userPool);
     var data;
     try {
       data = await cognitoUser.forgotPassword();
-      log.d(data);
+      //log.d(data);
       return {'status': true, 'cognitoUser': cognitoUser};
     } catch (e) {
       rethrow;
@@ -122,7 +120,7 @@ class CognitoService {
         return {'status': true, 'cognitoUser': cognitoUser};
       }
     } catch (e) {
-      log.e(e);
+      //log.e(e);
       throw OTPException('Failed to verify OTP');
     }
   }
@@ -134,8 +132,8 @@ class CognitoService {
       attributes = await cognitoUser.getUserAttributes();
       attributes.forEach((attribute) {
         if (attribute.getName() == 'custom:realUserId') {
-          log.i(attribute.getName());
-          log.i(attribute.getValue());
+          //log.i(attribute.getName());
+          //log.i(attribute.getValue());
           returnMap = {'status': true, 'data': attribute.getValue()};
         }
       });
@@ -145,7 +143,7 @@ class CognitoService {
         throw GetUserAttributeException('No attributes found');
       }
     } catch (e) {
-      log.e(e);
+      //log.e(e);
       rethrow;
     }
   }
@@ -164,7 +162,7 @@ class CognitoService {
         throw AddUserAttributeException('Failed to add user attribute');
       }
     } catch (e) {
-      log.e('ERROR: $e');
+      //log.e('ERROR: $e');
       return {'status': false, 'message': 'ATTRIBUTES', 'error': e};
     }
   }
@@ -180,8 +178,8 @@ class CognitoService {
 
   Future<Map<String, Object>> signInUser(
       String username, String password) async {
-    log.i("userPoolId | $userPoolId");
-    log.i('signInUser | phonenumber: $username password: *******');
+    //log.i("userPoolId | $userPoolId");
+    //log.i('signInUser | phonenumber: $username password: *******');
 
     final authDetails =
         AuthenticationDetails(username: username, password: password);
@@ -205,10 +203,10 @@ class CognitoService {
     } on CognitoUserConfirmationNecessaryException catch (e) {
       // handle User Confirmation Necessary
     } on CognitoClientException catch (e) {
-      log.e(e);
+      //log.e(e);
       rethrow;
     } catch (e) {
-      log.e(e);
+      //log.e(e);
       rethrow;
     }
     prefs.setString('accessToken', userSession.getAccessToken().getJwtToken());

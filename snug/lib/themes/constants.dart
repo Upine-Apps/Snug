@@ -1,4 +1,4 @@
-class Constants {
+class Constant {
   static String HOME = "Home";
   static String SETTING = "Setting";
   static String APP_THEME = "Theme";

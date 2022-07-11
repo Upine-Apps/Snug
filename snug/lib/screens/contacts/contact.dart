@@ -6,6 +6,7 @@ import 'package:snug/custom_widgets/customshowcase.dart';
 import 'package:snug/custom_widgets/topheader.dart';
 import 'package:snug/models/User.dart';
 import 'package:snug/providers/ContactProvider.dart';
+import 'package:snug/providers/LogProvider.dart';
 import 'package:snug/providers/UserProvider.dart';
 import 'package:snug/screens/authenticate/authenticate.dart';
 import 'package:snug/screens/contacts/create_contact.dart';
@@ -24,19 +25,17 @@ class Contact extends StatefulWidget {
   _ContactState createState() => _ContactState();
 }
 
-class _ContactState extends State<Contact>
-    with AutomaticKeepAliveClientMixin, WidgetsBindingObserver {
-  @override
-  bool get wantKeepAlive => true; //somehow makes it work
+class _ContactState extends State<Contact> with WidgetsBindingObserver {
   String _phone = '';
   String _name = '';
   String _userId = '';
   final GlobalKey<FormState> _contactFormStateKey = GlobalKey<FormState>();
   final TextEditingController nameCtrl = new TextEditingController();
   final TextEditingController phoneCtrl = new TextEditingController();
+
   void initState() {
-    WidgetsBinding.instance.addObserver(this);
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
@@ -46,33 +45,47 @@ class _ContactState extends State<Contact>
   }
 
   bool userHasContact = true;
-  final log = getLogger('Contact');
+  //final log = getLogger('Contact');
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
-    // I think this will successfully refresh the user session
-    log.i("APP_STATE: $state");
+    //refreshes user auth token for backend verification through cognito
 
     if (state == AppLifecycleState.resumed) {
       // user returned to our app
       final prefs = await SharedPreferences.getInstance();
-      log.i('Current user auth token: ${prefs.getString('accessToken')}');
+      final log = getLogger('refreshAuth', prefs.getString('path'));
+      final consoleLog = getConsoleLogger('refreshAuth');
+      log.i('AppState: $state');
+      consoleLog.i('refresh from Contact');
+      log.d('Current user auth token: ${prefs.getString('accessToken')}');
+      consoleLog.i('AppState: $state');
+      consoleLog
+          .d('Current user auth token: ${prefs.getString('accessToken')}');
       final _userProvider = Provider.of<UserProvider>(context, listen: false);
+      log.i('CognitoService.refreshAuth');
+      consoleLog.i('CognitoService.refreshAuth');
       Map<String, dynamic> refreshResponse = await CognitoService.instance
           .refreshAuth(
               _userProvider.getCognitoUser, prefs.getString('refreshToken'));
+      log.d('refreshResponse: ${refreshResponse['status']}');
+      consoleLog.d('refreshResponse: ${refreshResponse['status']}');
       if (refreshResponse['status'] == true) {
         final prefs = await SharedPreferences.getInstance();
         log.i('Successfully refreshed user session');
+        consoleLog.i('Successfully refreshed user session');
         CognitoUserSession userSession = refreshResponse['data'];
         _userProvider.setUserSession(userSession);
-        log.i('New user auth token: ${prefs.getString('accessToken')}');
+        log.d('New user auth token: ${prefs.getString('accessToken')}');
+        consoleLog.d('New user auth token: ${prefs.getString('accessToken')}');
       } else {
         log.e('Failed to refresh user session. Returning to home screen');
+        consoleLog
+            .e('Failed to refresh user session. Returning to home screen');
         CustomToast.showDialog(
             'Failed to refresh your session. Please sign in again',
             context,
-            Toast.CENTER);
+            Toast.BOTTOM);
         await Future.delayed(Duration(seconds: 2), () {
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => Authenticate()));
@@ -84,6 +97,8 @@ class _ContactState extends State<Contact>
   Widget build(BuildContext context) {
     final contactList = Provider.of<ContactProvider>(context, listen: true);
     final profileUser = Provider.of<UserProvider>(context, listen: true);
+    final logProvider = Provider.of<LogProvider>(context, listen: false);
+    final log = getLogger('Contact', logProvider.getLogPath);
     User _tempUser = profileUser.getUser;
     _userId = _tempUser.uid;
 
@@ -91,7 +106,6 @@ class _ContactState extends State<Contact>
       userHasContact = false;
     }
 
-    super.build(context); //what does this do
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(0),
@@ -202,9 +216,13 @@ class _ContactState extends State<Contact>
                                   return Dismissible(
                                     key: UniqueKey(),
                                     onDismissed: (direction) {
+                                      log.i('Deleting contact: ' +
+                                          contactList
+                                              .getContacts[index].phoneNumber);
+                                      log.d('contactList.removeContact');
                                       contactList.removeContact(index, _userId);
                                       CustomToast.showDialog('Contact deleted',
-                                          context, Toast.CENTER);
+                                          context, Toast.BOTTOM);
                                     },
                                     background:
                                         Container(color: Colors.transparent),
@@ -212,6 +230,8 @@ class _ContactState extends State<Contact>
                                       children: <Widget>[
                                         GestureDetector(
                                           onTap: () {
+                                            log.i(
+                                                'Lanching ${contactList.getContacts[index].phoneNumber}');
                                             launch(
                                                 "tel:${contactList.getContacts[index].phoneNumber}");
                                           },
@@ -315,6 +335,8 @@ class _ContactState extends State<Contact>
                                     children: <Widget>[
                                       GestureDetector(
                                         onTap: () {
+                                          log.i(
+                                              'Lanching ${contactList.getContacts[index].phoneNumber}');
                                           launch(
                                               "tel:${contactList.getContacts[index].phoneNumber}");
                                         },
@@ -437,13 +459,13 @@ class _ContactState extends State<Contact>
             ),
           ),
           onPressed: () {
+            log.i('Creating a contact');
             if (contactList.getContacts.length == 5) {
+              log.i('5 contacts already exist');
               CustomToast.showDialog(
-                  'You can only have 5 contacts', context, Toast.CENTER);
+                  'You can only have 5 contacts', context, Toast.BOTTOM);
             } else {
-              //////////////////////////////////////////////////
-              ////////////  Pop up to create a contact  ////////
-              ///
+              log.i('Showing create contact popup form');
               showDialog(
                   context: context,
                   builder: (BuildContext context) {

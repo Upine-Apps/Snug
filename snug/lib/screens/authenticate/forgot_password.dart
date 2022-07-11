@@ -3,11 +3,12 @@ import 'dart:async';
 import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:logger/logger.dart';
+import 'package:provider/provider.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 import 'package:snug/core/logger.dart';
 import 'package:snug/custom_widgets/CustomToast.dart';
 import 'package:snug/custom_widgets/raised_rounded_gradient_button.dart';
+import 'package:snug/providers/LogProvider.dart';
 import 'package:snug/screens/authenticate/authenticate.dart';
 import 'package:snug/screens/authenticate/sign_in.dart';
 import 'package:flutter_conditional_rendering/flutter_conditional_rendering.dart';
@@ -56,13 +57,20 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   CognitoUser cognitoUser;
   var _formKey = GlobalKey<FormState>();
   final _phoneFormKey = GlobalKey<FormState>();
-  final log = getLogger('forgotPassword');
+  //final log = getLogger('forgotPassword');
   @override
   Widget build(BuildContext context) {
     final node = FocusScope.of(context);
+    final logProvider = Provider.of<LogProvider>(context, listen: false);
+    final log = getLogger('ForgotPassword', logProvider.getLogPath);
+    final consoleLog = getConsoleLogger('ForgotPassword');
+
     return WillPopScope(
-      onWillPop: () => Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => SignIn())),
+      onWillPop: () {
+        log.i('pushToAuthenticate');
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => Authenticate()));
+      },
       child: GestureDetector(
         onTap: () {
           FocusScope.of(context).requestFocus(new FocusNode());
@@ -70,6 +78,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         child: Scaffold(
           extendBodyBehindAppBar: true,
           appBar: AppBar(
+              automaticallyImplyLeading:
+                  false, // Removes default back button on app bar
               elevation: 0,
               backgroundColor: Colors.transparent,
               title: Row(
@@ -81,6 +91,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     icon: Icon(Icons.arrow_back,
                         color: Theme.of(context).colorScheme.secondaryVariant),
                     onPressed: () {
+                      log.i('pushToAuthenticate');
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(builder: (context) => Authenticate()),
@@ -92,10 +103,15 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       : TextButton(
                           onPressed: () async {
                             try {
+                              log.i('CognitoService.forgotPassword');
                               Map<String, Object> forgotPasswordResponse =
                                   await CognitoService.instance
                                       .forgotPassword("+1$phoneNumber");
+                              log.d(
+                                  'forgotPasswordResponse: ${forgotPasswordResponse['status']}');
                               if (forgotPasswordResponse['status'] == true) {
+                                log.d(
+                                    'cognitoUser: ${forgotPasswordResponse['cognitoUser']}');
                                 setState(() {
                                   cognitoUser =
                                       forgotPasswordResponse['cognitoUser'];
@@ -103,10 +119,13 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                               }
                             } on CognitoClientException catch (e) {
                               if (e.code == 'LimitExceededException') {
+                                log.e(e);
                                 CustomToast.showDialog(
-                                    'Too many password reset attempts. Please wait 30 minutes and try again.',
+                                    'Too many password reset attempts. Please wait a bit and try again.',
                                     context,
                                     Toast.BOTTOM);
+                                log.i(
+                                    'Waiting 2 seconds for Toast to disappear and pushing to Authenticate');
                                 await Future.delayed(Duration(seconds: 2), () {
                                   Navigator.pushReplacement(
                                     context,
@@ -164,112 +183,134 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                   conditionBuilder: (BuildContext context) =>
                                       gotPhoneNumber == false,
                                   widgetBuilder: (BuildContext context) {
-                                    return Column(children: <Widget>[
-                                      Container(
+                                    return Column(
+                                      children: <Widget>[
+                                        Container(
                                           child: Form(
-                                        key: _phoneFormKey,
-                                        child: Column(children: <Widget>[
-                                          Container(
-                                              child: TextFormField(
-                                            inputFormatters: [
-                                              FilteringTextInputFormatter.allow(
-                                                  RegExp('[0-9]+')),
-                                            ],
-                                            validator: (String val) {
-                                              if (val.length != 10) {
-                                                return "Please enter a valid Phone Number";
-                                              }
-                                            },
-                                            keyboardType: TextInputType.number,
-                                            decoration: InputDecoration(
-                                                errorStyle: TextStyle(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .secondaryVariant),
-                                                enabledBorder:
-                                                    UnderlineInputBorder(
-                                                        borderSide: BorderSide(
-                                                            color: Theme.of(
-                                                                    context)
-                                                                .primaryColor)),
-                                                labelText: 'Phone Number'),
-                                            onChanged: (val) {
-                                              setState(() {
-                                                phoneNumber = val;
-                                              });
-                                            },
-                                          )),
-                                          Padding(
-                                              padding: EdgeInsets.only(
-                                                  top: MediaQuery.of(context)
-                                                          .size
-                                                          .height *
-                                                      .05),
-                                              child: Container(
-                                                  child:
-                                                      RaisedRoundedGradientButton(
-                                                          child: Text('Submit',
-                                                              style: TextStyle(
-                                                                  color: Theme.of(
-                                                                          context)
-                                                                      .dividerColor)),
-                                                          onPressed: () async {
-                                                            await SmsAutoFill()
-                                                                .listenForCode;
-                                                            if (_phoneFormKey
-                                                                .currentState
-                                                                .validate()) {
+                                            key: _phoneFormKey,
+                                            child: Column(
+                                              children: <Widget>[
+                                                Container(
+                                                    child: TextFormField(
+                                                  inputFormatters: [
+                                                    FilteringTextInputFormatter
+                                                        .allow(
+                                                            RegExp('[0-9]+')),
+                                                  ],
+                                                  validator: (String val) {
+                                                    if (val.length != 10) {
+                                                      return "Please enter a valid Phone Number";
+                                                    }
+                                                  },
+                                                  keyboardType:
+                                                      TextInputType.number,
+                                                  decoration: InputDecoration(
+                                                      errorStyle: TextStyle(
+                                                          color: Theme.of(
+                                                                  context)
+                                                              .colorScheme
+                                                              .secondaryVariant),
+                                                      enabledBorder: UnderlineInputBorder(
+                                                          borderSide: BorderSide(
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .primaryColor)),
+                                                      labelText:
+                                                          'Phone Number'),
+                                                  onChanged: (val) {
+                                                    setState(() {
+                                                      phoneNumber = val;
+                                                    });
+                                                  },
+                                                )),
+                                                Padding(
+                                                  padding: EdgeInsets.only(
+                                                      top:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .height *
+                                                              .05),
+                                                  child: Container(
+                                                    child:
+                                                        RaisedRoundedGradientButton(
+                                                      child: Text('Submit',
+                                                          style: TextStyle(
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .dividerColor)),
+                                                      onPressed: () async {
+                                                        await SmsAutoFill()
+                                                            .listenForCode;
+                                                        if (_phoneFormKey
+                                                            .currentState
+                                                            .validate()) {
+                                                          setState(() {
+                                                            gotPhoneNumber =
+                                                                true;
+                                                          });
+                                                          try {
+                                                            log.i(
+                                                                'CognitoService.forgotPassword');
+                                                            Map<String, Object>
+                                                                forgotPasswordResponse =
+                                                                await CognitoService
+                                                                    .instance
+                                                                    .forgotPassword(
+                                                                        "+1$phoneNumber");
+                                                            log.d(
+                                                                'forgotPasswordResponse: ${forgotPasswordResponse['status']}');
+                                                            if (forgotPasswordResponse[
+                                                                    'status'] ==
+                                                                true) {
+                                                              log.d(
+                                                                  'cognitoUser: ${forgotPasswordResponse['cognitoUser']}');
                                                               setState(() {
-                                                                gotPhoneNumber =
-                                                                    true;
+                                                                cognitoUser =
+                                                                    forgotPasswordResponse[
+                                                                        'cognitoUser'];
                                                               });
-                                                              try {
-                                                                Map<String,
-                                                                        Object>
-                                                                    forgotPasswordResponse =
-                                                                    await CognitoService
-                                                                        .instance
-                                                                        .forgotPassword(
-                                                                            "+1$phoneNumber");
-                                                                if (forgotPasswordResponse[
-                                                                        'status'] ==
-                                                                    true) {
-                                                                  setState(() {
-                                                                    cognitoUser =
-                                                                        forgotPasswordResponse[
-                                                                            'cognitoUser'];
-                                                                  });
-                                                                }
-                                                              } on CognitoClientException catch (e) {
-                                                                if (e.code ==
-                                                                    'LimitExceededException') {
-                                                                  CustomToast.showDialog(
-                                                                      'Too many password reset attempts. Please wait 30 minutes and try again.',
-                                                                      context,
-                                                                      Toast
-                                                                          .BOTTOM);
-                                                                  await Future.delayed(
-                                                                      Duration(
-                                                                          seconds:
-                                                                              2),
-                                                                      () {
-                                                                    Navigator
-                                                                        .pushReplacement(
-                                                                      context,
-                                                                      MaterialPageRoute(
-                                                                          builder: (context) =>
-                                                                              Authenticate()),
-                                                                    );
-                                                                  });
-                                                                }
-                                                              } catch (e) {
-                                                                log.e(e);
-                                                              }
                                                             }
-                                                          }))),
-                                        ]),
-                                      ))
-                                    ]);
+                                                          } on CognitoClientException catch (e) {
+                                                            log.e(e);
+                                                            if (e.code ==
+                                                                'LimitExceededException') {
+                                                              CustomToast.showDialog(
+                                                                  'Too many password reset attempts. Please wait a bit and try again.',
+                                                                  context,
+                                                                  Toast.BOTTOM);
+                                                              log.i(
+                                                                  'Waiting 2 seconds for Toast to disappear and pushing to Authenticate');
+                                                              await Future.delayed(
+                                                                  Duration(
+                                                                      seconds:
+                                                                          2),
+                                                                  () {
+                                                                Navigator
+                                                                    .pushReplacement(
+                                                                  context,
+                                                                  MaterialPageRoute(
+                                                                      builder:
+                                                                          (context) =>
+                                                                              Authenticate()),
+                                                                );
+                                                              });
+                                                            } else {
+                                                              rethrow;
+                                                            }
+                                                          } catch (e) {
+                                                            log.e(e);
+                                                          }
+                                                        }
+                                                      },
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    );
                                   },
                                   fallbackBuilder: (BuildContext context) {
                                     return Container(
@@ -371,14 +412,18 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                                     color: Theme.of(context)
                                                         .colorScheme
                                                         .secondaryVariant),
-                                                icon: Icon(Icons.security),
+                                                icon: Icon(
+                                                  Icons.security,
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .secondaryVariant,
+                                                ),
                                                 labelText: 'Password'),
                                             validator: (val) => val.length < 6
                                                 ? 'Enter a password 6+ char long'
                                                 : null,
                                             obscureText: true,
                                             onChanged: (val) {
-                                              log.i('setPassword | ****');
                                               setState(() => password1 = val);
                                             },
                                           ),
@@ -398,7 +443,12 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                                     color: Theme.of(context)
                                                         .colorScheme
                                                         .secondaryVariant),
-                                                icon: Icon(Icons.security),
+                                                icon: Icon(
+                                                  Icons.security,
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .secondaryVariant,
+                                                ),
                                                 labelText: 'Confirm Password'),
                                             validator: (String val) {
                                               if (val != _passOne.text) {
@@ -415,67 +465,124 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                           height: 20.0,
                                         ),
                                         RaisedRoundedGradientButton(
-                                            onPressed: () async {
-                                              if (_formKey.currentState
-                                                  .validate()) {
-                                                if (didPressSubmit == false) {
-                                                  setState(() {
-                                                    didPressSubmit = true;
-                                                  });
-                                                  log.d(_otp);
-                                                  FocusScope.of(context)
-                                                      .requestFocus(
-                                                          FocusNode());
-                                                  try {
-                                                    Map<String, Object>
-                                                        confirmPasswordResponse =
-                                                        await CognitoService
-                                                            .instance
-                                                            .confirmPassword(
-                                                                cognitoUser,
-                                                                _otp,
-                                                                password2);
-                                                    if (confirmPasswordResponse[
-                                                            'status'] ==
-                                                        true) {
-                                                      CustomToast.showDialog(
-                                                          'Successfully reset password!',
-                                                          context,
-                                                          Toast.BOTTOM);
-                                                      await Future.delayed(
-                                                          Duration(seconds: 2),
-                                                          () {
-                                                        Navigator
-                                                            .pushReplacement(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                              builder: (context) =>
-                                                                  Authenticate()),
-                                                        );
-                                                      });
-                                                    }
-                                                  } on CognitoClientException catch (e) {
-                                                    if (e.code ==
-                                                        'CodeMismatchException') {
-                                                      CustomToast.showDialog(
-                                                          'Incorrect OTP code. Please try again!',
-                                                          context,
-                                                          Toast.BOTTOM);
-                                                      setState(() {
-                                                        didPressSubmit = false;
-                                                      });
-                                                    }
-                                                    log.e(e);
+                                          onPressed: () async {
+                                            if (_formKey.currentState
+                                                .validate()) {
+                                              if (didPressSubmit == false) {
+                                                log.i('didPressSubmit');
+                                                setState(() {
+                                                  didPressSubmit = true;
+                                                });
+                                                //log.d(_otp);
+                                                FocusScope.of(context)
+                                                    .requestFocus(FocusNode());
+                                                try {
+                                                  log.i(
+                                                      'CognitoService.confirmPassword');
+                                                  Map<String, Object>
+                                                      confirmPasswordResponse =
+                                                      await CognitoService
+                                                          .instance
+                                                          .confirmPassword(
+                                                              cognitoUser,
+                                                              _otp,
+                                                              password2);
+                                                  log.d(
+                                                      'confirmPasswordResponse: ${confirmPasswordResponse['status']}');
+                                                  if (confirmPasswordResponse[
+                                                          'status'] ==
+                                                      true) {
+                                                    CustomToast.showDialog(
+                                                        'Successfully reset password!',
+                                                        context,
+                                                        Toast.BOTTOM);
+                                                    log.i(
+                                                        'Waiting 2 seconds for Toast to disappear and pushing to Authenticate');
+                                                    await Future.delayed(
+                                                        Duration(seconds: 2),
+                                                        () {
+                                                      Navigator.pushReplacement(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                Authenticate()),
+                                                      );
+                                                    });
                                                   }
+                                                } on CognitoClientException catch (e) {
+                                                  log.e(e);
+                                                  if (e.code ==
+                                                      'CodeMismatchException') {
+                                                    log.e('Incorrect OTP code');
+                                                    CustomToast.showDialog(
+                                                        'Incorrect OTP code. Please try again!',
+                                                        context,
+                                                        Toast.BOTTOM);
+                                                    setState(() {
+                                                      didPressSubmit = false;
+                                                    });
+                                                  } else {
+                                                    rethrow;
+                                                  }
+                                                } catch (e) {
+                                                  log.e(
+                                                      'Reset password failed');
+                                                  log.e(e);
+                                                  CustomToast.showDialog(
+                                                      'Password reset failed. Returning you to sign in',
+                                                      context,
+                                                      Toast.BOTTOM);
+                                                  log.i(
+                                                      'Waiting 2 seconds for Toast to disappear and pushing to Authenticate');
+                                                  await Future.delayed(
+                                                      Duration(seconds: 2), () {
+                                                    Navigator.pushReplacement(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              Authenticate()),
+                                                    );
+                                                  });
                                                 }
                                               }
-                                            },
-                                            child: Text(
-                                              'Update Password',
-                                              style: TextStyle(
-                                                  color: Theme.of(context)
-                                                      .dividerColor),
-                                            ))
+                                            } else {
+                                              log.i(
+                                                  'Waiting 2 seconds and allowing submit button press again');
+                                              await Future.delayed(
+                                                  Duration(seconds: 2), () {
+                                                setState(() {
+                                                  didPressSubmit = false;
+                                                });
+                                              });
+                                            }
+                                          },
+                                          child: didPressSubmit == true
+                                              ? SizedBox(
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                    strokeWidth: 2,
+                                                    valueColor:
+                                                        AlwaysStoppedAnimation<
+                                                                Color>(
+                                                            Theme.of(context)
+                                                                .colorScheme
+                                                                .secondary),
+                                                  ),
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .height *
+                                                      .025,
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      .05)
+                                              : Text(
+                                                  'Update Password',
+                                                  style: TextStyle(
+                                                      color: Theme.of(context)
+                                                          .dividerColor),
+                                                ),
+                                        )
                                       ],
                                     ));
                                   })

@@ -4,12 +4,12 @@ import 'dart:io';
 import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:snug/custom_widgets/CustomToast.dart';
 import 'package:snug/custom_widgets/customshowcase.dart';
 import 'package:snug/custom_widgets/raise_gradient_circular_button.dart';
 import 'package:snug/custom_widgets/topheader.dart';
 import 'package:snug/models/User.dart';
+import 'package:snug/providers/LogProvider.dart';
 import 'package:snug/providers/UserProvider.dart';
 import 'package:snug/screens/authenticate/authenticate.dart';
 import 'package:snug/screens/profile/profile_edit.dart';
@@ -27,8 +27,7 @@ class ProfilePage extends StatefulWidget {
   MapScreenState createState() => MapScreenState();
 }
 
-class MapScreenState extends State<ProfilePage>
-    with AutomaticKeepAliveClientMixin, WidgetsBindingObserver {
+class MapScreenState extends State<ProfilePage> with WidgetsBindingObserver {
   String picture;
   List<String> profilePics = [
     'assets/image/pug.jpg',
@@ -36,7 +35,11 @@ class MapScreenState extends State<ProfilePage>
     'assets/image/dog1.jpg',
     'assets/image/dog2.jpg',
     'assets/image/dog3.jpg',
-    'assets/image/dog4.jpg'
+    'assets/image/dog4.jpg',
+    'assets/image/dog5.jpg',
+    'assets/image/dog6.jpg',
+    'assets/image/dog7.jpg',
+    'assets/image/dog8.jpg',
   ];
   var random = new Random();
   TextEditingController _controller;
@@ -44,6 +47,7 @@ class MapScreenState extends State<ProfilePage>
 
   @override
   void initState() {
+    super.initState();
     WidgetsBinding.instance.addObserver(this);
     _controller = new TextEditingController();
 
@@ -57,13 +61,13 @@ class MapScreenState extends State<ProfilePage>
       setState(() {
         picture = prefs.getString('profilePicture');
       });
-      _userProvider.setProfilePic(picture);
     } else {
       setState(() {
         picture = 'assets/image/pug.jpg';
       });
-      _userProvider.setProfilePic(picture);
+      prefs.setString('profilePicture', picture);
     }
+    _userProvider.setProfilePic(picture);
   }
 
   @override
@@ -72,32 +76,43 @@ class MapScreenState extends State<ProfilePage>
     super.dispose();
   }
 
-  @override
-  bool get wantKeepAlive => true;
-  bool _status = true;
-  final log = getLogger('Profile');
+  //final log = getLogger('Profile');
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
-    // I think this will successfully refresh the user session
-    log.i("APP_STATE: $state");
+    //refreshes user auth token for backend verification through cognito
 
     if (state == AppLifecycleState.resumed) {
       // user returned to our app
       final prefs = await SharedPreferences.getInstance();
-      log.i('Current user auth token: ${prefs.getString('accessToken')}');
+      final log = getLogger('refreshAuth', prefs.getString('path'));
+      final consoleLog = getConsoleLogger('refreshAuth');
+      consoleLog.i('refresh from Profile');
+      log.i('AppState: $state');
+      log.d('Current user auth token: ${prefs.getString('accessToken')}');
+      consoleLog.i('AppState: $state');
+      consoleLog
+          .d('Current user auth token: ${prefs.getString('accessToken')}');
       final _userProvider = Provider.of<UserProvider>(context, listen: false);
+      log.i('CognitoService.refreshAuth');
+      consoleLog.i('CognitoService.refreshAuth');
       Map<String, dynamic> refreshResponse = await CognitoService.instance
           .refreshAuth(
               _userProvider.getCognitoUser, prefs.getString('refreshToken'));
+      log.d('refreshResponse: ${refreshResponse['status']}');
+      consoleLog.d('refreshResponse: ${refreshResponse['status']}');
       if (refreshResponse['status'] == true) {
         final prefs = await SharedPreferences.getInstance();
         log.i('Successfully refreshed user session');
+        consoleLog.i('Successfully refreshed user session');
         CognitoUserSession userSession = refreshResponse['data'];
         _userProvider.setUserSession(userSession);
-        log.i('New user auth token: ${prefs.getString('accessToken')}');
+        log.d('New user auth token: ${prefs.getString('accessToken')}');
+        consoleLog.d('New user auth token: ${prefs.getString('accessToken')}');
       } else {
         log.e('Failed to refresh user session. Returning to home screen');
+        consoleLog
+            .e('Failed to refresh user session. Returning to home screen');
         CustomToast.showDialog(
             'Failed to refresh your session. Please sign in again',
             context,
@@ -113,6 +128,7 @@ class MapScreenState extends State<ProfilePage>
   final FocusNode myFocusNode = FocusNode();
 
   _convertDob(String dob) {
+    //log.i(dob);
     String year = dob.substring(0, 4);
     String month = dob.substring(5, 7);
     String day = dob.substring(8, 10);
@@ -122,31 +138,30 @@ class MapScreenState extends State<ProfilePage>
 
   getImage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    final currentProfilePic = prefs.getString("profilePicture");
+    var currentProfilePic =
+        profilePics.indexOf(prefs.getString("profilePicture"));
     final _userProvider = Provider.of<UserProvider>(context, listen: false);
-
-    int randomInt = random.nextInt(6);
-    String randomPic = profilePics[randomInt];
-    while (randomPic == currentProfilePic) {
-      randomInt = random.nextInt(6);
-      randomPic = profilePics[randomInt];
-    }
+    //log.i(currentProfilePic);
+    currentProfilePic != profilePics.length - 1
+        ? currentProfilePic += 1
+        : currentProfilePic = 0;
+    String nextPic = profilePics[currentProfilePic];
     setState(() {
-      picture = randomPic;
-      prefs.setString("profilePicture", randomPic);
+      picture = nextPic;
+      prefs.setString("profilePicture", nextPic);
     });
-    _userProvider.setProfilePic(randomPic);
+    _userProvider.setProfilePic(nextPic);
   }
 
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context, listen: true);
+    final logProvider = Provider.of<LogProvider>(context, listen: false);
+    final log = getLogger('Profile', logProvider.getLogPath);
     User currentUser = userProvider.getUser;
 
     File _image;
-    final picker = ImagePicker();
 
     final _formKey = GlobalKey<FormState>();
-    super.build(context);
     return new Scaffold(
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(0),
@@ -264,15 +279,16 @@ class MapScreenState extends State<ProfilePage>
                                     width:
                                         MediaQuery.of(context).size.width / 8,
                                     child: RaisedCircularGradientButton(
+                                        elevation: 2,
                                         child: Icon(
                                           Icons.edit,
                                           color: Colors.white,
                                         ),
                                         onPressed: () async {
+                                          log.i('Profile edit popup');
                                           SharedPreferences profile =
                                               await SharedPreferences
                                                   .getInstance();
-
                                           showDialog(
                                               context: context,
                                               builder: (BuildContext context) {
@@ -322,7 +338,7 @@ class MapScreenState extends State<ProfilePage>
                                   mainAxisSize: MainAxisSize.min,
                                   children: <Widget>[
                                     Text(
-                                        '${currentUser.first_name}  ${currentUser.last_name}')
+                                        '${currentUser.first_name} ${currentUser.last_name}')
                                   ],
                                 ))
                               ],
@@ -531,7 +547,6 @@ class MapScreenState extends State<ProfilePage>
                                         "${currentUser.ft}' ${currentUser.inch}\""))
                               ],
                             )),
-
                         SizedBox(
                           height: 5,
                         ),
@@ -576,7 +591,6 @@ class MapScreenState extends State<ProfilePage>
                                 new Container(child: Text("${currentUser.zip}"))
                               ],
                             )),
-                        // !_status ? _getActionButtons() : new Container(),
                       ],
                     ),
                   ),

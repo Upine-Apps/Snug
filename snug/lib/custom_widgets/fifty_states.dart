@@ -13,6 +13,8 @@ class FiftyStates extends StatelessWidget {
   Widget build(BuildContext context) {
     return DropdownButtonFormField<String>(
         decoration: InputDecoration(
+          labelText: 'State',
+            alignLabelWithHint: true,
             errorStyle: TextStyle(
                 color: Theme.of(context).colorScheme.secondaryVariant),
             enabledBorder: UnderlineInputBorder(

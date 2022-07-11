@@ -9,7 +9,8 @@ class AppTheme {
           fontSize: 36,
           fontWeight: FontWeight.bold,
         )),
-        dividerColor: Colors.black54, //use this for text
+
+        dividerColor: Color(0xFF565656), //use this for text
         primaryColor: Color(0xFFe8b5c0),
         colorScheme: ColorScheme.dark(
             primary: Color(0xFF222f5a),
@@ -35,7 +36,7 @@ class AppTheme {
   get lightTheme => ThemeData(
         dividerColor: Colors.white, // use this for text
 
-        hintColor: Colors.black54,
+        hintColor: Color(0xFF565656),
         // Color(0xFF5b6686),
         primaryColor: Color(0xFF5b6686),
         colorScheme: ColorScheme.light(
@@ -49,8 +50,12 @@ class AppTheme {
           color: Colors.transparent,
         ),
         inputDecorationTheme: InputDecorationTheme(
-          hintStyle: TextStyle(color: Colors.black54),
-          labelStyle: TextStyle(color: Colors.black54),
+          hintStyle: TextStyle(
+            color: Color(0xFF565656),
+          ),
+          labelStyle: TextStyle(
+            color: Color(0xFF565656),
+          ),
         ),
 
         brightness: Brightness.light,
